@@ -33,9 +33,8 @@ pub const Vec2 = extern struct {
         return .{ .x = self.x - other.x, .y = self.y - other.y };
     }
 
-    pub fn scale(self: *Vec2, s: f32) void {
-        self.x *= s;
-        self.y *= s;
+    pub fn scale(self: Vec2, s: f32) Vec2 {
+        return .{ .x = self.x * s, .y = self.y * s};
     }
 
     pub fn clamp(self: Vec2, min: Vec2, max: Vec2) Vec2 {
