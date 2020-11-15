@@ -14,7 +14,7 @@ pub const MultiVertex = extern struct {
 };
 
 pub const MultiBatcher = struct {
-    mesh: zia.gfx.DynamicMesh(MultiVertex, u16),
+    mesh: zia.gfx.DynamicMesh(u16, MultiVertex),
     vert_index: usize = 0, // current index into the vertex array
     textures: [8]rk.Image = undefined,
     last_texture: usize = 0,
@@ -34,7 +34,7 @@ pub const MultiBatcher = struct {
         }
 
         return .{
-            .mesh = zia.gfx.DynamicMesh(MultiVertex, u16).init(allocator, max_sprites * 4, indices) catch unreachable,
+            .mesh = zia.gfx.DynamicMesh(u16, MultiVertex).init(allocator, max_sprites * 4, indices) catch unreachable,
             .textures = [_]rk.Image{0} ** 8,
         };
     }
@@ -94,23 +94,23 @@ pub const MultiBatcher = struct {
         const tid = self.submitTexture(texture.img);
 
         var verts = self.mesh.verts[self.vert_index .. self.vert_index + 4];
-        verts[0].pos = pos; // bl
-        verts[0].uv = .{ .x = 0, .y = 1 };
+        verts[0].pos = pos; // tl
+        verts[0].uv = .{ .x = 0, .y = 0 };
         verts[0].col = col;
         verts[0].tid = tid;
 
-        verts[1].pos = .{ .x = pos.x + texture.width, .y = pos.y }; // br
-        verts[1].uv = .{ .x = 1, .y = 1 };
+        verts[1].pos = .{ .x = pos.x + texture.width, .y = pos.y }; // tr
+        verts[1].uv = .{ .x = 1, .y = 0 };
         verts[1].col = col;
         verts[1].tid = tid;
 
-        verts[2].pos = .{ .x = pos.x + texture.width, .y = pos.y + texture.height }; // tr
-        verts[2].uv = .{ .x = 1, .y = 0 };
+        verts[2].pos = .{ .x = pos.x + texture.width, .y = pos.y + texture.height }; // br
+        verts[2].uv = .{ .x = 1, .y = 1 };
         verts[2].col = col;
         verts[2].tid = tid;
 
-        verts[3].pos = .{ .x = pos.x, .y = pos.y + texture.height }; // tl
-        verts[3].uv = .{ .x = 0, .y = 0 };
+        verts[3].pos = .{ .x = pos.x, .y = pos.y + texture.height }; // bl
+        verts[3].uv = .{ .x = 0, .y = 1 };
         verts[3].col = col;
         verts[3].tid = tid;
 

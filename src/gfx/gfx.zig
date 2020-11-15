@@ -16,6 +16,8 @@ pub const Batcher = @import("batcher.zig").Batcher;
 pub const MultiBatcher = @import("multi_batcher.zig").MultiBatcher;
 pub const TriangleBatcher = @import("triangle_batcher.zig").TriangleBatcher;
 
+pub const FontBook = @import("fontbook.zig").FontBook;
+
 pub const Vertex = extern struct {
     pos: math.Vec2 = .{ .x = 0, .y = 0 },
     uv: math.Vec2 = .{ .x = 0, .y = 0 },
@@ -112,4 +114,4 @@ pub fn commitFrame() void {
 }
 
 // import all the drawing methods
-usingnamespace @import("draw.zig");
+pub usingnamespace @import("draw.zig");

@@ -7,8 +7,13 @@ const Vertex = zia.gfx.Vertex;
 const DynamicMesh = zia.gfx.DynamicMesh;
 
 pub const TriangleBatcher = struct {
+<<<<<<< HEAD:src/gfx/triangle_batcher.zig
     mesh: DynamicMesh(Vertex, u16),
     white_tex: zia.gfx.Texture = undefined,
+=======
+    mesh: DynamicMesh(u16, Vertex),
+    white_tex: gk.gfx.Texture = undefined,
+>>>>>>> 173bb7d2df4523862fa71169ab86a88414381298:gamekit/graphics/triangle_batcher.zig
 
     vert_index: usize = 0, // current index into the vertex array
 
@@ -23,7 +28,7 @@ pub const TriangleBatcher = struct {
         }
 
         var batcher = TriangleBatcher{
-            .mesh = try DynamicMesh(Vertex, u16).init(allocator, max_tris * 3, indices),
+            .mesh = try DynamicMesh(u16, Vertex).init(allocator, max_tris * 3, indices),
         };
         errdefer batcher.deinit();
 

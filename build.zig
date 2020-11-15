@@ -12,7 +12,9 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
 
     const examples = [_][2][]const u8{
+        [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "directions", "examples/directions.zig" },
+        [_][]const u8{ "primitives", "examples/primitives.zig" },
         [_][]const u8{ "offscreen", "examples/offscreen.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "tri_batcher", "examples/tri_batcher.zig" },
@@ -44,7 +46,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     exe.setBuildMode(b.standardReleaseOptions());
     exe.setOutputDir("zig-cache/bin");
 
-    addGameKitToArtifact(b, exe, target, "");
+    addZiaToArtifact(b, exe, target, "");
 
     const run_cmd = exe.run();
     const exe_step = b.step(name, b.fmt("run {}.zig", .{name}));
@@ -54,7 +56,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
 }
 
 /// adds zia, renderkit, stb and sdl packages to the LibExeObjStep
-pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     // only add the build option once!
     if (enable_imgui == null)
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
@@ -70,6 +72,11 @@ pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: 
     stb_builder.linkArtifact(b, exe, target, prefix_path);
     const stb_pkg = stb_builder.getPackage(prefix_path);
 
+    // fontstash
+    const fontstash_build = @import(prefix_path ++ "src/deps/fontstash/build.zig");
+    fontstash_build.linkArtifact(b, exe, target, prefix_path);
+    const fontstash_pkg = fontstash_build.getPackage(prefix_path);
+
     // renderkit
     const renderkit_build = @import(prefix_path ++ "src/deps/renderkit/build.zig");
     renderkit_build.addRenderKitToArtifact(b, exe, target, prefix_path ++ "src/deps/renderkit/");
@@ -82,11 +89,11 @@ pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: 
     const imgui_pkg = imgui_builder.getImGuiPackage(prefix_path);
     const imgui_gl_pkg = imgui_builder.getImGuiGlPackage(prefix_path);
 
-    // gamekit
+    // zia
     const zia_package = Pkg{
         .name = "zia",
         .path = prefix_path ++ "src/zia.zig",
-        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, imgui_pkg, imgui_gl_pkg },
+        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, imgui_gl_pkg },
     };
     exe.addPackage(zia_package);
 }

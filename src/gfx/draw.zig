@@ -8,7 +8,7 @@ const Texture = gfx.Texture;
 
 pub const draw = struct {
     pub var batcher: gfx.Batcher = undefined;
-    // pub var fontbook: *gfx.FontBook = undefined;
+    pub var fontbook: *gfx.FontBook = undefined;
 
     var quad: math.Quad = math.Quad.init(0, 0, 1, 1, 1, 1);
     var white_tex: Texture = undefined;
@@ -17,9 +17,9 @@ pub const draw = struct {
         white_tex = Texture.initSingleColor(0xFFFFFFFF);
         batcher = gfx.Batcher.init(std.testing.allocator, 1000);
 
-        // fontbook = try gfx.FontBook.init(null, 128, 128, .nearest);
-        // _ = fontbook.addFontMem("ProggyTiny", @embedFile("assets/ProggyTiny.ttf"), false);
-        // fontbook.setSize(10);
+        fontbook = gfx.FontBook.init(std.testing.allocator, 128, 128, .nearest) catch unreachable;
+        _ = fontbook.addFontMem("ProggyTiny", @embedFile("../assets/ProggyTiny.ttf"), false);
+        fontbook.setSize(10);
     }
 
     pub fn deinit() void {
@@ -83,7 +83,7 @@ pub const draw = struct {
             quad.uvs[2] = .{ .x = fons_quad.s1, .y = fons_quad.t1 };
             quad.uvs[3] = .{ .x = fons_quad.s0, .y = fons_quad.t1 };
 
-            batcher.draw(book.texture.?, quad, matrix, math.Color.white);
+            batcher.draw(book.texture.?, quad, matrix, math.Color{ .value = iter.color });
         }
     }
 
@@ -147,13 +147,12 @@ pub const draw = struct {
     pub fn circle(center: math.Vec2, radius: f32, thickness: f32, resolution: i32, color: math.Color) void {
         quad.setFill(white_tex.width, white_tex.height);
 
-        var last = math.Vec2.init(1, 0);
-        last.scale(radius);
+        var last = math.Vec2.init(1, 0).scale(radius);
         var last_p = last.orthogonal();
 
         var i: usize = 0;
         while (i <= resolution) : (i += 1) {
-            const at = math.Vec2.angleToVec(@intToFloat(f32, i) * math.pi_over_2 / @intToFloat(f32, resolution), radius);
+            const at = math.Vec2.angleToVec(@intToFloat(f32, i) * std.math.pi * 0.5 / @intToFloat(f32, resolution), radius);
             const at_p = at.orthogonal();
 
             line(center.add(last), center.add(at), thickness, color);
