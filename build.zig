@@ -70,9 +70,9 @@ pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: 
     const stb_pkg = stb_builder.getPackage(prefix_path);
 
     // renderkit
-    const renderkit_build = @import(prefix_path ++ "renderkit/build.zig");
-    renderkit_build.addRenderKitToArtifact(b, exe, target, prefix_path ++ "renderkit/");
-    const renderkit_pkg = renderkit_build.getRenderKitPackage(prefix_path ++ "renderkit/");
+    const renderkit_build = @import(prefix_path ++ "src/deps/renderkit/build.zig");
+    renderkit_build.addRenderKitToArtifact(b, exe, target, prefix_path ++ "src/deps/renderkit/");
+    const renderkit_pkg = renderkit_build.getRenderKitPackage(prefix_path ++ "src/deps/renderkit/");
 
     // imgui
     // TODO: skip adding imgui altogether when enable_imgui is false
