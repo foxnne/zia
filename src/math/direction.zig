@@ -3,13 +3,15 @@ const warn = std.debug.warn;
 const assert = std.debug.assert;
 const print = std.debug.print;
 
+const Vec2 = @import("vec2.zig").Vec2;
+
 /// describes a direction as one of 8 unique byte values
 pub const Direction = packed struct {
     value: u8 = 0,
 
     /// returns a new direction
-    pub fn init(n: Name) Direction {
-        return Direction{ .value = @enumToInt(n) };
+    pub fn init() Direction {
+        return .{};
     }
 
     /// returns the direction nearest the input vector
@@ -33,6 +35,11 @@ pub const Direction = packed struct {
         return .{ .value = d };
     }
 
+    /// returns direction from first position to second
+    pub fn look(self: Direction, from: Vec2, to: Vec2) Direction {
+        return self.find(to.x - from.x, to.y - from.y);
+    }
+
     /// returns horizontal axis of the direction
     pub fn x(self: Direction) f32 {
         return @intToFloat(f32, @bitCast(i8, self.value) << 4 >> 6);
@@ -41,6 +48,21 @@ pub const Direction = packed struct {
     /// returns vertical axis of the direction
     pub fn y(self: Direction) f32 {
         return @intToFloat(f32, @bitCast(i8, self.value) << 6 >> 6);
+    }
+
+    pub fn vec2(self: Direction) Vec2 {
+        return .{ .x = self.x(), .y = self.y() };
+    }
+
+    pub fn normalized(self: Direction) Vec2 {
+        var nx = self.x();
+        var ny = self.y();
+
+        if ((nx > 0 or nx < 0) and (ny > 0 or ny < 0)) {
+            return .{ .x = nx * 0.707106781185, .y = ny * 0.707106781185 };
+        } else {
+            return .{ .x = nx, .y = ny };
+        }
     }
 
     /// returns the previous direction stored in the first four bits
@@ -82,11 +104,11 @@ pub const Direction = packed struct {
         return (self.value & 3) != 3;
     }
 
-    pub fn name(self: Direction) Name {
-        return @intToEnum(Name, self.value & 15);
+    pub fn cardinal(self: Direction) Cardinal {
+        return @intToEnum(Cardinal, self.value & 15);
     }
 
-    pub const Name = packed enum(u8) {
+    pub const Cardinal = packed enum(u8) {
         None = 0,
         S = 0b0000_0001, // 1
         E = 0b0000_0100, // 4
@@ -104,11 +126,11 @@ test "Direction" {
     assert(@sizeOf(Direction) == 1);
 
     // intialization
-    var direction = Direction.init(.S);
+    var direction = Direction.init();
     // also can use init, and chain methods
     direction = direction.find(1, 1);
 
-    // when a init direction is calculated,
+    // when a new direction is calculated,
     // the previous is pushed 4 bits back and can be returned via previous()
     // history state will be removed if init() is used
     direction = direction.find(1, 1);
@@ -118,37 +140,10 @@ test "Direction" {
 
     // this history state also provides a changed bool
     // this will always be true if init(), but false if the same direction is calculated twice
-    // if direction is set once per frame in a loop, its a reliable way to determine init directions
+    // if direction is set once per frame in a loop, its a reliable way to determine new directions
     if (direction.changed()) {
         print("direction changed!\n", .{});
     }
-
-    // directions are intended to be generic
-    // as such, enums arent provided, but unique values for up to 8 directions are
-    // we need to support games that use only 4 directions as well as 8, and directions are mostly used
-    // to manage "rounding" a mouse or keyboard direction to the nearest direction for sprite appearance
-    // or movement
-
-    // one hurdle is that we need to support a "none" state for input direction, but for character animation,
-    // a "none" direction shouldn't exist, as a character will always have *some* direction, generally south by default, facing the screen
-    // this means 0 and 1 should equal the same amount
-
-    // genericly our 9 values are:
-    // 0b0000_0000 = None
-
-    // Y
-    // 0b0000_0001 = South/Down
-    // 0b0000_0011 = North/Up
-
-    // X
-    // 0b0000_0100 = Right/East
-    // 0b0000_1100 = Left/West
-
-    // Combo
-    // 0b0000_0101 = DR/SE
-    // 0b0000_0111 = UR/NE
-    // 0b0000_1111 = UL/NW
-    // 0b0000_1101 = DL/SW
 
     var mousePosX: f32 = 0.1;
     var mousePosY: f32 = 0.5;
@@ -159,11 +154,11 @@ test "Direction" {
     var characterPosX: f32 = 0.0;
     var characterPosY: f32 = 1.0;
 
-    var inputDirection = Direction.init(.S).find(keyboardX, keyboardY);
-    var characterFacingDirection = Direction.init(.S);
+    var inputDirection = Direction.init().find(keyboardX, keyboardY);
+    var characterFacingDirection = Direction.init();
     characterFacingDirection = characterFacingDirection.find(mousePosX - characterPosX, mousePosY - characterPosY);
 
-    switch (inputDirection.name()) {
+    switch (inputDirection.cardinal()) {
         .SE => print("Southeast!\n", .{}),
         else => print("Value not supported!\n", .{}),
     }
