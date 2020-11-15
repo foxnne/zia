@@ -4,3 +4,6 @@ url=https://github.com/prime31/zig-renderkit
 [submodule "gamekit/deps/imgui/cimgui"]
 	path = gamekit/deps/imgui/cimgui
 	url = https://github.com/cimgui/cimgui.git
+[submodule "src/deps/imgui/cimgui"]
+	path = src/deps/imgui/cimgui
+	url = https://github.com/cimgui/cimgui.git
