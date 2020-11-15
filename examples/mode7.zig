@@ -1,11 +1,11 @@
 const std = @import("std");
 const renderkit = @import("renderkit");
-const gamekit = @import("gamekit");
-const gfx = gamekit.gfx;
-const math = gamekit.math;
+const zia = @import("zia");
+const gfx = zia.gfx;
+const math = zia.math;
 
-const Texture = gamekit.gfx.Texture;
-const Color = gamekit.math.Color;
+const Texture = zia.gfx.Texture;
+const Color = zia.math.Color;
 
 const Block = struct {
     tex: Texture,
@@ -111,7 +111,7 @@ var camera: Camera = undefined;
 var blocks: std.ArrayList(math.Vec2) = undefined;
 
 pub fn main() !void {
-    try gamekit.run(.{
+    try zia.run(.{
         .init = init,
         .update = update,
         .render = render,
@@ -122,7 +122,7 @@ pub fn main() !void {
 
 fn init() !void {
     _ = @import("sdl").SDL_GL_SetSwapInterval(1);
-    const drawable_size = gamekit.window.drawableSize();
+    const drawable_size = zia.window.drawableSize();
     camera = Camera.init(@intToFloat(f32, drawable_size.w), @intToFloat(f32, drawable_size.h));
 
     map = Texture.initFromFile(std.testing.allocator, "examples/assets/mario_kart.png", .nearest) catch unreachable;
@@ -155,48 +155,48 @@ fn shutdown() !void {
 
 fn update() !void {
     const move_speed = 140.0;
-    if (gamekit.input.keyDown(.w)) {
-        camera.x += std.math.cos(camera.r) * move_speed * gamekit.time.rawDeltaTime();
-        camera.y += std.math.sin(camera.r) * move_speed * gamekit.time.rawDeltaTime();
-    } else if (gamekit.input.keyDown(.s)) {
-        camera.x = camera.x - std.math.cos(camera.r) * move_speed * gamekit.time.rawDeltaTime();
-        camera.y = camera.y - std.math.sin(camera.r) * move_speed * gamekit.time.rawDeltaTime();
+    if (zia.input.keyDown(.w)) {
+        camera.x += std.math.cos(camera.r) * move_speed * zia.time.rawDeltaTime();
+        camera.y += std.math.sin(camera.r) * move_speed * zia.time.rawDeltaTime();
+    } else if (zia.input.keyDown(.s)) {
+        camera.x = camera.x - std.math.cos(camera.r) * move_speed * zia.time.rawDeltaTime();
+        camera.y = camera.y - std.math.sin(camera.r) * move_speed * zia.time.rawDeltaTime();
     }
 
-    if (gamekit.input.keyDown(.a)) {
-        camera.x += std.math.cos(camera.r - std.math.pi / 2.0) * move_speed * gamekit.time.rawDeltaTime();
-        camera.y += std.math.sin(camera.r - std.math.pi / 2.0) * move_speed * gamekit.time.rawDeltaTime();
-    } else if (gamekit.input.keyDown(.d)) {
-        camera.x += std.math.cos(camera.r + std.math.pi / 2.0) * move_speed * gamekit.time.rawDeltaTime();
-        camera.y += std.math.sin(camera.r + std.math.pi / 2.0) * move_speed * gamekit.time.rawDeltaTime();
+    if (zia.input.keyDown(.a)) {
+        camera.x += std.math.cos(camera.r - std.math.pi / 2.0) * move_speed * zia.time.rawDeltaTime();
+        camera.y += std.math.sin(camera.r - std.math.pi / 2.0) * move_speed * zia.time.rawDeltaTime();
+    } else if (zia.input.keyDown(.d)) {
+        camera.x += std.math.cos(camera.r + std.math.pi / 2.0) * move_speed * zia.time.rawDeltaTime();
+        camera.y += std.math.sin(camera.r + std.math.pi / 2.0) * move_speed * zia.time.rawDeltaTime();
     }
 
-    if (gamekit.input.keyDown(.i)) {
-        camera.f += gamekit.time.rawDeltaTime();
-    } else if (gamekit.input.keyDown(.o)) {
-        camera.f -= gamekit.time.rawDeltaTime();
+    if (zia.input.keyDown(.i)) {
+        camera.f += zia.time.rawDeltaTime();
+    } else if (zia.input.keyDown(.o)) {
+        camera.f -= zia.time.rawDeltaTime();
     }
 
-    if (gamekit.input.keyDown(.k)) {
-        camera.o += gamekit.time.rawDeltaTime();
-    } else if (gamekit.input.keyDown(.l)) {
-        camera.o -= gamekit.time.rawDeltaTime();
+    if (zia.input.keyDown(.k)) {
+        camera.o += zia.time.rawDeltaTime();
+    } else if (zia.input.keyDown(.l)) {
+        camera.o -= zia.time.rawDeltaTime();
     }
 
-    if (gamekit.input.keyDown(.minus)) {
-        camera.z += gamekit.time.rawDeltaTime() * 10;
-    } else if (gamekit.input.keyDown(.equals)) {
-        camera.z -= gamekit.time.rawDeltaTime() * 10;
+    if (zia.input.keyDown(.minus)) {
+        camera.z += zia.time.rawDeltaTime() * 10;
+    } else if (zia.input.keyDown(.equals)) {
+        camera.z -= zia.time.rawDeltaTime() * 10;
     }
 
-    if (gamekit.input.keyDown(.q)) {
-        camera.setRotation(@mod(camera.r, std.math.tau) - gamekit.time.rawDeltaTime());
-    } else if (gamekit.input.keyDown(.e)) {
-        camera.setRotation(@mod(camera.r, std.math.tau) + gamekit.time.rawDeltaTime());
+    if (zia.input.keyDown(.q)) {
+        camera.setRotation(@mod(camera.r, std.math.tau) - zia.time.rawDeltaTime());
+    } else if (zia.input.keyDown(.e)) {
+        camera.setRotation(@mod(camera.r, std.math.tau) + zia.time.rawDeltaTime());
     }
 
-    if (gamekit.input.mousePressed(.left)) {
-        var pos = camera.toWorld(gamekit.input.mousePos());
+    if (zia.input.mousePressed(.left)) {
+        var pos = camera.toWorld(zia.input.mousePos());
         _ = blocks.append(pos) catch unreachable;
     }
 }
@@ -205,7 +205,7 @@ fn render() !void {
     gfx.beginPass(.{});
     drawPlane();
 
-    var pos = camera.toScreen(camera.toWorld(gamekit.input.mousePos()));
+    var pos = camera.toScreen(camera.toWorld(zia.input.mousePos()));
     gfx.draw.texScaleOrigin(block, pos.x, pos.y, pos.size, block.width / 2, 0);
 
     for (blocks.items) |b| {
@@ -236,7 +236,7 @@ fn drawPlane() void {
 
     // bind out map to the second texture slot and we need a full screen render for the shader so we just draw a full screen rect
     gfx.draw.bindTexture(map, 1);
-    const drawable_size = gamekit.window.drawableSize();
+    const drawable_size = zia.window.drawableSize();
     gfx.draw.rect(.{}, @intToFloat(f32, drawable_size.w), @intToFloat(f32, drawable_size.h), math.Color.white);
     gfx.setShader(null);
     gfx.draw.unbindTexture(1);

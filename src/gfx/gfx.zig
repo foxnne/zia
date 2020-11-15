@@ -1,20 +1,20 @@
 const std = @import("std");
-const gamekit = @import("gamekit.zig");
+const zia = @import("../zia.zig");
 const renderkit = @import("renderkit");
-const math = gamekit.math;
+const math = zia.math;
 
 // high level wrapper objects that use the low-level backend api
-pub const Texture = @import("graphics/texture.zig").Texture;
-pub const OffscreenPass = @import("graphics/offscreen_pass.zig").OffscreenPass;
-pub const Shader = @import("graphics/shader.zig").Shader;
+pub const Texture = @import("texture.zig").Texture;
+pub const OffscreenPass = @import("offscreen_pass.zig").OffscreenPass;
+pub const Shader = @import("shader.zig").Shader;
 
 // even higher level wrappers for 2D game dev
-pub const Mesh = @import("graphics/mesh.zig").Mesh;
-pub const DynamicMesh = @import("graphics/mesh.zig").DynamicMesh;
+pub const Mesh = @import("mesh.zig").Mesh;
+pub const DynamicMesh = @import("mesh.zig").DynamicMesh;
 
-pub const Batcher = @import("graphics/batcher.zig").Batcher;
-pub const MultiBatcher = @import("graphics/multi_batcher.zig").MultiBatcher;
-pub const TriangleBatcher = @import("graphics/triangle_batcher.zig").TriangleBatcher;
+pub const Batcher = @import("batcher.zig").Batcher;
+pub const MultiBatcher = @import("multi_batcher.zig").MultiBatcher;
+pub const TriangleBatcher = @import("triangle_batcher.zig").TriangleBatcher;
 
 pub const Vertex = extern struct {
     pos: math.Vec2 = .{ .x = 0, .y = 0 },
@@ -83,7 +83,7 @@ pub fn beginPass(config: PassConfig) void {
             proj_mat = math.Mat32.initOrtho(pass.color_texture.width, pass.color_texture.height);
         }
     } else {
-        const size = gamekit.window.drawableSize();
+        const size = zia.window.drawableSize();
         renderkit.renderer.beginDefaultPass(clear_command, size.w, size.h);
         proj_mat = math.Mat32.initOrtho(@intToFloat(f32, size.w), @intToFloat(f32, size.h));
     }

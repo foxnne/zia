@@ -1,9 +1,9 @@
 const std = @import("std");
-const gk = @import("gamekit");
-const Color = gk.math.Color;
+const zia = @import("zia");
+const Color = zia.math.Color;
 
 pub fn main() !void {
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .render = render,
     });
@@ -12,6 +12,6 @@ pub fn main() !void {
 fn init() !void {}
 
 fn render() !void {
-    gk.gfx.beginPass(.{.color = Color.lime });
-    gk.gfx.endPass();
+    zia.gfx.beginPass(.{.color = Color.lime });
+    zia.gfx.endPass();
 }

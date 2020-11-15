@@ -2,7 +2,7 @@ const std = @import("std");
 const stb_image = @import("stb");
 const renderkit = @import("renderkit");
 const renderer = renderkit.renderer;
-const fs = @import("../gamekit.zig").utils.fs;
+const fs = @import("../zia.zig").utils.fs;
 
 pub const Texture = struct {
     img: renderkit.Image,

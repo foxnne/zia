@@ -1,8 +1,8 @@
 const std = @import("std");
 const gfx = @import("gfx.zig");
 const renderkit = @import("renderkit");
-const gk = @import("gamekit.zig");
-const math = gk.math;
+const zia = @import("../zia.zig");
+const math = zia.math;
 
 const Texture = gfx.Texture;
 

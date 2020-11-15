@@ -1,7 +1,7 @@
 const std = @import("std");
-const gk = @import("gamekit");
-const math = gk.math;
-const gfx = gk.gfx;
+const zia = @import("zia");
+const math = zia.math;
+const gfx = zia.gfx;
 const draw = gfx.draw;
 
 var rng = std.rand.DefaultPrng.init(0x12345678);
@@ -50,11 +50,11 @@ var white_tex: gfx.Texture = undefined;
 var things: []Thing = undefined;
 var pass: gfx.OffscreenPass = undefined;
 var rt_pos: math.Vec2 = .{};
-var camera: gk.utils.Camera = undefined;
+var camera: zia.utils.Camera = undefined;
 
 pub fn main() !void {
     rng.seed(@intCast(u64, std.time.milliTimestamp()));
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .update = update,
         .render = render,
@@ -62,8 +62,8 @@ pub fn main() !void {
 }
 
 fn init() !void {
-    camera = gk.utils.Camera.init();
-    const size = gk.window.size();
+    camera = zia.utils.Camera.init();
+    const size = zia.window.size();
     camera.pos = .{ .x = @intToFloat(f32, size.w) * 0.5, .y = @intToFloat(f32, size.h) * 0.5 };
 
     texture = gfx.Texture.initFromFile(std.testing.allocator, "examples/assets/textures/bee-8.png", .nearest) catch unreachable;
@@ -75,36 +75,36 @@ fn init() !void {
 
 fn update() !void {
     for (things) |*thing| {
-        thing.pos.x += thing.vel.x * gk.time.dt();
-        thing.pos.y += thing.vel.y * gk.time.dt();
+        thing.pos.x += thing.vel.x * zia.time.dt();
+        thing.pos.y += thing.vel.y * zia.time.dt();
     }
 
     rt_pos.x += 0.5;
     rt_pos.y += 0.5;
 
-    if (gk.input.keyDown(.a)) {
-        camera.pos.x += 100 * gk.time.dt();
-    } else if (gk.input.keyDown(.d)) {
-        camera.pos.x -= 100 * gk.time.dt();
+    if (zia.input.keyDown(.a)) {
+        camera.pos.x -= 100 * zia.time.dt();
+    } else if (zia.input.keyDown(.d)) {
+        camera.pos.x += 100 * zia.time.dt();
     }
-    if (gk.input.keyDown(.w)) {
-        camera.pos.y -= 100 * gk.time.dt();
-    } else if (gk.input.keyDown(.s)) {
-        camera.pos.y += 100 * gk.time.dt();
+    if (zia.input.keyDown(.w)) {
+        camera.pos.y += 100 * zia.time.dt();
+    } else if (zia.input.keyDown(.s)) {
+        camera.pos.y -= 100 * zia.time.dt();
     }
 }
 
 fn render() !void {
     // offscreen rendering
-    gk.gfx.beginPass(.{ .color = math.Color.purple, .pass = pass });
+    zia.gfx.beginPass(.{ .color = math.Color.purple, .pass = pass });
     draw.tex(texture, .{ .x = 10 + range(f32, -5, 5) });
     draw.tex(texture, .{ .x = 50 + range(f32, -5, 5) });
     draw.tex(texture, .{ .x = 90 + range(f32, -5, 5) });
     draw.tex(texture, .{ .x = 130 + range(f32, -5, 5) });
-    gk.gfx.endPass();
+    zia.gfx.endPass();
 
     // backbuffer rendering
-    gk.gfx.beginPass(.{
+    zia.gfx.beginPass(.{
         .color = math.Color{ .value = randomColor() },
         .trans_mat = camera.transMat(),
     });
@@ -116,6 +116,8 @@ fn render() !void {
         draw.tex(thing.texture, thing.pos);
     }
 
+    draw.line(camera.pos, camera.screenToWorld(zia.input.mousePos()), 1, math.Color.red);
+
     draw.texScale(checker_tex, .{ .x = 350, .y = 50 }, 12);
     draw.point(.{ .x = 400, .y = 300 }, 20, math.Color.orange);
     draw.texScale(checker_tex, .{ .x = 0, .y = 0 }, 12.5); // bl
@@ -123,7 +125,7 @@ fn render() !void {
     draw.texScale(checker_tex, .{ .x = 800 - 50, .y = 600 - 50 }, 12.5); // tr
     draw.texScale(checker_tex, .{ .x = 0, .y = 600 - 50 }, 12.5); // tl
 
-    gk.gfx.endPass();
+    zia.gfx.endPass();
 }
 
 fn makeThings(n: usize, tex: gfx.Texture) []Thing {

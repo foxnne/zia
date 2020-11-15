@@ -25,6 +25,6 @@ pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.buil
 pub fn getPackage(comptime prefix_path: []const u8) std.build.Pkg {
     return .{
         .name = "sdl",
-        .path = prefix_path ++ "gamekit/deps/sdl/sdl.zig",
+        .path = prefix_path ++ "src/deps/sdl/sdl.zig",
     };
 }

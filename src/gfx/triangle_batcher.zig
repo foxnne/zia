@@ -1,14 +1,14 @@
 const std = @import("std");
 const renderkit = @import("renderkit");
-const gk = @import("../gamekit.zig");
-const math = gk.math;
+const zia = @import("../zia.zig");
+const math = zia.math;
 
-const Vertex = gk.gfx.Vertex;
-const DynamicMesh = gk.gfx.DynamicMesh;
+const Vertex = zia.gfx.Vertex;
+const DynamicMesh = zia.gfx.DynamicMesh;
 
 pub const TriangleBatcher = struct {
     mesh: DynamicMesh(Vertex, u16),
-    white_tex: gk.gfx.Texture = undefined,
+    white_tex: zia.gfx.Texture = undefined,
 
     vert_index: usize = 0, // current index into the vertex array
 
@@ -28,7 +28,7 @@ pub const TriangleBatcher = struct {
         errdefer batcher.deinit();
 
         var pixels = [_]u32{ 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
-        batcher.white_tex = gk.gfx.Texture.initWithData(u32, 2, 2, pixels[0..]);
+        batcher.white_tex = zia.gfx.Texture.initWithData(u32, 2, 2, pixels[0..]);
 
         return batcher;
     }

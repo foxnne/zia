@@ -1,7 +1,7 @@
 const std = @import("std");
 const rk = @import("renderkit");
 const renderer = rk.renderer;
-const gfx = @import("../gamekit.zig").gfx;
+const gfx = @import("../zia.zig").gfx;
 
 pub const OffscreenPass = struct {
     pass: rk.Pass,

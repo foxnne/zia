@@ -1,15 +1,15 @@
 const std = @import("std");
 const renderkit = @import("renderkit");
-const gk = @import("../gamekit.zig");
-const math = gk.math;
+const zia = @import("../zia.zig");
+const math = zia.math;
 
 const IndexBuffer = renderkit.IndexBuffer;
 const VertexBuffer = renderkit.VertexBuffer;
-const Vertex = gk.gfx.Vertex;
-const Texture = gk.gfx.Texture;
+const Vertex = zia.gfx.Vertex;
+const Texture = zia.gfx.Texture;
 
 pub const Batcher = struct {
-    mesh: gk.gfx.DynamicMesh(Vertex, u16),
+    mesh: zia.gfx.DynamicMesh(Vertex, u16),
     vert_index: usize = 0, // current index into the vertex array
     current_image: renderkit.Image = std.math.maxInt(renderkit.Image),
 
@@ -29,7 +29,7 @@ pub const Batcher = struct {
         }
 
         return .{
-            .mesh = gk.gfx.DynamicMesh(Vertex, u16).init(allocator, max_sprites * 4, indices) catch unreachable,
+            .mesh = zia.gfx.DynamicMesh(Vertex, u16).init(allocator, max_sprites * 4, indices) catch unreachable,
         };
     }
 

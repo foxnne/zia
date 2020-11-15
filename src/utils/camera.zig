@@ -1,5 +1,5 @@
 const std = @import("std");
-const gk = @import("../gamekit.zig");
+const gk = @import("../zia.zig");
 const math = gk.math;
 
 pub const Camera = struct {

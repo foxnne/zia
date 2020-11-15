@@ -7,10 +7,10 @@ const renderkit = @import("renderkit");
 pub const utils = @import("utils/utils.zig");
 pub const math = @import("math/math.zig");
 
-const Gfx = @import("gfx.zig").Gfx;
+const Gfx = @import("gfx/gfx.zig").Gfx;
 const Window = @import("window.zig").Window;
 const WindowConfig = @import("window.zig").WindowConfig;
-const Input = @import("input.zig").Input;
+const Input = @import("input/input.zig").Input;
 const Time = @import("time.zig").Time;
 
 pub const Config = struct {
@@ -35,7 +35,7 @@ pub const enable_imgui: bool = if (@hasDecl(@import("root"), "build_options")) b
     break :blk false;
 };
 
-pub const gfx = @import("gfx.zig");
+pub const gfx = @import("gfx/gfx.zig");
 pub var window: Window = undefined;
 pub var time: Time = undefined;
 pub var input: Input = undefined;

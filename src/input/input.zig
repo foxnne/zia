@@ -1,10 +1,11 @@
 const std = @import("std");
 const sdl = @import("sdl");
-const gk = @import("gamekit.zig");
-const math = gk.math;
-pub usingnamespace @import("input_types.zig");
+const zia = @import("../zia.zig");
+const math = zia.math;
 
-const FixedList = gk.utils.FixedList;
+pub const Keys =  @import("keys.zig").Keys;
+
+const FixedList = zia.utils.FixedList;
 
 const released: u3 = 1; // true only the frame the key is released
 const down: u3 = 2; // true the entire time the key is down

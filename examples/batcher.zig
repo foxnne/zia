@@ -1,8 +1,8 @@
 const std = @import("std");
 const sdl = @import("sdl");
-const gk = @import("gamekit");
-const gfx = gk.gfx;
-const math = gk.math;
+const zia = @import("zia");
+const gfx = zia.gfx;
+const math = zia.math;
 
 var rng = std.rand.DefaultPrng.init(0x12345678);
 
@@ -57,7 +57,7 @@ var things: []Thing = undefined;
 
 pub fn main() !void {
     rng.seed(@intCast(u64, std.time.milliTimestamp()));
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .update = update,
         .render = render,
@@ -95,11 +95,11 @@ fn shutdown() !void {
 }
 
 fn update() !void {
-    if (@mod(gk.time.frames(), 500) == 0) std.debug.print("fps: {d}\n", .{gk.time.fps()});
+    if (@mod(zia.time.frames(), 500) == 0) std.debug.print("fps: {d}\n", .{zia.time.fps()});
 
     for (things) |*thing| {
-        thing.pos.x += thing.vel.x * gk.time.rawDeltaTime();
-        thing.pos.y += thing.vel.y * gk.time.rawDeltaTime();
+        thing.pos.x += thing.vel.x * zia.time.rawDeltaTime();
+        thing.pos.y += thing.vel.y * zia.time.rawDeltaTime();
 
         if (thing.pos.x > 780) {
             thing.vel.x *= -1;

@@ -12,8 +12,8 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
 
     const examples = [_][2][]const u8{
-        [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "offscreen", "examples/offscreen.zig" },
+        [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "tri_batcher", "examples/tri_batcher.zig" },
         [_][]const u8{ "batcher", "examples/batcher.zig" },
         [_][]const u8{ "meshes", "examples/meshes.zig" },
@@ -52,7 +52,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     return exe;
 }
 
-/// adds gamekit, renderkit, stb and sdl packages to the LibExeObjStep
+/// adds zia, renderkit, stb and sdl packages to the LibExeObjStep
 pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     // only add the build option once!
     if (enable_imgui == null)
@@ -60,12 +60,12 @@ pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: 
     exe.addBuildOption(bool, "enable_imgui", enable_imgui.?);
 
     // sdl
-    const sdl_builder = @import(prefix_path ++ "gamekit/deps/sdl/build.zig");
+    const sdl_builder = @import(prefix_path ++ "src/deps/sdl/build.zig");
     sdl_builder.linkArtifact(b, exe, target, prefix_path);
     const sdl_pkg = sdl_builder.getPackage(prefix_path);
 
     // stb
-    const stb_builder = @import(prefix_path ++ "gamekit/deps/stb/build.zig");
+    const stb_builder = @import(prefix_path ++ "src/deps/stb/build.zig");
     stb_builder.linkArtifact(b, exe, target, prefix_path);
     const stb_pkg = stb_builder.getPackage(prefix_path);
 
@@ -76,16 +76,16 @@ pub fn addGameKitToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: 
 
     // imgui
     // TODO: skip adding imgui altogether when enable_imgui is false
-    const imgui_builder = @import(prefix_path ++ "gamekit/deps/imgui/build.zig");
+    const imgui_builder = @import(prefix_path ++ "src/deps/imgui/build.zig");
     imgui_builder.linkArtifact(b, exe, target, prefix_path);
     const imgui_pkg = imgui_builder.getImGuiPackage(prefix_path);
     const imgui_gl_pkg = imgui_builder.getImGuiGlPackage(prefix_path);
 
     // gamekit
-    const gamekit_package = Pkg{
-        .name = "gamekit",
-        .path = prefix_path ++ "gamekit/gamekit.zig",
+    const zia_package = Pkg{
+        .name = "zia",
+        .path = prefix_path ++ "src/zia.zig",
         .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, imgui_pkg, imgui_gl_pkg },
     };
-    exe.addPackage(gamekit_package);
+    exe.addPackage(zia_package);
 }

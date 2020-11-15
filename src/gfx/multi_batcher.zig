@@ -1,7 +1,7 @@
 const std = @import("std");
 const rk = @import("renderkit");
-const gk = @import("../gamekit.zig");
-const math = gk.math;
+const zia = @import("../zia.zig");
+const math = zia.math;
 
 const IndexBuffer = rk.IndexBuffer;
 const VertexBuffer = rk.VertexBuffer;
@@ -14,7 +14,7 @@ pub const MultiVertex = extern struct {
 };
 
 pub const MultiBatcher = struct {
-    mesh: gk.gfx.DynamicMesh(MultiVertex, u16),
+    mesh: zia.gfx.DynamicMesh(MultiVertex, u16),
     vert_index: usize = 0, // current index into the vertex array
     textures: [8]rk.Image = undefined,
     last_texture: usize = 0,
@@ -34,7 +34,7 @@ pub const MultiBatcher = struct {
         }
 
         return .{
-            .mesh = gk.gfx.DynamicMesh(MultiVertex, u16).init(allocator, max_sprites * 4, indices) catch unreachable,
+            .mesh = zia.gfx.DynamicMesh(MultiVertex, u16).init(allocator, max_sprites * 4, indices) catch unreachable,
             .textures = [_]rk.Image{0} ** 8,
         };
     }
@@ -86,7 +86,7 @@ pub const MultiBatcher = struct {
         return @intToFloat(f32, self.last_texture - 1);
     }
 
-    pub fn drawTex(self: *MultiBatcher, pos: math.Vec2, col: u32, texture: gk.gfx.Texture) void {
+    pub fn drawTex(self: *MultiBatcher, pos: math.Vec2, col: u32, texture: zia.gfx.Texture) void {
         if (self.vert_index >= self.mesh.verts.len) {
             self.flush();
         }

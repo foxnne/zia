@@ -36,7 +36,7 @@ pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.buil
         exe.linkSystemLibrary("c++");
     }
 
-    const base_path = prefix_path ++ "gamekit/deps/imgui/";
+    const base_path = prefix_path ++ "src/deps/imgui/";
     exe.addIncludeDir(base_path ++ "cimgui/imgui");
     exe.addIncludeDir(base_path ++ "cimgui/imgui/examples");
 
@@ -52,7 +52,7 @@ pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.buil
 }
 
 fn addImGuiGlImplementation(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
-    const base_path = prefix_path ++ "gamekit/deps/imgui/";
+    const base_path = prefix_path ++ "src/deps/imgui/";
     const cpp_args = [_][]const u8{ "-Wno-return-type-c-linkage", "-DIMGUI_IMPL_API=extern \"C\"", "-DIMGUI_IMPL_OPENGL_LOADER_GL3W" };
 
     // TODO: why doesnt gl3w/imgui_impl_opengl3 compile correctly?
@@ -87,7 +87,7 @@ fn addImGuiGlImplementation(b: *Builder, exe: *std.build.LibExeObjStep, target: 
         exe.linkLibrary(lib);
     } else if (build_impl_type == .object_files) {
         // use make to build the object files then include them
-        _ = b.exec(&[_][]const u8{ "make", "-C", "gamekit/deps/imgui" }) catch unreachable;
+        _ = b.exec(&[_][]const u8{ "make", "-C", "src/deps/imgui" }) catch unreachable;
         exe.addObjectFile(base_path ++ "build/gl3w.o");
         exe.addObjectFile(base_path ++ "build/imgui_impl_opengl3.o");
         exe.addObjectFile(base_path ++ "build/imgui_impl_sdl.o");
@@ -119,14 +119,14 @@ fn macosFrameworksDir(b: *Builder) ![]u8 {
 pub fn getImGuiPackage(comptime prefix_path: []const u8) std.build.Pkg {
     return .{
         .name = "imgui",
-        .path = prefix_path ++ "gamekit/deps/imgui/imgui.zig",
+        .path = prefix_path ++ "src/deps/imgui/imgui.zig",
     };
 }
 
 pub fn getImGuiGlPackage(comptime prefix_path: []const u8) std.build.Pkg {
     return .{
         .name = "imgui_gl",
-        .path = prefix_path ++ "gamekit/deps/imgui/imgui_gl.zig",
+        .path = prefix_path ++ "src/deps/imgui/imgui_gl.zig",
         .dependencies = &[_]std.build.Pkg{getImGuiPackage(prefix_path)},
     };
 }

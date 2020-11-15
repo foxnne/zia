@@ -1,7 +1,7 @@
 const std = @import("std");
-const gk = @import("gamekit");
-const math = gk.math;
-const gfx = gk.gfx;
+const zia = @import("zia");
+const math = zia.math;
+const gfx = zia.gfx;
 
 var shader: gfx.Shader = undefined;
 var tex: gfx.Texture = undefined;
@@ -10,7 +10,7 @@ var mesh: gfx.Mesh = undefined;
 var dyn_mesh: gfx.DynamicMesh(gfx.Vertex, u16) = undefined;
 
 pub fn main() !void {
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .update = update,
         .render = render,
@@ -62,7 +62,7 @@ fn update() !void {
 }
 
 fn render() !void {
-    gk.gfx.beginPass(.{ .color = math.Color.beige });
+    zia.gfx.beginPass(.{ .color = math.Color.beige });
 
     mesh.bindImage(tex.img, 0);
     mesh.draw();
@@ -70,5 +70,5 @@ fn render() !void {
     dyn_mesh.bindImage(colored_tex.img, 0);
     dyn_mesh.drawAllVerts();
 
-    gk.gfx.endPass();
+    zia.gfx.endPass();
 }
