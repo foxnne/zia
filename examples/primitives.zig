@@ -1,11 +1,11 @@
 const std = @import("std");
-const gk = @import("gamekit");
-const gfx = gk.gfx;
-const Color = gk.math.Color;
-const Vec2 = gk.math.Vec2;
+const zia = @import("gamekit");
+const gfx = zia.gfx;
+const Color = zia.math.Color;
+const Vec2 = zia.math.Vec2;
 
 pub fn main() !void {
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .render = render,
     });

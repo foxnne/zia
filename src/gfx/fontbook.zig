@@ -1,11 +1,11 @@
 const std = @import("std");
-const gk = @import("../zia.zig");
+const zia = @import("../zia.zig");
 const rk = @import("renderkit");
 const fons = @import("fontstash");
 
 pub const FontBook = struct {
     stash: *fons.Context,
-    texture: ?gk.gfx.Texture,
+    texture: ?zia.gfx.Texture,
     tex_filter: rk.TextureFilter,
     width: i32 = 0,
     height: i32 = 0,
@@ -47,7 +47,7 @@ pub const FontBook = struct {
 
     // add fonts
     pub fn addFont(self: *FontBook, file: [:0]const u8) c_int {
-        const data = gk.fs.read(self.allocator, file) catch unreachable;
+        const data = zia.fs.read(self.allocator, file) catch unreachable;
 
         // we can let FONS free the data since we are using the c_allocator here
         return fons.fonsAddFontMem(self.stash, file, @ptrCast([*c]const u8, data), @intCast(i32, data.len), 1);
@@ -67,7 +67,7 @@ pub const FontBook = struct {
         fons.fonsSetSize(self.stash, size);
     }
 
-    pub fn setColor(self: FontBook, color: gk.math.Color) void {
+    pub fn setColor(self: FontBook, color: zia.math.Color) void {
         fons.fonsSetColor(self.stash, color.value);
     }
 
@@ -139,7 +139,7 @@ pub const FontBook = struct {
         }
 
         if (self.texture == null) {
-            self.texture = gk.gfx.Texture.initWithOptions(width, height, self.tex_filter, .clamp);
+            self.texture = zia.gfx.Texture.initWithOptions(width, height, self.tex_filter, .clamp);
         }
 
         self.width = width;
@@ -155,7 +155,7 @@ pub const FontBook = struct {
     fn renderUpdate(ctx: ?*c_void, rect: [*c]c_int, data: [*c]const u8) callconv(.C) c_int {
         // TODO: only update the rect that changed
         var self = @ptrCast(*FontBook, @alignCast(@alignOf(FontBook), ctx));
-        if (!self.tex_dirty or self.last_update == gk.time.frames()) {
+        if (!self.tex_dirty or self.last_update == zia.time.frames()) {
             self.tex_dirty = true;
             return 0;
         }
@@ -177,7 +177,7 @@ pub const FontBook = struct {
 
         self.texture.?.setData(u8, pixels);
         self.tex_dirty = false;
-        self.last_update = gk.time.frames();
+        self.last_update = zia.time.frames();
         return 1;
     }
 };

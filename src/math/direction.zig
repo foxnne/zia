@@ -29,8 +29,8 @@ pub const Direction = packed struct {
             if (vx > 0) d = d | 4 else if (vx < 0) d = d | 12;
         }
         if (absy > absx * 0.41421356237) {
-            //y               //0001                     //0011
-            if (vy > 0) d = d | 1 else if (vy < 0) d = d | 3;
+            //y               //0011                     //0001
+            if (vy > 0) d = d | 3 else if (vy < 0) d = d | 1;
         }
         return .{ .value = d };
     }
@@ -50,10 +50,12 @@ pub const Direction = packed struct {
         return @intToFloat(f32, @bitCast(i8, self.value) << 6 >> 6);
     }
 
+    /// returns a vector containing the vertical and horizontal axes
     pub fn vec2(self: Direction) Vec2 {
         return .{ .x = self.x(), .y = self.y() };
     }
 
+    /// returns a normalized vector from the direction
     pub fn normalized(self: Direction) Vec2 {
         var nx = self.x();
         var ny = self.y();
@@ -110,14 +112,14 @@ pub const Direction = packed struct {
 
     pub const Cardinal = packed enum(u8) {
         None = 0,
-        S = 0b0000_0001, // 1
+        S = 0b0000_0001, // 3
         E = 0b0000_0100, // 4
-        N = 0b0000_0011, // 3
+        N = 0b0000_0011, // 1
         W = 0b0000_1100, // 12
-        SE = 0b0000_0101, // 5
-        NE = 0b0000_0111, // 7
-        NW = 0b0000_1111, // 15
-        SW = 0b0000_1101, // 13
+        SE = 0b0000_0101, // 7
+        NE = 0b0000_0111, // 5
+        NW = 0b0000_1111, // 13
+        SW = 0b0000_1101, // 15
         _,
     };
 };
