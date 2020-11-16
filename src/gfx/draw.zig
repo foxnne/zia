@@ -155,10 +155,10 @@ pub const draw = struct {
             const at = math.Vec2.angleToVec(@intToFloat(f32, i) * std.math.pi * 0.5 / @intToFloat(f32, resolution), radius);
             const at_p = at.orthogonal();
 
-            line(center.add(last), center.add(at), thickness, color);
-            line(center.subtract(last), center.subtract(at), thickness, color);
-            line(center.add(last_p), center.add(at_p), thickness, color);
-            line(center.subtract(last_p), center.subtract(at_p), thickness, color);
+            line(center.addv(last), center.addv(at), thickness, color);
+            line(center.subv(last), center.subv(at), thickness, color);
+            line(center.addv(last_p), center.addv(at_p), thickness, color);
+            line(center.subv(last_p), center.subv(at_p), thickness, color);
 
             last = at;
             last_p = at_p;

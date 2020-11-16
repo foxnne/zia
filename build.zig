@@ -12,8 +12,8 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
 
     const examples = [_][2][]const u8{
-        [_][]const u8{ "directions", "examples/directions.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
+        [_][]const u8{ "directions", "examples/directions.zig" },
         [_][]const u8{ "primitives", "examples/primitives.zig" },
         [_][]const u8{ "offscreen", "examples/offscreen.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
@@ -62,29 +62,30 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
     exe.addBuildOption(bool, "enable_imgui", enable_imgui.?);
 
+    var dependencies = std.ArrayList(Pkg).init(b.allocator);
+
     // sdl
-    const sdl_builder = @import(prefix_path ++ "src/deps/sdl/build.zig");
+    const sdl_builder = @import("src/deps/sdl/build.zig");
     sdl_builder.linkArtifact(b, exe, target, prefix_path);
     const sdl_pkg = sdl_builder.getPackage(prefix_path);
 
     // stb
-    const stb_builder = @import(prefix_path ++ "src/deps/stb/build.zig");
+    const stb_builder = @import("src/deps/stb/build.zig");
     stb_builder.linkArtifact(b, exe, target, prefix_path);
     const stb_pkg = stb_builder.getPackage(prefix_path);
 
     // fontstash
-    const fontstash_build = @import(prefix_path ++ "src/deps/fontstash/build.zig");
+    const fontstash_build = @import("src/deps/fontstash/build.zig");
     fontstash_build.linkArtifact(b, exe, target, prefix_path);
     const fontstash_pkg = fontstash_build.getPackage(prefix_path);
 
     // renderkit
-    const renderkit_build = @import(prefix_path ++ "src/deps/renderkit/build.zig");
+    const renderkit_build = @import("src/deps/renderkit/build.zig");
     renderkit_build.addRenderKitToArtifact(b, exe, target, prefix_path ++ "src/deps/renderkit/");
     const renderkit_pkg = renderkit_build.getRenderKitPackage(prefix_path ++ "src/deps/renderkit/");
 
     // imgui
-    // TODO: skip adding imgui altogether when enable_imgui is false
-    const imgui_builder = @import(prefix_path ++ "src/deps/imgui/build.zig");
+    const imgui_builder = @import("src/deps/imgui/build.zig");
     imgui_builder.linkArtifact(b, exe, target, prefix_path);
     const imgui_pkg = imgui_builder.getImGuiPackage(prefix_path);
     const imgui_gl_pkg = imgui_builder.getImGuiGlPackage(prefix_path);
