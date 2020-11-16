@@ -9,9 +9,36 @@ const Vec2 = @import("vec2.zig").Vec2;
 pub const Direction = packed struct {
     value: u8 = 0,
 
-    /// returns a new direction
-    pub fn init() Direction {
-        return .{};
+    /// initializes a new direction
+    pub fn init(c: Compass) Direction {
+        return .{.value = @enumToInt(c)};
+    }
+
+    /// returns the compass enum of the direction
+    pub fn get(self: Direction) Compass {
+        return @intToEnum(Compass, self.value & 15);
+    }
+
+    /// sets the direction from compass enum
+    pub fn set(self: Direction, c: Compass) Direction {
+        if (self.value & 0b0000_1111 != @enumToInt(c)) {
+            return .{ .value = (self.value << 4) | @enumToInt(c)};
+        } else
+            return self;
+    }
+
+    /// writes the actual bits of the direction
+    pub fn write (self: Direction, nx: bool, px: bool, ny: bool, py: bool) Direction {
+        var d = self.value << 4;
+        if (nx) { d = d | 0b0000_1100; }
+        if (px) { d = d | 0b0000_0100; }
+        if (ny) { d = d | 0b0000_0011; }
+        if (py) { d = d | 0b0000_0001; }
+
+        if (self.value & 0b0000_1111 != d & 0b0000_1111 )
+            return .{.value = d}
+        else
+            return self;
     }
 
     /// returns the direction nearest the input vector
@@ -25,14 +52,18 @@ pub const Direction = packed struct {
         const absy = @fabs(vy);
 
         if (absy < absx * 2.41421356237) {
-            //x               //0100                     //1100
-            if (vx > 0) d = d | 4 else if (vx < 0) d = d | 12;
+            //x 
+            if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
         }
         if (absy > absx * 0.41421356237) {
-            //y               //0011                     //0001
-            if (vy > 0) d = d | 3 else if (vy < 0) d = d | 1;
+            //y 
+            if (vy > 0) d = d | 0b0000_0011 else if (vy < 0) d = d | 0b0000_0001;
         }
-        return .{ .value = d };
+
+        if (self.value & 0b0000_1111 != d & 0b0000_1111 )
+            return .{.value = d}
+        else
+            return self;
     }
 
     /// returns direction from first position to second
@@ -72,45 +103,36 @@ pub const Direction = packed struct {
         return .{ .value = self.value >> 4 };
     }
 
-    /// returns true if previous direction does not equal current direction
-    pub fn changed(self: Direction) bool {
-        return !self.equals(self.previous());
-    }
-
     /// returns true if the lowest 4 bits match
     pub fn equals(self: Direction, other: Direction) bool {
-        return (self.value & 15) == (other.value & 15);
+        return (self.value & 0b0000_1111) == (other.value & 0b0000_1111);
     }
 
     /// returns the direction flipped horizontally
     pub fn flipHorizontally(self: Direction) Direction {
         //flip the negative x bit only if the x bit is not zero
-        if (self.value & 4 != 0) {
-            return Direction{ .value = (self.value << 4) | (self.value & 15) ^ 8 };
+        if (self.value & 0b0000_0100 != 0) {
+            return Direction{ .value = (self.value << 4) | (self.value & 0b0000_1111) ^ 0b0000_1000 };
         } else return self;
     }
 
     /// returns the direction flipped vertically
     pub fn flipVertically(self: Direction) Direction {
         //flip the negative y bit only if the y bit is not zero
-        if (self.value & 1 != 0) {
-            return Direction{ .value = (self.value << 4) | (self.value & 15) ^ 2 };
+        if (self.value & 0b0000_0001 != 0) {
+            return Direction{ .value = (self.value << 4) | (self.value & 0b0000_1111) ^ 0b0000_0010 };
         } else return self;
     }
 
     pub fn flippedHorizontally(self: Direction) bool {
-        return (self.value & 12) == 12;
+        return (self.value & 0b0000_1100) == 0b0000_1100;
     }
 
     pub fn flippedVertically(self: Direction) bool {
-        return (self.value & 3) != 3;
+        return (self.value & 0b0000_0011) != 0b0000_0011;
     }
 
-    pub fn cardinal(self: Direction) Cardinal {
-        return @intToEnum(Cardinal, self.value & 15);
-    }
-
-    pub const Cardinal = packed enum(u8) {
+    pub const Compass = packed enum(u8) {
         None = 0,
         S = 0b0000_0001, // 3
         E = 0b0000_0100, // 4

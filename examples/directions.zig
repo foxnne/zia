@@ -2,7 +2,6 @@ const std = @import("std");
 const zia = @import("zia");
 const Color = zia.math.Color;
 const Direction = zia.math.Direction;
-const draw = zia.gfx.draw;
 
 var camera: zia.utils.Camera = undefined;
 var direction: Direction = .{};
@@ -27,6 +26,6 @@ fn update() !void {
 
 fn render() !void {
     zia.gfx.beginPass(.{.color = Color.lime });
-    draw.line(camera.pos, camera.pos.add(direction.normalized().scale(100)) , 1, Color.red);
+    zia.gfx.draw.line(camera.pos, camera.pos.add(direction.normalized().scale(100)) , 2, Color.red);
     zia.gfx.endPass();
 }
