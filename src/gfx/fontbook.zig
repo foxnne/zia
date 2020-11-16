@@ -138,9 +138,8 @@ pub const FontBook = struct {
             self.texture = null;
         }
 
-        if (self.texture == null) {
-            self.texture = zia.gfx.Texture.initWithOptions(width, height, self.tex_filter, .clamp);
-        }
+        if (self.texture == null)
+            self.texture = zia.gfx.Texture.initDynamic(width, height, self.tex_filter, .clamp);
 
         self.width = width;
         self.height = height;

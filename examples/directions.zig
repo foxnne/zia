@@ -26,6 +26,6 @@ fn update() !void {
 
 fn render() !void {
     zia.gfx.beginPass(.{.color = Color.lime });
-    zia.gfx.draw.line(camera.pos, camera.pos.add(direction.normalized().scale(100)) , 2, Color.red);
+    zia.gfx.draw.line(camera.pos, camera.pos.addv(direction.normalized().scale(100)) , 2, Color.red);
     zia.gfx.endPass();
 }
