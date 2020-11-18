@@ -54,7 +54,11 @@ pub var state = struct {
 }{};
 
 pub fn init() void {
-    state.shader = Shader.init(@embedFile("shaders/default.vs"), @embedFile("shaders/default.fs")) catch unreachable;
+    state.shader = switch (renderkit.current_renderer) {
+        .opengl => Shader.init(@embedFile("shaders/default.vs"), @embedFile("shaders/default.fs")) catch unreachable,
+        .metal => Shader.init(@embedFile("shaders/default_mtl.vs"), @embedFile("shaders/default_mtl.fs")) catch unreachable,
+        else => @panic("no default shader for renderer: " ++ renderkit.current_renderer),
+    };
     state.shader.bind();
     state.shader.setUniformName(i32, "MainTex", 0);
     draw.init();
@@ -62,6 +66,7 @@ pub fn init() void {
 
 pub fn deinit() void {
     draw.deinit();
+    state.shader.deinit();
 }
 
 pub fn setShader(shader: ?Shader) void {
