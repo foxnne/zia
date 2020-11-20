@@ -32,7 +32,7 @@ pub const Mesh = struct {
 
     pub fn draw(self: Mesh) void {
         renderer.applyBindings(self.bindings);
-        renderer.draw(0, self.element_count, 0);
+        renderer.draw(0, self.element_count, 1);
     }
 };
 
@@ -42,9 +42,9 @@ pub fn DynamicMesh(comptime IndexT: type, comptime VertT: type) type {
         const Self = @This();
 
         bindings: renderkit.BufferBindings,
-        vertex_buffer: renderkit.Buffer,
         verts: []VertT,
         element_count: c_int,
+        verts_updated: bool = false,
         allocator: *std.mem.Allocator,
 
         pub fn init(allocator: *std.mem.Allocator, vertex_count: usize, indices: []IndexT) !Self {
@@ -59,7 +59,6 @@ pub fn DynamicMesh(comptime IndexT: type, comptime VertT: type) type {
 
             return Self{
                 .bindings = renderer.BufferBindings.init(ibuffer, &[_]renderer.Buffer{vertex_buffer}),
-                .vertex_buffer = vertex_buffer,
                 .verts = try allocator.alloc(VertT, vertex_count),
                 .element_count = @intCast(c_int, indices.len),
                 .allocator = allocator,
@@ -73,27 +72,36 @@ pub fn DynamicMesh(comptime IndexT: type, comptime VertT: type) type {
         }
 
         pub fn updateAllVerts(self: *Self) void {
-            renderer.updateBuffer(VertT, self.vertex_buffer, self.verts);
+            renderer.updateBuffer(VertT, self.bindings.vert_buffers[0], self.verts);
         }
 
         /// uploads to the GPU the slice from start_index with num_verts
-        pub fn updateVertSlice(self: *Self, start_index: usize, num_verts: usize) void {
+        pub fn updateVertSlice(self: *Self, num_verts: usize) void {
+            std.debug.assert(num_verts <= self.verts.len);
+            const vert_slice = self.verts[0..num_verts];
+            renderer.updateBuffer(VertT, self.bindings.vert_buffers[0], vert_slice);
+        }
+
+        /// uploads to the GPU the slice from start with num_verts. Records the offset in the BufferBindings allowing you
+        /// to interleave appendVertSlice and draw calls. When calling draw after appendVertSlice
+        /// the base_element is reset to the start of the newly updated data so you would pass in 0 for base_element.
+        pub fn appendVertSlice(self: *Self, start_index: usize, num_verts: usize) void {
             std.debug.assert(start_index + num_verts <= self.verts.len);
-            const vert_slice = self.verts[start_index .. start_index + num_verts];
-            renderer.updateBuffer(VertT, self.vertex_buffer, vert_slice);
+            const vert_slice = self.verts[start_index..start_index + num_verts];
+            self.bindings.vertex_buffer_offsets[0] = renderer.appendBuffer(VertT, self.bindings.vert_buffers[0], vert_slice);
         }
 
         pub fn bindImage(self: *Self, image: renderkit.Image, slot: c_uint) void {
             self.bindings.bindImage(image, slot);
         }
 
-        pub fn draw(self: Self, element_count: c_int) void {
+        pub fn draw(self: Self, base_element: c_int, element_count: c_int) void {
             renderer.applyBindings(self.bindings);
-            renderer.draw(0, element_count, 0);
+            renderer.draw(base_element, element_count, 1);
         }
 
         pub fn drawAllVerts(self: Self) void {
-            self.draw(@intCast(c_int, self.element_count));
+            self.draw(0, @intCast(c_int, self.element_count));
         }
     };
 }
