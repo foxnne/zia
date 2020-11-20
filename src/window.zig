@@ -8,6 +8,7 @@ pub const WindowConfig = struct {
     height: i32 = 600, // the preferred height of the window / canvas
     resizable: bool = true, // whether the window should be allowed to be resized
     fullscreen: bool = false, // whether the window should be created in fullscreen mode
+    maximized: bool = false, // whether the window should be created maximized
     high_dpi: bool = false, // whether the backbuffer is full-resolution on HighDPI displays
 };
 
@@ -31,6 +32,7 @@ pub const Window = struct {
         if (config.resizable) flags |= sdl.SDL_WINDOW_RESIZABLE;
         if (config.high_dpi) flags |= sdl.SDL_WINDOW_ALLOW_HIGHDPI;
         if (config.fullscreen) flags |= sdl.SDL_WINDOW_FULLSCREEN_DESKTOP;
+        if (config.maximized) flags |= sdl.SDL_WINDOW_MAXIMIZED;
 
         switch (renderkit.current_renderer) {
             .opengl => window.createOpenGlWindow(config, flags),

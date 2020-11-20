@@ -3,7 +3,7 @@ const zia = @import("../zia.zig");
 const math = zia.math;
 
 pub const Camera = struct {
-    pos: math.Vec2 = .{},
+    position: math.Vec2 = .{},
     zoom: f32 = 1,
 
     pub fn init() Camera {
@@ -18,7 +18,7 @@ pub const Camera = struct {
         var transform = math.Mat32.identity;
 
         var tmp = math.Mat32.identity;
-        tmp.translate(-self.pos.x, -self.pos.y);
+        tmp.translate(-self.position.x, -self.position.y);
         transform = tmp.mul(transform);
 
         tmp = math.Mat32.identity;
@@ -34,6 +34,6 @@ pub const Camera = struct {
 
     pub fn screenToWorld(self: Camera, pos: math.Vec2) math.Vec2 {
         var inv_trans_mat = self.transMat().invert();
-        return inv_trans_mat.transformVec2(.{ .x = pos.x, .y = @intToFloat(f32, zia.window.height()) - pos.y });
+        return inv_trans_mat.transformVec2(pos);
     }
 };

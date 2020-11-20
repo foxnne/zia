@@ -11,7 +11,7 @@ pub const Direction = packed struct {
 
     /// initializes a new direction
     pub fn init(c: Compass) Direction {
-        return .{.value = @enumToInt(c)};
+        return .{ .value = @enumToInt(c) };
     }
 
     /// returns the compass enum of the direction
@@ -21,24 +21,27 @@ pub const Direction = packed struct {
 
     /// sets the direction from compass enum
     pub fn set(self: Direction, c: Compass) Direction {
-        if (self.value & 0b0000_1111 != @enumToInt(c)) {
-            return .{ .value = (self.value << 4) | @enumToInt(c)};
-        } else
-            return self;
+        return .{ .value = (self.value << 4) | @enumToInt(c) };
     }
 
     /// writes the actual bits of the direction
-    pub fn write (self: Direction, nx: bool, px: bool, ny: bool, py: bool) Direction {
+    /// useful for converting input to directions
+    pub fn write(self: Direction, up: bool, dn: bool, lt: bool, rt: bool) Direction {
         var d = self.value << 4;
-        if (nx) { d = d | 0b0000_1100; }
-        if (px) { d = d | 0b0000_0100; }
-        if (ny) { d = d | 0b0000_0011; }
-        if (py) { d = d | 0b0000_0001; }
+        if (lt) {
+            d = d | 0b0000_1100;
+        }
+        if (rt) {
+            d = d | 0b0000_0100;
+        }
+        if (up) {
+            d = d | 0b0000_0011;
+        }
+        if (dn) {
+            d = d | 0b0000_0001;
+        }
 
-        if (self.value & 0b0000_1111 != d & 0b0000_1111 )
-            return .{.value = d}
-        else
-            return self;
+        return .{ .value = d };
     }
 
     /// returns the direction nearest the input vector
@@ -52,18 +55,15 @@ pub const Direction = packed struct {
         const absy = @fabs(vy);
 
         if (absy < absx * 2.41421356237) {
-            //x 
+            //x
             if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
         }
         if (absy > absx * 0.41421356237) {
-            //y 
-            if (vy > 0) d = d | 0b0000_0011 else if (vy < 0) d = d | 0b0000_0001;
+            //y
+            if (vy > 0) d = d | 0b0000_0001 else if (vy < 0) d = d | 0b0000_0011;
         }
 
-        if (self.value & 0b0000_1111 != d & 0b0000_1111 )
-            return .{.value = d}
-        else
-            return self;
+        return .{ .value = d };
     }
 
     /// returns direction from first position to second
@@ -101,6 +101,11 @@ pub const Direction = packed struct {
     /// returns the previous direction stored in the first four bits
     pub fn previous(self: Direction) Direction {
         return .{ .value = self.value >> 4 };
+    }
+
+    /// returns true if previous direction is different from current
+    pub fn changed (self: Direction) bool {
+        return !self.equals(self.previous());
     }
 
     /// returns true if the lowest 4 bits match
@@ -147,45 +152,27 @@ pub const Direction = packed struct {
 };
 
 test "Direction" {
-    assert(@sizeOf(Direction) == 1);
 
-    // intialization
-    var direction = Direction.init();
-    // also can use init, and chain methods
-    direction = direction.find(1, 1);
+    // initialization
+    var direction = Direction.init(.S);
+    std.testing.expect(direction.changed() == true);
 
-    // when a new direction is calculated,
-    // the previous is pushed 4 bits back and can be returned via previous()
-    // history state will be removed if init() is used
-    direction = direction.find(1, 1);
-    direction = direction.find(0.2, 1);
-    print("\nPrevious Direction: x = {}, y = {}\n", .{ direction.previous().x(), direction.previous().y() });
-    print("Currect Direction: x = {}, y = {}\n", .{ direction.x(), direction.y() });
+    // setting and detecting no change
+    direction = direction.set(.S);
+    std.testing.expect(direction.changed() == false);
 
-    // this history state also provides a changed bool
-    // this will always be true if init(), but false if the same direction is calculated twice
-    // if direction is set once per frame in a loop, its a reliable way to determine new directions
-    if (direction.changed()) {
-        print("direction changed!\n", .{});
-    }
+    // further setting and detecting change
+    direction = direction.set(.E);
+    std.testing.expect(direction.changed() == true);
 
-    var mousePosX: f32 = 0.1;
-    var mousePosY: f32 = 0.5;
+    // writing direction bits
+    // up, down, left, right
+    direction = direction.write(false, false, false, true);
+    std.testing.expect(direction.get() == .E);
+    std.testing.expect(direction.changed() == false);
 
-    var keyboardX: f32 = 1.0;
-    var keyboardY: f32 = 1.0;
+    // finding the direction based on a vector
+    direction = direction.find(0, 1);
+    std.testing.expect(direction.get() == .S);
 
-    var characterPosX: f32 = 0.0;
-    var characterPosY: f32 = 1.0;
-
-    var inputDirection = Direction.init().find(keyboardX, keyboardY);
-    var characterFacingDirection = Direction.init();
-    characterFacingDirection = characterFacingDirection.find(mousePosX - characterPosX, mousePosY - characterPosY);
-
-    switch (inputDirection.cardinal()) {
-        .SE => print("Southeast!\n", .{}),
-        else => print("Value not supported!\n", .{}),
-    }
-
-    // now how can we determine how to interpret either direction?
 }

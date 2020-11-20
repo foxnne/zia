@@ -18,6 +18,7 @@ pub fn main() !void {
         .init = init,
         .update = update,
         .render = render,
+        .window = .{ .maximized = true }
     });
 }
 
@@ -31,11 +32,12 @@ fn init() !void {
 }
 
 fn update() !void {
-    direction = direction.look(camera.pos, camera.screenToWorld(zia.input.mousePos()));
+    direction = direction.look(camera.position, camera.screenToWorld(zia.input.mousePos()));
+    std.debug.print("mousex: {} mouse:y {}", .{camera.screenToWorld(zia.input.mousePos()).x, camera.screenToWorld(zia.input.mousePos()).y});
     keyDirection = keyDirection.write(zia.input.keyDown(.a), zia.input.keyDown(.d), zia.input.keyDown(.w), zia.input.keyDown(.s));
 
-    camera.pos.x += keyDirection.x() * 10 * zia.time.dt();
-    camera.pos.y += keyDirection.y() * 10 * zia.time.dt();
+    camera.position.x += keyDirection.x() * 10 * zia.time.dt();
+    camera.position.y += keyDirection.y() * 10 * zia.time.dt();
 
 }
 
@@ -45,8 +47,8 @@ fn render() !void {
     zia.gfx.endPass();
 
     zia.gfx.beginPass(.{.color = Color.gray, .trans_mat = camera.transMat()});
-    zia.gfx.draw.texScaleOrigin(pass.color_texture,camera.pos.x, camera.pos.y, scale, pass.color_texture.width / 2 , pass.color_texture.height/ 2 );
-    zia.gfx.draw.line(camera.pos, camera.pos.addv(direction.normalize().scale(100)) , 2, Color.red);
-    zia.gfx.draw.line(camera.pos,camera.pos.addv(keyDirection.normalize().scale(100)) , 2, Color.blue);
+    zia.gfx.draw.texScaleOrigin(pass.color_texture,camera.position.x, camera.position.y, scale, pass.color_texture.width / 2 , pass.color_texture.height/ 2 );
+    zia.gfx.draw.line(camera.position, camera.position.addv(direction.normalize().scale(100)) , 2, Color.red);
+    zia.gfx.draw.line(camera.position,camera.position.addv(keyDirection.normalize().scale(100)) , 2, Color.blue);
     zia.gfx.endPass();
 }
