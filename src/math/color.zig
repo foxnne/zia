@@ -157,7 +157,7 @@ pub const Color = extern union {
     pub const white = Color{ .value = 0xFFFFFFFF };
     pub const black = Color{ .value = 0xFF000000 };
     pub const transparent = Color{ .channels = .{ .r = 0, .g = 0, .b = 0, .a = 0 } };
-    pub const aya = Color{ .channels = .{ .r = 204, .g = 51, .b = 77, .a = 255 } };
+    pub const zia = Color{ .channels = .{ .r = 42, .g = 44, .b = 54, .a = 255 } };
     pub const light_gray = Color{ .channels = .{ .r = 200, .g = 200, .b = 200, .a = 255 } };
     pub const gray = Color{ .channels = .{ .r = 130, .g = 130, .b = 130, .a = 255 } };
     pub const dark_gray = Color{ .channels = .{ .r = 80, .g = 80, .b = 80, .a = 255 } };

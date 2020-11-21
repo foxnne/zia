@@ -5,7 +5,7 @@ usingnamespace @import("imgui");
 
 pub const enable_imgui = true;
 
-var clear_color = zia.math.Color.aya;
+var clear_color = zia.math.Color.zia;
 var camera: zia.utils.Camera = undefined;
 var tex: gfx.Texture = undefined;
 
