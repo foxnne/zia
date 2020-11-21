@@ -37,6 +37,21 @@
             }
         },
         {
+            "label": "Build and Run Project (imgui)",
+            "type": "shell",
+            "command": "zig build run -Dimgui=true",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Build and Run Project (release-fast)",
             "type": "shell",
             "command": "zig build run -Drelease-fast",
@@ -82,7 +97,7 @@
             },
         },
         {
-            "label": "Build and Run Tests in Current File",
+            "label": "Test File",
             "type": "shell",
             "command": "zig test ${file}",
             "problemMatcher": [

@@ -7,14 +7,9 @@ const Vertex = zia.gfx.Vertex;
 const DynamicMesh = zia.gfx.DynamicMesh;
 
 pub const TriangleBatcher = struct {
-<<<<<<< HEAD:src/gfx/triangle_batcher.zig
-    mesh: DynamicMesh(Vertex, u16),
-    white_tex: zia.gfx.Texture = undefined,
-=======
     mesh: DynamicMesh(u16, Vertex),
     draw_calls: std.ArrayList(i32),
-    white_tex: gk.gfx.Texture = undefined,
->>>>>>> 173bb7d2df4523862fa71169ab86a88414381298:gamekit/graphics/triangle_batcher.zig
+    white_tex: zia.gfx.Texture = undefined,
 
     begin_called: bool = false,
     frame: u32 = 0, // tracks when a batch is started in a new frame so that state can be reset
@@ -58,8 +53,8 @@ pub const TriangleBatcher = struct {
         std.debug.assert(!self.begin_called);
 
         // reset all state for new frame
-        if (self.frame != gk.time.frames()) {
-            self.frame = gk.time.frames();
+        if (self.frame != zia.time.frames()) {
+            self.frame = zia.time.frames();
             self.vert_index = 0;
             self.buffer_offset = 0;
         }

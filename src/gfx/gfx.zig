@@ -55,8 +55,8 @@ pub var state = struct {
 
 pub fn init() void {
     state.shader = switch (renderkit.current_renderer) {
-        .opengl => Shader.init(@embedFile("shaders/default.vs"), @embedFile("shaders/default.fs")) catch unreachable,
-        .metal => Shader.init(@embedFile("shaders/default_mtl.vs"), @embedFile("shaders/default_mtl.fs")) catch unreachable,
+        .opengl => Shader.init(@embedFile("shaders/sprite.gl.vs"), @embedFile("shaders/sprite.gl.fs")) catch unreachable,
+        .metal => Shader.init(@embedFile("shaders/sprite.mtl.vs"), @embedFile("shaders/sprite.mtl.fs")) catch unreachable,
         else => @panic("no default shader for renderer: " ++ renderkit.current_renderer),
     };
     draw.init();
@@ -72,6 +72,7 @@ pub fn setShader(shader: ?Shader) void {
 
     draw.batcher.flush();
     new_shader.bind();
+    new_shader.setVertUniform(math.Mat32, &state.transform_mat);
     new_shader.setUniformName(math.Mat32, "TransformMatrix", state.transform_mat);
 }
 

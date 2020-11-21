@@ -1,5 +1,5 @@
 const std = @import("std");
-const zia = @import("gamekit");
+const zia = @import("zia");
 const gfx = zia.gfx;
 const Color = zia.math.Color;
 const Vec2 = zia.math.Vec2;

@@ -3,7 +3,7 @@ const zia = @import("zia");
 const math = zia.math;
 const Color = math.Color;
 
-var tri_batch: gk.gfx.TriangleBatcher = undefined;
+var tri_batch: zia.gfx.TriangleBatcher = undefined;
 
 pub fn main() !void {
     try zia.run(.{
@@ -13,7 +13,7 @@ pub fn main() !void {
 }
 
 fn init() !void {
-    tri_batch = try gk.gfx.TriangleBatcher.init(std.testing.allocator, 100);
+    tri_batch = try zia.gfx.TriangleBatcher.init(std.testing.allocator, 100);
 }
 
 fn render() !void {

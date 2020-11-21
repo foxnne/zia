@@ -1,9 +1,9 @@
 const std = @import("std");
-const gk = @import("gamekit");
-const gfx = gk.gfx;
-const Color = gk.math.Color;
+const zia = @import("zia");
+const gfx = zia.gfx;
+const Color = zia.math.Color;
 
-pub const renderer: gk.renderkit.Renderer = .metal;
+pub const renderer: zia.renderkit.Renderer = .metal;
 
 var dyn_mesh: gfx.DynamicMesh(u16, gfx.Vertex) = undefined;
 var mesh: gfx.Mesh = undefined;
@@ -11,7 +11,7 @@ var tex: gfx.Texture = undefined;
 var pass: gfx.OffscreenPass = undefined;
 
 pub fn main() !void {
-    try gk.run(.{
+    try zia.run(.{
         .init = init,
         .render = render,
     });
@@ -47,12 +47,12 @@ fn init() !void {
 var y: f32 = 0;
 fn render() !void {
     // offscreen rendering
-    gk.gfx.beginPass(.{ .color = gk.math.Color.purple, .pass = pass });
+    zia.gfx.beginPass(.{ .color = zia.math.Color.purple, .pass = pass });
     var i: f32 = 10.0;
     while (i < 280) : (i += 40) {
         gfx.draw.tex(tex, .{ .x = i });
     }
-    gk.gfx.endPass();
+    zia.gfx.endPass();
 
     // backbuffer rendering
     gfx.beginPass(.{ .color = Color.lime });
