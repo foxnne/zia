@@ -24,14 +24,14 @@ fn init() !void {
 
 fn update() !void {
     if (zia.input.keyDown(.a)) {
-        camera.pos.x += 100 * zia.time.dt();
+        camera.position.x += 100 * zia.time.dt();
     } else if (zia.input.keyDown(.d)) {
-        camera.pos.x -= 100 * zia.time.dt();
+        camera.position.x -= 100 * zia.time.dt();
     }
     if (zia.input.keyDown(.w)) {
-        camera.pos.y -= 100 * zia.time.dt();
+        camera.position.y -= 100 * zia.time.dt();
     } else if (zia.input.keyDown(.s)) {
-        camera.pos.y += 100 * zia.time.dt();
+        camera.position.y += 100 * zia.time.dt();
     }
 }
 
@@ -46,7 +46,7 @@ fn render() !void {
     }
 
     var buf: [255]u8 = undefined;
-    var str = try std.fmt.bufPrintZ(&buf, "Camera Pos: {d:.2}, {d:.2}", .{camera.pos.x, camera.pos.y});
+    var str = try std.fmt.bufPrintZ(&buf, "Camera Pos: {d:.2}, {d:.2}", .{camera.position.x, camera.position.y});
     igText(str);
 
     var mouse = zia.input.mousePos();
@@ -58,10 +58,10 @@ fn render() !void {
     str = try std.fmt.bufPrintZ(&buf, "World Pos: {d:.2}, {d:.2}", .{ world.x, world.y });
     igText(str);
 
-    if (ogButton("Camera Pos to 0,0")) camera.pos = .{};
+    if (ogButton("Camera Pos to 0,0")) camera.position = .{};
     if (ogButton("Camera Pos to screen center")) {
         const size = zia.window.size();
-        camera.pos = .{ .x = @intToFloat(f32, size.w) * 0.5, .y = @intToFloat(f32, size.h) * 0.5 };
+        camera.position = .{ .x = @intToFloat(f32, size.w) * 0.5, .y = @intToFloat(f32, size.h) * 0.5 };
     }
 
     gfx.draw.point(.{}, 40, zia.math.Color.white);

@@ -12,6 +12,7 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
 
     const examples = [_][2][]const u8{
+        [_][]const u8{ "clear_imgui", "examples/clear_imgui.zig" },
         [_][]const u8{ "tri_batcher", "examples/tri_batcher.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "directions", "examples/directions.zig" },
@@ -21,7 +22,6 @@ pub fn build(b: *Builder) !void {
         [_][]const u8{ "meshes", "examples/meshes.zig" },
         [_][]const u8{ "clear", "examples/clear.zig" },
         [_][]const u8{ "clear_mtl", "examples/clear_mtl.zig" },
-        [_][]const u8{ "clear_imgui", "examples/clear_imgui.zig" },
     };
 
     const examples_step = b.step("examples", "build all examples");

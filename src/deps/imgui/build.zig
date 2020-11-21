@@ -18,6 +18,7 @@ pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.buil
     if (target.isWindows()) {
         exe.linkSystemLibrary("user32");
         exe.linkSystemLibrary("gdi32");
+        exe.linkSystemLibrary("opengl32");
     } else if (target.isDarwin()) {
         const frameworks_dir = macosFrameworksDir(b) catch unreachable;
         exe.addFrameworkDir(frameworks_dir);
