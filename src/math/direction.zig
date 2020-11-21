@@ -1,7 +1,4 @@
 const std = @import("std");
-const warn = std.debug.warn;
-const assert = std.debug.assert;
-const print = std.debug.print;
 
 const Vec2 = @import("vec2.zig").Vec2;
 

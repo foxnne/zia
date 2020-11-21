@@ -33,8 +33,7 @@ fn init() !void {
 
 fn update() !void {
     direction = direction.look(camera.position, camera.screenToWorld(zia.input.mousePos()));
-    std.debug.print("mousex: {} mouse:y {}", .{camera.screenToWorld(zia.input.mousePos()).x, camera.screenToWorld(zia.input.mousePos()).y});
-    keyDirection = keyDirection.write(zia.input.keyDown(.a), zia.input.keyDown(.d), zia.input.keyDown(.w), zia.input.keyDown(.s));
+    keyDirection = keyDirection.write(zia.input.keyDown(.w), zia.input.keyDown(.s), zia.input.keyDown(.a), zia.input.keyDown(.d));
 
     camera.position.x += keyDirection.x() * 10 * zia.time.dt();
     camera.position.y += keyDirection.y() * 10 * zia.time.dt();
