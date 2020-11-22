@@ -24,9 +24,25 @@ pub const Vertex = extern struct {
     col: u32 = 0xFFFFFFFF,
 };
 
+/// default params for the sprite shader. Translate the Mat32 into 2 arrays of Vec4 for the shader uniform slot.
+pub const VertexParams = extern struct {
+    pub const metadata = .{
+        .uniforms = .{ .VertexParams = .{ .type = .float4, .array_count = 2 } },
+        .images = .{ "main_tex" },
+    };
+
+    transform_matrix: [8]f32 = [_]f32{0} ** 8,
+
+    pub fn init(mat: *math.Mat32) VertexParams {
+        var params = VertexParams{};
+        std.mem.copy(f32, &params.transform_matrix, &mat.data);
+        return params;
+    }
+};
+
 pub const PassConfig = struct {
     color_action: renderkit.ClearAction = .clear,
-    color: math.Color = math.Color.aya,
+    color: math.Color = math.Color.zia,
     stencil_action: renderkit.ClearAction = .dont_care,
     stencil: u8 = 0,
     depth_action: renderkit.ClearAction = .dont_care,
@@ -55,8 +71,8 @@ pub var state = struct {
 
 pub fn init() void {
     state.shader = switch (renderkit.current_renderer) {
-        .opengl => Shader.init(@embedFile("shaders/sprite.gl.vs"), @embedFile("shaders/sprite.gl.fs")) catch unreachable,
-        .metal => Shader.init(@embedFile("shaders/sprite.mtl.vs"), @embedFile("shaders/sprite.mtl.fs")) catch unreachable,
+        .opengl => Shader.initWithFragUniform(VertexParams, @embedFile("shaders/sprite_vs.glsl"), @embedFile("shaders/sprite_fs.glsl")) catch unreachable,
+        .metal => Shader.initWithFragUniform(VertexParams, @embedFile("shaders/sprite_vs.metal"), @embedFile("shaders/sprite_fs.metal")) catch unreachable,
         else => @panic("no default shader for renderer: " ++ renderkit.current_renderer),
     };
     draw.init();
@@ -72,8 +88,10 @@ pub fn setShader(shader: ?Shader) void {
 
     draw.batcher.flush();
     new_shader.bind();
-    new_shader.setVertUniform(math.Mat32, &state.transform_mat);
-    new_shader.setUniformName(math.Mat32, "TransformMatrix", state.transform_mat);
+
+    var params = VertexParams.init(&state.transform_mat);
+    new_shader.setVertUniform(VertexParams, &params);
+    // new_shader.setUniformName(math.Mat32, "TransformMatrix", state.transform_mat);
 }
 
 pub fn beginPass(config: PassConfig) void {

@@ -65,8 +65,8 @@ fn render() !void {
 
     zia.gfx.beginPass(.{.color = Color.gray, .trans_mat = camera.transMat()});
     zia.gfx.draw.texScaleOrigin(pass.color_texture,camera.position.x, camera.position.y, scale, pass.color_texture.width / 2 , pass.color_texture.height/ 2 );
-    zia.gfx.draw.line(camera.position, camera.position.addv(direction.normalize().scale(100)) , 2, Color.red);
-    zia.gfx.draw.line(camera.position,camera.position.addv(keyDirection.normalize().scale(100)) , 2, Color.blue);
+    zia.gfx.draw.line(camera.position, camera.position.add(direction.normalize().scale(100)) , 2, Color.red);
+    zia.gfx.draw.line(camera.position,camera.position.add(keyDirection.normalize().scale(100)) , 2, Color.blue);
     zia.gfx.endPass();
 
     if (zia.enable_imgui)
