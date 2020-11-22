@@ -1,6 +1,6 @@
 const std = @import("std");
 const zia = @import("../zia.zig");
-const renderkit = @import("renderkit");
+const rk = @import("renderkit");
 const math = zia.math;
 
 // high level wrapper objects that use the low-level backend api
@@ -24,7 +24,7 @@ pub const Vertex = extern struct {
     col: u32 = 0xFFFFFFFF,
 };
 
-/// default params for the sprite shader. Translate the Mat32 into 2 arrays of Vec4 for the shader uniform slot.
+/// default params for the sprite shader. Translates the Mat32 into 2 arrays of f32 for the shader uniform slot.
 pub const VertexParams = extern struct {
     pub const metadata = .{
         .uniforms = .{ .VertexParams = .{ .type = .float4, .array_count = 2 } },
@@ -41,18 +41,18 @@ pub const VertexParams = extern struct {
 };
 
 pub const PassConfig = struct {
-    color_action: renderkit.ClearAction = .clear,
+    color_action: rk.ClearAction = .clear,
     color: math.Color = math.Color.zia,
-    stencil_action: renderkit.ClearAction = .dont_care,
+    stencil_action: rk.ClearAction = .dont_care,
     stencil: u8 = 0,
-    depth_action: renderkit.ClearAction = .dont_care,
+    depth_action: rk.ClearAction = .dont_care,
     depth: f64 = 0,
 
     trans_mat: ?math.Mat32 = null,
     shader: ?Shader = null,
     pass: ?OffscreenPass = null,
 
-    pub fn asClearCommand(self: PassConfig) renderkit.ClearCommand {
+    pub fn asClearCommand(self: PassConfig) rk.ClearCommand {
         return .{
             .color = self.color.asArray(),
             .color_action = self.color_action,
@@ -70,10 +70,10 @@ pub var state = struct {
 }{};
 
 pub fn init() void {
-    state.shader = switch (renderkit.current_renderer) {
-        .opengl => Shader.initWithFragUniform(VertexParams, @embedFile("shaders/sprite_vs.glsl"), @embedFile("shaders/sprite_fs.glsl")) catch unreachable,
-        .metal => Shader.initWithFragUniform(VertexParams, @embedFile("shaders/sprite_vs.metal"), @embedFile("shaders/sprite_fs.metal")) catch unreachable,
-        else => @panic("no default shader for renderer: " ++ renderkit.current_renderer),
+    state.shader = switch (rk.current_renderer) {
+        .opengl => Shader.init(@embedFile("shaders/sprite_vs.glsl"), @embedFile("shaders/sprite_fs.glsl")) catch unreachable,
+        .metal => Shader.init(@embedFile("shaders/sprite_vs.metal"), @embedFile("shaders/sprite_fs.metal")) catch unreachable,
+        else => @panic("no default shader for renderer: " ++ rk.current_renderer),
     };
     draw.init();
 }
@@ -99,16 +99,16 @@ pub fn beginPass(config: PassConfig) void {
     draw.batcher.begin();
 
     if (config.pass) |pass| {
-        renderkit.renderer.beginPass(pass.pass, clear_command);
+        rk.renderer.beginPass(pass.pass, clear_command);
         // inverted for OpenGL offscreen passes
-        if (renderkit.current_renderer == .opengl) {
+        if (rk.current_renderer == .opengl) {
             proj_mat = math.Mat32.initOrthoInverted(pass.color_texture.width, pass.color_texture.height);
         } else {
             proj_mat = math.Mat32.initOrtho(pass.color_texture.width, pass.color_texture.height);
         }
     } else {
         const size = zia.window.drawableSize();
-        renderkit.renderer.beginDefaultPass(clear_command, size.w, size.h);
+        rk.renderer.beginDefaultPass(clear_command, size.w, size.h);
         proj_mat = math.Mat32.initOrtho(@intToFloat(f32, size.w), @intToFloat(f32, size.h));
     }
 
@@ -126,12 +126,12 @@ pub fn beginPass(config: PassConfig) void {
 pub fn endPass() void {
     setShader(null);
     draw.batcher.end();
-    renderkit.renderer.endPass();
+    rk.renderer.endPass();
 }
 
 /// if we havent yet blitted to the screen do so now
 pub fn commitFrame() void {
-    renderkit.renderer.commitFrame();
+    rk.renderer.commitFrame();
 }
 
 // import all the drawing methods

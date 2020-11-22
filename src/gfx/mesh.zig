@@ -1,6 +1,6 @@
 const std = @import("std");
-const renderkit = @import("renderkit");
-const renderer = renderkit.renderer;
+const rk = @import("renderkit");
+const renderer = rk.renderer;
 
 pub const Mesh = struct {
     bindings: renderer.BufferBindings,
@@ -26,7 +26,7 @@ pub const Mesh = struct {
         renderer.destroyBuffer(self.bindings.vert_buffers[0]);
     }
 
-    pub fn bindImage(self: *Mesh, image: renderkit.Image, slot: c_uint) void {
+    pub fn bindImage(self: *Mesh, image: rk.Image, slot: c_uint) void {
         self.bindings.bindImage(image, slot);
     }
 
@@ -41,7 +41,7 @@ pub fn DynamicMesh(comptime IndexT: type, comptime VertT: type) type {
     return struct {
         const Self = @This();
 
-        bindings: renderkit.BufferBindings,
+        bindings: rk.BufferBindings,
         verts: []VertT,
         element_count: c_int,
         verts_updated: bool = false,
@@ -93,7 +93,7 @@ pub fn DynamicMesh(comptime IndexT: type, comptime VertT: type) type {
             self.bindings.vertex_buffer_offsets[0] = renderer.appendBuffer(VertT, self.bindings.vert_buffers[0], vert_slice);
         }
 
-        pub fn bindImage(self: *Self, image: renderkit.Image, slot: c_uint) void {
+        pub fn bindImage(self: *Self, image: rk.Image, slot: c_uint) void {
             self.bindings.bindImage(image, slot);
         }
 

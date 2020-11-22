@@ -1,5 +1,5 @@
 const std = @import("std");
-const renderkit = @import("renderkit");
+const rk = @import("renderkit");
 const zia = @import("zia");
 const gfx = zia.gfx;
 const math = zia.math;
@@ -9,10 +9,7 @@ const Color = zia.math.Color;
 
 const Mode7Params = struct {
     pub const metadata = .{
-        .uniforms = .{
-            .VertexParams = .{ .type = .float4, .array_count = 2 },
-            .Mode7Params = .{ .type = .float4, .array_count = 3 },
-        },
+        .uniforms = .{ .Mode7Params = .{ .type = .float4, .array_count = 3 }, },
         .images = .{ "main_tex", "map_tex" },
     };
 
@@ -152,8 +149,8 @@ fn init() !void {
     map = Texture.initFromFile(std.testing.allocator, "examples/assets/textures/mario_kart.png", .nearest) catch unreachable;
     block = Texture.initFromFile(std.testing.allocator, "examples/assets/textures/block.png", .nearest) catch unreachable;
 
-    const vert = if (zia.renderkit.current_renderer == .opengl) @embedFile("../src/gfx/shaders/sprite_vs.glsl") else @embedFile("../src/gfx/shaders/sprite_vs.metal");
-    const frag = if (zia.renderkit.current_renderer == .opengl) @embedFile("assets/shaders/mode7.gl.fs") else @embedFile("assets/shaders/mode7.mtl.fs");
+    const vert = if (zia.renderkit.current_renderer == .opengl) @embedFile("../src/gfx/shaders/sprite_vs.glsl") else @embedFile("../src/gfx/shaders/assets/sprite_vs.metal");
+    const frag = if (zia.renderkit.current_renderer == .opengl) @embedFile("assets/shaders/mode7_fs.glsl") else @embedFile("assets/shaders/mode7_fs.metal");
     mode7_shader = try gfx.Shader.initWithFragUniform(Mode7Params, vert, frag);
 
     blocks = std.ArrayList(math.Vec2).init(std.testing.allocator);

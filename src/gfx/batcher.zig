@@ -1,10 +1,10 @@
 const std = @import("std");
-const renderkit = @import("renderkit");
+const rk = @import("renderkit");
 const zia = @import("../zia.zig");
 const math = zia.math;
 
-const IndexBuffer = renderkit.IndexBuffer;
-const VertexBuffer = renderkit.VertexBuffer;
+const IndexBuffer = rk.IndexBuffer;
+const VertexBuffer = rk.VertexBuffer;
 const Vertex = zia.gfx.Vertex;
 const Texture = zia.gfx.Texture;
 
@@ -19,7 +19,7 @@ pub const Batcher = struct {
     buffer_offset: i32 = 0, // offset into the vertex buffer of the first non-rendered vert
 
     const DrawCall = struct {
-        image: renderkit.Image,
+        image: rk.Image,
         quad_count: i32,
     };
 
@@ -84,7 +84,7 @@ pub const Batcher = struct {
             self.mesh.draw(base_element, draw_call.quad_count * 6);
 
             self.buffer_offset += draw_call.quad_count * 4;
-            draw_call.image = renderkit.invalid_resource_id;
+            draw_call.image = rk.invalid_resource_id;
             base_element += draw_call.quad_count * 6;
         }
 
@@ -102,10 +102,10 @@ pub const Batcher = struct {
             self.buffer_offset = 0;
 
             // with GL we can just orphan the buffer
-            if (renderkit.current_renderer == .opengl) {
+            if (rk.current_renderer == .opengl) {
                 self.mesh.updateAllVerts();
                 self.mesh.bindings.vertex_buffer_offsets[0] = 0;
-            } else if (renderkit.current_renderer == .metal) {
+            } else if (rk.current_renderer == .metal) {
                 // we need a bigger Mesh since Metal has no concept of buffer orphaning
                 var new_max_sprites = std.math.clamp(self.mesh.verts.len / 4 * 2, 0, std.math.maxInt(u16) / 6);
 
