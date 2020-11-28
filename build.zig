@@ -5,11 +5,17 @@ const Builder = std.build.Builder;
 const Target = std.build.Target;
 const Pkg = std.build.Pkg;
 
+const renderkit_build = @import("src/deps/renderkit/build.zig");
+const ShaderCompileStep = renderkit_build.ShaderCompileStep;
+
 var enable_imgui: ?bool = null;
 
 pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{});
     const mode = b.standardReleaseOptions();
+
+    // use a different cache folder for macos arm builds
+    b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.arch == std.builtin.Arch.aarch64) "zig-arm-cache" else "zig-cache";
 
     const examples = [_][2][]const u8{
         [_][]const u8{ "directions", "examples/directions.zig" },
@@ -37,12 +43,29 @@ pub fn build(b: *Builder) !void {
         // first element in the list is added as "run" so "zig build run" works
         if (i == 0) _ = createExe(b, target, "run", source);
     }
+
+    // shader compiler, run with `zig build compile-shaders`
+    const res = ShaderCompileStep.init(b, "renderkit/shader_compiler/", .{
+        .shader = "examples/assets/shaders/shader_src.glsl",
+        .shader_output_path = "examples/assets/shaders",
+        .package_output_path = "examples/assets",
+        .additional_imports = &[_][]const u8{
+            "const zia = @import(\"zia\");",
+            "const gfx = zia.gfx;",
+            "const math = zia.math;",
+            "const renderkit = zia.renderkit;",
+        },
+    });
+
+    const comple_shaders_step = b.step("compile-shaders", "compiles all shaders");
+    b.default_step.dependOn(comple_shaders_step);
+    comple_shaders_step.dependOn(&res.step);
 }
 
 fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []const u8) *std.build.LibExeObjStep {
     var exe = b.addExecutable(name, source);
     exe.setBuildMode(b.standardReleaseOptions());
-    exe.setOutputDir("zig-cache/bin");
+    exe.setOutputDir(std.fs.path.joinPosix(b.allocator, &[_][]const u8{ b.cache_root, "bin" }) catch unreachable);
 
     addZiaToArtifact(b, exe, target, "");
 
@@ -53,8 +76,10 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     return exe;
 }
 
-/// adds zia, renderkit, stb and sdl packages to the LibExeObjStep
+/// adds gamekit, renderkit, stb and sdl packages to the LibExeObjStep
 pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+    if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
+
     // only add the build option once!
     if (enable_imgui == null)
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
@@ -78,7 +103,6 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     const fontstash_pkg = fontstash_build.getPackage(prefix_path);
 
     // renderkit
-    const renderkit_build = @import("src/deps/renderkit/build.zig");
     renderkit_build.addRenderKitToArtifact(b, exe, target, prefix_path ++ "src/deps/renderkit/");
     const renderkit_pkg = renderkit_build.getRenderKitPackage(prefix_path ++ "src/deps/renderkit/");
 
@@ -86,13 +110,12 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     const imgui_builder = @import("src/deps/imgui/build.zig");
     imgui_builder.linkArtifact(b, exe, target, prefix_path);
     const imgui_pkg = imgui_builder.getImGuiPackage(prefix_path);
-    const imgui_gl_pkg = imgui_builder.getImGuiGlPackage(prefix_path);
 
     // zia
     const zia_package = Pkg{
         .name = "zia",
         .path = prefix_path ++ "src/zia.zig",
-        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, imgui_gl_pkg },
+        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg },
     };
     exe.addPackage(zia_package);
 }

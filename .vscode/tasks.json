@@ -10,7 +10,7 @@
             "MTL_SHADER_VALIDATION_TEXTURE_USAGE": "1",
             "MTL_DEBUG_LAYER": "1",
             "METAL_DEVICE_WRAPPER_TYPE": "1",
-        }
+        },
     },
     "tasks": [
         {
@@ -37,6 +37,7 @@
             }
         },
         {
+<<<<<<< HEAD
             "label": "Build and Run Project (imgui)",
             "type": "shell",
             "command": "zig build run -Dimgui=true",
@@ -47,6 +48,15 @@
                 "kind": "build",
                 "isDefault": true
             },
+=======
+            "label": "Build and Run Project (x64 on arm)",
+            "type": "shell",
+            "command": "~/zig/zig-x64/zig build run",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+>>>>>>> da63961b6253d69bc270a482ec04852942f0c65d
             "presentation": {
                 "clear": true
             }
@@ -88,10 +98,7 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "presentation": {
                 "clear": true,
             },
@@ -106,26 +113,37 @@
             "presentation": {
                 "clear": true
             },
-            "group": {
-                "kind": "build",
-                "isDefault": true
+            "group": "build",
+        },
+        {
+            "label": "Compile Shaders",
+            "type": "shell",
+            "command": "zig build compile-shaders",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
             }
         },
         {
             "label": "apitrace run executable",
             "type": "shell",
             "command": "apitrace",
-            "args": ["trace", "--api", "gl", "${workspaceFolder}/zig-cache/bin/run"],
+            "args": [
+                "trace",
+                "--api",
+                "gl",
+                "${workspaceFolder}/zig-cache/bin/run"
+            ],
             "problemMatcher": [
                 "$gcc"
             ],
             "presentation": {
                 "clear": true
             },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "group": "build",
         },
     ]
 }

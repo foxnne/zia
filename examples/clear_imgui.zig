@@ -3,6 +3,7 @@ const zia = @import("zia");
 const gfx = zia.gfx;
 usingnamespace @import("imgui");
 
+pub const renderer: zia.renderkit.Renderer = .opengl;
 pub const enable_imgui = true;
 
 var clear_color = zia.math.Color.zia;
@@ -19,10 +20,11 @@ pub fn main() !void {
 
 fn init() !void {
     camera = zia.utils.Camera.init();
-    tex = gfx.Texture.initSingleColor(0xFFFF00FF);
 }
 
 fn update() !void {
+    igShowDemoWindow(null);
+
     if (zia.input.keyDown(.a)) {
         camera.position.x += 100 * zia.time.dt();
     } else if (zia.input.keyDown(.d)) {
@@ -38,7 +40,7 @@ fn update() !void {
 fn render() !void {
     gfx.beginPass(.{ .color = clear_color, .trans_mat = camera.transMat() });
 
-    igText("WASD moves camera");
+    igText("WASD moves camera " ++ icons.camera);
 
     var color = clear_color.asArray();
     if (igColorEdit4("Clear Color", &color[0], ImGuiColorEditFlags_NoInputs)) {
@@ -46,7 +48,7 @@ fn render() !void {
     }
 
     var buf: [255]u8 = undefined;
-    var str = try std.fmt.bufPrintZ(&buf, "Camera Pos: {d:.2}, {d:.2}", .{camera.position.x, camera.position.y});
+    var str = try std.fmt.bufPrintZ(&buf, "Camera Pos: {d:.2}, {d:.2}", .{ camera.position.x, camera.position.y });
     igText(str);
 
     var mouse = zia.input.mousePos();

@@ -10,6 +10,7 @@ pub const WindowConfig = struct {
     fullscreen: bool = false, // whether the window should be created in fullscreen mode
     maximized: bool = false, // whether the window should be created maximized
     high_dpi: bool = false, // whether the backbuffer is full-resolution on HighDPI displays
+    disable_vsync: bool = false, // whether vsync should be disabled
 };
 
 pub const WindowMode = enum(u32) {
@@ -39,6 +40,8 @@ pub const Window = struct {
             .metal => window.createMetalWindow(config, flags),
             else => unreachable,
         }
+
+        if (config.disable_vsync) _ = sdl.SDL_GL_SetSwapInterval(0);
 
         window.id = sdl.SDL_GetWindowID(window.sdl_window);
         return window;

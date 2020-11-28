@@ -4,6 +4,7 @@ const math = zia.math;
 const gfx = zia.gfx;
 const draw = gfx.draw;
 
+pub const renderer: zia.renderkit.Renderer = .opengl;
 var rng = std.rand.DefaultPrng.init(0x12345678);
 
 pub fn range(comptime T: type, at_least: T, less_than: T) T {

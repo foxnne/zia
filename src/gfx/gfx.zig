@@ -7,6 +7,7 @@ const math = zia.math;
 pub const Texture = @import("texture.zig").Texture;
 pub const OffscreenPass = @import("offscreen_pass.zig").OffscreenPass;
 pub const Shader = @import("shader.zig").Shader;
+pub const ShaderState = @import("shader.zig").ShaderState;
 
 // even higher level wrappers for 2D game dev
 pub const Mesh = @import("mesh.zig").Mesh;
@@ -26,22 +27,6 @@ pub const Vertex = extern struct {
     col: u32 = 0xFFFFFFFF,
 };
 
-/// default params for the sprite shader. Translates the Mat32 into 2 arrays of f32 for the shader uniform slot.
-pub const VertexParams = extern struct {
-    pub const metadata = .{
-        .uniforms = .{ .VertexParams = .{ .type = .float4, .array_count = 2 } },
-        .images = .{ "main_tex" },
-    };
-
-    transform_matrix: [8]f32 = [_]f32{0} ** 8,
-
-    pub fn init(mat: *math.Mat32) VertexParams {
-        var params = VertexParams{};
-        std.mem.copy(f32, &params.transform_matrix, &mat.data);
-        return params;
-    }
-};
-
 pub const PassConfig = struct {
     color_action: rk.ClearAction = .clear,
     color: math.Color = math.Color.zia,
@@ -51,7 +36,7 @@ pub const PassConfig = struct {
     depth: f64 = 0,
 
     trans_mat: ?math.Mat32 = null,
-    shader: ?Shader = null,
+    shader: ?*Shader = null,
     pass: ?OffscreenPass = null,
 
     pub fn asClearCommand(self: PassConfig) rk.ClearCommand {
@@ -72,11 +57,7 @@ pub var state = struct {
 }{};
 
 pub fn init() void {
-    state.shader = switch (rk.current_renderer) {
-        .opengl => Shader.init(@embedFile("shaders/sprite_vs.glsl"), @embedFile("shaders/sprite_fs.glsl")) catch unreachable,
-        .metal => Shader.init(@embedFile("shaders/sprite_vs.metal"), @embedFile("shaders/sprite_fs.metal")) catch unreachable,
-        else => @panic("no default shader for renderer: " ++ rk.current_renderer),
-    };
+    state.shader = Shader.initDefaultSpriteShader() catch unreachable;
     draw.init();
 }
 
@@ -85,14 +66,17 @@ pub fn deinit() void {
     state.shader.deinit();
 }
 
-pub fn setShader(shader: ?Shader) void {
-    const new_shader = shader orelse state.shader;
+pub fn setShader(shader: ?*Shader) void {
+    const new_shader = shader orelse &state.shader;
 
     draw.batcher.flush();
     new_shader.bind();
+    new_shader.setTransformMatrix(&state.transform_mat);
+}
 
-    var params = VertexParams.init(&state.transform_mat);
-    new_shader.setVertUniform(VertexParams, &params);
+pub fn setRenderState(state: renderkit.RenderState) void {
+    draw.batcher.flush();
+    renderkit.renderer.setRenderState(state);
 }
 
 pub fn beginPass(config: PassConfig) void {

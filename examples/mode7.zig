@@ -1,31 +1,14 @@
 const std = @import("std");
-const rk = @import("renderkit");
+const renderkit = @import("renderkit");
 const zia = @import("zia");
 const gfx = zia.gfx;
 const math = zia.math;
+const shaders = @import("assets/shaders.zig");
+
+pub const renderer: zia.renderkit.Renderer = .opengl;
 
 const Texture = zia.gfx.Texture;
 const Color = zia.math.Color;
-
-const Mode7Params = struct {
-    pub const metadata = .{
-        .uniforms = .{ .Mode7Params = .{ .type = .float4, .array_count = 3 }, },
-        .images = .{ "main_tex", "map_tex" },
-    };
-
-    mapw: f32 = 0,
-    maph: f32 = 0,
-    x: f32 = 0,
-    y: f32 = 0,
-    zoom: f32 = 0,
-    fov: f32 = 0,
-    offset: f32 = 0,
-    wrap: f32 = 0,
-    x1: f32 = 0,
-    x2: f32 = 0,
-    y1: f32 = 0,
-    y2: f32 = 0,
-};
 
 const Block = struct {
     tex: Texture,
@@ -126,8 +109,7 @@ const Camera = struct {
 
 var map: Texture = undefined;
 var block: Texture = undefined;
-var mode7_shader: gfx.Shader = undefined;
-var uniform: Mode7Params = .{};
+var mode7_shader: shaders.Mode7Shader = undefined;
 var camera: Camera = undefined;
 var blocks: std.ArrayList(math.Vec2) = undefined;
 var wrap: f32 = 0;
@@ -149,9 +131,7 @@ fn init() !void {
     map = Texture.initFromFile(std.testing.allocator, "examples/assets/textures/mario_kart.png", .nearest) catch unreachable;
     block = Texture.initFromFile(std.testing.allocator, "examples/assets/textures/block.png", .nearest) catch unreachable;
 
-    const vert = if (zia.renderkit.current_renderer == .opengl) @embedFile("../src/gfx/shaders/sprite_vs.glsl") else @embedFile("../src/gfx/shaders/assets/sprite_vs.metal");
-    const frag = if (zia.renderkit.current_renderer == .opengl) @embedFile("assets/shaders/mode7_fs.glsl") else @embedFile("assets/shaders/mode7_fs.metal");
-    mode7_shader = try gfx.Shader.initWithFragUniform(Mode7Params, vert, frag);
+    mode7_shader = shaders.createMode7Shader();
 
     blocks = std.ArrayList(math.Vec2).init(std.testing.allocator);
     _ = blocks.append(.{ .x = 0, .y = 0 }) catch unreachable;
@@ -228,7 +208,8 @@ fn update() !void {
 
 fn render() !void {
     // bind our mode7 shader, draw the plane which will then unset the shader for regular sprite drawing
-    gfx.beginPass(.{ .shader = mode7_shader });
+    updateMode7Uniforms();
+    gfx.beginPass(.{ .shader = &mode7_shader.shader });
     drawPlane();
 
     var pos = camera.toScreen(camera.toWorld(zia.input.mousePos()));
@@ -249,26 +230,25 @@ fn render() !void {
     gfx.endPass();
 }
 
-fn drawPlane() void {
-    uniform.mapw = map.width;
-    uniform.maph = map.height;
-    uniform.x = camera.x;
-    uniform.y = camera.y;
-    uniform.zoom = camera.z;
-    uniform.fov = camera.f;
-    uniform.offset = camera.o;
-    uniform.wrap = wrap;
-    uniform.x1 = camera.x1;
-    uniform.y1 = camera.y1;
-    uniform.x2 = camera.x2;
-    uniform.y2 = camera.y2;
-    mode7_shader.setFragUniform(Mode7Params, &uniform);
+fn updateMode7Uniforms() void {
+    mode7_shader.frag_uniform.mapw = map.width;
+    mode7_shader.frag_uniform.maph = map.height;
+    mode7_shader.frag_uniform.x = camera.x;
+    mode7_shader.frag_uniform.y = camera.y;
+    mode7_shader.frag_uniform.zoom = camera.z;
+    mode7_shader.frag_uniform.fov = camera.f;
+    mode7_shader.frag_uniform.offset = camera.o;
+    mode7_shader.frag_uniform.wrap = wrap;
+    mode7_shader.frag_uniform.x1 = camera.x1;
+    mode7_shader.frag_uniform.y1 = camera.y1;
+    mode7_shader.frag_uniform.x2 = camera.x2;
+    mode7_shader.frag_uniform.y2 = camera.y2;
+}
 
+fn drawPlane() void {
     // bind out map to the second texture slot and we need a full screen render for the shader so we just draw a full screen rect
     gfx.draw.bindTexture(map, 1);
     const drawable_size = zia.window.size();
     gfx.draw.rect(.{}, @intToFloat(f32, drawable_size.w), @intToFloat(f32, drawable_size.h), math.Color.white);
     gfx.setShader(null);
-    gfx.draw.unbindTexture(1);
 }
-var o = true;
