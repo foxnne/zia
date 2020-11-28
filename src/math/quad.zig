@@ -1,6 +1,6 @@
 const Vec2 = @import("vec2.zig").Vec2;
 const Rect = @import("rect.zig").Rect;
-const RectI = @import("rect.zig").RectI;
+const RectF = @import("rect.zig").RectF;
 
 pub const Quad = struct {
     img_w: f32,
@@ -18,12 +18,12 @@ pub const Quad = struct {
         return q;
     }
 
-    pub fn setViewportRect(self: *Quad, viewport: Rect) void {
-        self.setViewport(viewport.x, viewport.y, viewport.w, viewport.h);
+    pub fn setViewportRectF(self: *Quad, viewport: RectF) void {
+        self.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
     }
 
-    pub fn setViewportRectI(self: *Quad, viewport: RectI) void {
-        self.setViewport(@intToFloat(f32, viewport.x), @intToFloat(f32, viewport.y), @intToFloat(f32, viewport.w), @intToFloat(f32, viewport.h));
+    pub fn setViewportRect(self: *Quad, viewport: Rect) void {
+        self.setViewport(@intToFloat(f32, viewport.x), @intToFloat(f32, viewport.y), @intToFloat(f32, viewport.width), @intToFloat(f32, viewport.height));
     }
 
     pub fn setViewport(self: *Quad, x: f32, y: f32, width: f32, height: f32) void {

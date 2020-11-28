@@ -65,6 +65,20 @@ pub const draw = struct {
         batcher.draw(texture, quad, transform, math.Color.white);
     }
 
+    pub fn sprite (atlas: zia.gfx.Atlas, index: i32, position: math.Vec2) void
+    {
+        var i = @intCast(usize, index);
+        var source = atlas.rects.items[i];
+        var origin = atlas.origins.items[i];
+
+        var mat = math.Mat32.initTransform(.{.x = position.x, .y = position.y, .sx = 1, .sy = 1, .ox = origin.x, .oy = origin.y});
+
+        quad.setImageDimensions(atlas.texture.width, atlas.texture.height);
+        quad.setViewportRectF(source);
+        batcher.draw(atlas.texture, quad, mat, math.Color.white );
+
+    }
+
     pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {
         var book = fb orelse fontbook;
         // TODO: dont hardcode scale as 4
