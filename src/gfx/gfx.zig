@@ -18,6 +18,7 @@ pub const MultiBatcher = @import("multi_batcher.zig").MultiBatcher;
 pub const TriangleBatcher = @import("triangle_batcher.zig").TriangleBatcher;
 
 pub const Atlas = @import("atlas.zig").Atlas;
+pub const Sprite = @import("sprite.zig").Sprite;
 
 pub const FontBook = @import("fontbook.zig").FontBook;
 

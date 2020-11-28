@@ -1,12 +1,12 @@
 const std = @import("std");
 const zia = @import("../zia.zig");
 const math = zia.math;
+const Sprite = @import("sprite.zig").Sprite;
 
 pub const Atlas = struct {
     texture: zia.gfx.Texture,
     count: i32,
-    rects: std.ArrayList(math.RectF),
-    origins: std.ArrayList(math.Vec2),  
+    sprites: std.ArrayList(Sprite),
 
     pub fn init(texture: zia.gfx.Texture, cols: i32, rows: i32) Atlas {
         var count: i32 = cols * rows;
@@ -14,8 +14,7 @@ pub const Atlas = struct {
         var atlas : Atlas = .{
             .texture = texture,
             .count = count,
-            .rects = std.ArrayList(math.RectF).init(std.testing.allocator),
-            .origins = std.ArrayList(math.Vec2).init(std.testing.allocator),
+            .sprites = std.ArrayList(Sprite).init(std.testing.allocator),
         };
 
         var sprite_width = texture.width / @intToFloat(f32, cols);
@@ -25,17 +24,21 @@ pub const Atlas = struct {
         while (r < rows) : (r += 1) {
             var c: i32 = 0;
             while (c < cols) : (c += 1) {
-                atlas.rects.append(.{
-                    .width = sprite_width,
-                    .height = sprite_height,
-                    .x = @intToFloat(f32, c) * sprite_width,
-                    .y = @intToFloat(f32, r) * sprite_height,
-                }) catch unreachable;
 
-                atlas.origins.append(.{
-                    .x = 0.5 * sprite_width,
-                    .y = 0.5 * sprite_height,
-                }) catch unreachable;
+                var x = @intToFloat(f32, c) * sprite_width;
+                var y = @intToFloat(f32, r) * sprite_height;
+                var origin : math.Vec2 = .{.x = 0.5 * sprite_width, .y = 0.5 * sprite_height};
+                
+                var sprite = Sprite.init(
+                    x,
+                    y,
+                    sprite_width,
+                    sprite_height,
+                    origin,
+                    math.Color.white,
+                  );
+
+                atlas.sprites.append(sprite) catch unreachable;
             }
         }
         return atlas;
@@ -43,8 +46,6 @@ pub const Atlas = struct {
 
     pub fn deinit() void
     {
-        rects.deinit();
-        uvs.deinit();
-        origins.deinit();
+        sprites.deinit();
     }
 };

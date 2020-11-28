@@ -76,15 +76,16 @@ fn render() !void {
         .E => 5,
         .NE => 6,
         .N => 7,
-        .NW => 0,
-        .W => 1,
-        .SW => 2,
+        .NW => 6,
+        .W => 5,
+        .SW => 4,
         else => 0
     };
 
     index += 9;
+    
 
-    zia.gfx.draw.sprite(atlas, index, position);
+    zia.gfx.draw.sprite(atlas, index, position, direction.flippedHorizontally(), false);
     
     zia.gfx.endPass();
 
