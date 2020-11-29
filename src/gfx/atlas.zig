@@ -35,7 +35,6 @@ pub const Atlas = struct {
                     sprite_width,
                     sprite_height,
                     origin,
-                    math.Color.white,
                   );
 
                 atlas.sprites.append(sprite) catch unreachable;

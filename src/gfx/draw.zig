@@ -73,7 +73,7 @@ pub const draw = struct {
 
         quad.setImageDimensions(atlas.texture.width, atlas.texture.height);
         quad.setViewportRectF(spr.rect);
-        batcher.draw(atlas.texture, quad, mat, spr.color );
+        batcher.draw(atlas.texture, quad, mat, math.Color.white );
     }
 
     pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {
