@@ -25,17 +25,16 @@ pub const Atlas = struct {
             var c: i32 = 0;
             while (c < cols) : (c += 1) {
 
-                var x = @intToFloat(f32, c) * sprite_width;
-                var y = @intToFloat(f32, r) * sprite_height;
+                var source: math.RectF = .{ 
+                    .x = @intToFloat(f32, c) * sprite_width,
+                    .y = @intToFloat(f32, r) * sprite_height,
+                    .width = sprite_width,
+                    .height = sprite_height,
+                };
+
                 var origin : math.Vec2 = .{.x = 0.5 * sprite_width, .y = 0.5 * sprite_height};
                 
-                var sprite = Sprite.init(
-                    x,
-                    y,
-                    sprite_width,
-                    sprite_height,
-                    origin,
-                  );
+                var sprite : Sprite = .{ .source = source, .origin = origin };
 
                 atlas.sprites.append(sprite) catch unreachable;
             }
@@ -43,8 +42,8 @@ pub const Atlas = struct {
         return atlas;
     }
 
-    pub fn deinit() void
+    pub fn deinit(self: Atlas) void
     {
-        sprites.deinit();
+        self.sprites.deinit();
     }
 };

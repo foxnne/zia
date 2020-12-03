@@ -123,6 +123,36 @@ pub const Batcher = struct {
         }
     }
 
+    const SpriteOptions = struct {
+        scale: f32 = 1.0,
+        flipHorizontally: bool = false,
+        flipVertically: bool = false,
+        color: math.Color = math.Color.white
+    };
+
+    pub fn drawSprite (self: *Batcher, atlas: zia.gfx.Atlas, index: i32, position: math.Vec2, options: SpriteOptions) void{
+        self.ensureCapacity(atlas.texture) catch |err| {
+            std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
+            return;
+        };
+
+        var i = @intCast(usize, index);
+        var spr = atlas.sprites.items[i];
+        var mat = math.Mat32.initTransform(.{
+            .x = position.x,
+            .y = position.y,
+            .sx = if (options.flipHorizontally) -options.scale else options.scale,
+            .sy = if (options.flipVertically) -options.scale else options.scale,
+            .ox = spr.origin.x,
+            .oy = spr.origin.y,
+        });
+
+        var quad: math.Quad = .{ .img_w = atlas.texture.width, .img_h = atlas.texture.height};
+        quad.setViewportRectF(spr.source);
+
+        draw(atlas.texture, quad, mat, options.color);
+    }
+
     pub fn drawTex(self: *Batcher, pos: math.Vec2, col: u32, texture: Texture) void {
         self.ensureCapacity(texture) catch |err| {
             std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});

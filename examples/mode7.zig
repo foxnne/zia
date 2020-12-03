@@ -97,7 +97,13 @@ const Camera = struct {
         }
 
         for (self.sprites.items) |sprite| {
-            gfx.draw.texScaleOrigin(sprite.tex, sprite.pos.x, sprite.pos.y, sprite.scale, sprite.tex.width / 2, sprite.tex.height);
+            gfx.draw.texture(sprite.tex, sprite.pos, .{
+                .scale = sprite.scale,
+                .origin = .{
+                    .x = sprite.tex.width / 2,
+                    .y = sprite.tex.height,
+                },
+            });
         }
         self.sprites.items.len = 0;
     }
@@ -214,7 +220,7 @@ fn render() !void {
 
     var pos = camera.toScreen(camera.toWorld(zia.input.mousePos()));
     gfx.draw.circle(.{ .x = pos.x, .y = pos.y }, pos.size, 2, 8, zia.math.Color.white);
-    gfx.draw.texScaleOrigin(block, pos.x, pos.y, pos.size, block.width / 2, block.height);
+    gfx.draw.texture(block, .{.x = pos.x, .y = pos.y}, .{ .scale = pos.size, .origin = .{ .x = block.width / 2, .y = block.height } });
 
     for (blocks.items) |b| camera.placeSprite(block, b, 8);
     camera.renderSprites();

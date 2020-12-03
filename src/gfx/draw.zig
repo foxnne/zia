@@ -28,8 +28,8 @@ pub const draw = struct {
     }
 
     /// binds a Texture to the Bindings in the Batchers DynamicMesh
-    pub fn bindTexture(texture: Texture, slot: c_uint) void {
-        batcher.mesh.bindImage(texture.img, slot);
+    pub fn bindTexture(t: Texture, slot: c_uint) void {
+        batcher.mesh.bindImage(t.img, slot);
     }
 
     /// unbinds a previously bound texture. All texture slots > 0 must be unbound manually!
@@ -38,42 +38,49 @@ pub const draw = struct {
     }
 
     // Drawing
-    pub fn tex(texture: Texture, position: math.Vec2) void {
-        quad.setFill(texture.width, texture.height);
+    const TextureOptions = struct {
+        scale: f32 = 1.0,
+        origin: math.Vec2 = .{},
+        color: math.Color = math.Color.white,
+    };
 
-        var mat = math.Mat32.initTransform(.{ .x = position.x, .y = position.y });
-        batcher.draw(texture, quad, mat, math.Color.white);
+    pub fn texture(t: Texture, position: math.Vec2, options: TextureOptions) void {
+        quad.setFill(t.width, t.height);
+
+        var mat = math.Mat32.initTransform(.{
+            .x = position.x,
+            .y = position.y,
+            .sx = options.scale,
+            .sy = options.scale,
+            .ox = options.origin.x,
+            .oy = options.origin.y,
+        });
+
+        batcher.draw(t, quad, mat, options.color);
     }
 
-    pub fn texScale(texture: Texture, position: math.Vec2, scale: f32) void {
-        quad.setFill(texture.width, texture.height);
+    const SpriteOptions = struct {
+        scale: f32 = 1.0,
+        flipHorizontally: bool = false,
+        flipVertically: bool = false,
+        color: math.Color = math.Color.white
+    };
 
-        var mat = math.Mat32.initTransform(.{ .x = position.x, .y = position.y, .sx = scale, .sy = scale });
-        batcher.draw(texture, quad, mat, math.Color.white);
-    }
-
-    pub fn texScaleOrigin(texture: Texture, x: f32, y: f32, scale: f32, ox: f32, oy: f32) void {
-        quad.setFill(texture.width, texture.height);
-
-        var mat = math.Mat32.initTransform(.{ .x = x, .y = y, .sx = scale, .sy = scale, .ox = ox, .oy = oy });
-        batcher.draw(texture, quad, mat, math.Color.white);
-    }
-
-    pub fn texViewport(texture: Texture, viewport: math.RectI, transform: math.Mat32) void {
-        quad.setImageDimensions(texture.width, texture.height);
-        quad.setViewportRectI(viewport);
-        batcher.draw(texture, quad, transform, math.Color.white);
-    }
-
-    pub fn sprite(atlas: zia.gfx.Atlas, index: i32, position: math.Vec2, flipHorizontally: bool, flipVertically: bool) void
-    {
+    pub fn sprite(atlas: zia.gfx.Atlas, index: i32, position: math.Vec2, options: SpriteOptions) void {
         var i = @intCast(usize, index);
         var spr = atlas.sprites.items[i];
-        var mat = math.Mat32.initTransform(.{.x = position.x, .y = position.y, .sx = if (flipHorizontally) -1 else 1, .sy = if(flipVertically) -1 else 1, .ox = spr.origin.x, .oy = spr.origin.y});
+        var mat = math.Mat32.initTransform(.{
+            .x = position.x,
+            .y = position.y,
+            .sx = if (options.flipHorizontally) -options.scale else options.scale,
+            .sy = if (options.flipVertically) -options.scale else options.scale,
+            .ox = spr.origin.x,
+            .oy = spr.origin.y,
+        });
 
         quad.setImageDimensions(atlas.texture.width, atlas.texture.height);
-        quad.setViewportRectF(spr.rect);
-        batcher.draw(atlas.texture, quad, mat, math.Color.white );
+        quad.setViewportRectF(spr.source);
+        batcher.draw(atlas.texture, quad, mat, options.color);
     }
 
     pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {

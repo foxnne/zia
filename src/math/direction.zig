@@ -84,7 +84,7 @@ pub const Direction = packed struct {
     }
 
     /// returns a normalized vector from the direction
-    pub fn normalize(self: Direction) Vec2 {
+    pub fn normalized(self: Direction) Vec2 {
         var nx = self.x();
         var ny = self.y();
 
@@ -95,13 +95,18 @@ pub const Direction = packed struct {
         }
     }
 
-    /// returns the previous direction stored in the first four bits
+    /// returns the current direction stored in the first four bits
+    pub fn current(self: Direction) Direction {
+        return .{ .value = self.value & 0b0000_1111 };
+    }
+
+    /// returns the previous direction stored in the last four bits
     pub fn previous(self: Direction) Direction {
         return .{ .value = self.value >> 4 };
     }
 
     /// returns true if previous direction is different from current
-    pub fn changed (self: Direction) bool {
+    pub fn changed(self: Direction) bool {
         return !self.equals(self.previous());
     }
 
@@ -136,16 +141,28 @@ pub const Direction = packed struct {
 
     pub const Compass = packed enum(u8) {
         None = 0,
+
         S = 0b0000_0001, // 3
         E = 0b0000_0100, // 4
         N = 0b0000_0011, // 1
         W = 0b0000_1100, // 12
+
         SE = 0b0000_0101, // 7
         NE = 0b0000_0111, // 5
         NW = 0b0000_1111, // 13
         SW = 0b0000_1101, // 15
         _,
     };
+
+    pub const S = Direction{ .value = 0b0000_0001 };
+    pub const E = Direction{ .value = 0b0000_0100 };
+    pub const N = Direction{ .value = 0b0000_0011 };
+    pub const W = Direction{ .value = 0b0000_1100 };
+
+    pub const SE = Direction{ .value = 0b0000_0101 };
+    pub const NE = Direction{ .value = 0b0000_0111 };
+    pub const NW = Direction{ .value = 0b0000_1111 };
+    pub const SW = Direction{ .value = 0b0000_1101 };
 };
 
 test "Direction" {
@@ -171,5 +188,4 @@ test "Direction" {
     // finding the direction based on a vector
     direction = direction.find(0, 1);
     std.testing.expect(direction.get() == .S);
-
 }

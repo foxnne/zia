@@ -65,7 +65,7 @@ pub fn main() !void {
 fn init() !void {
     camera = zia.utils.Camera.init();
     const size = zia.window.size();
-    camera.pos = .{ .x = @intToFloat(f32, size.w) * 0.5, .y = @intToFloat(f32, size.h) * 0.5 };
+    camera.position = .{ .x = @intToFloat(f32, size.w) * 0.5, .y = @intToFloat(f32, size.h) * 0.5 };
 
     texture = gfx.Texture.initFromFile(std.testing.allocator, "examples/assets/textures/bee-8.png", .nearest) catch unreachable;
     checker_tex = gfx.Texture.initCheckerTexture();
@@ -84,24 +84,25 @@ fn update() !void {
     rt_pos.y += 0.5;
 
     if (zia.input.keyDown(.a)) {
-        camera.pos.x -= 100 * zia.time.dt();
+        camera.position.x -= 100 * zia.time.dt();
     } else if (zia.input.keyDown(.d)) {
-        camera.pos.x += 100 * zia.time.dt();
+        camera.position.x += 100 * zia.time.dt();
     }
     if (zia.input.keyDown(.w)) {
-        camera.pos.y += 100 * zia.time.dt();
+        camera.position.y += 100 * zia.time.dt();
     } else if (zia.input.keyDown(.s)) {
-        camera.pos.y -= 100 * zia.time.dt();
+        camera.position.y -= 100 * zia.time.dt();
     }
 }
 
 fn render() !void {
     // offscreen rendering
     zia.gfx.beginPass(.{ .color = math.Color.purple, .pass = pass });
-    draw.tex(texture, .{ .x = 10 + range(f32, -5, 5) });
-    draw.tex(texture, .{ .x = 50 + range(f32, -5, 5) });
-    draw.tex(texture, .{ .x = 90 + range(f32, -5, 5) });
-    draw.tex(texture, .{ .x = 130 + range(f32, -5, 5) });
+
+    draw.texture(texture, .{ .x = 10 + range(f32, -5, 5) }, .{});
+    draw.texture(texture, .{ .x = 50 + range(f32, -5, 5) }, .{});
+    draw.texture(texture, .{ .x = 90 + range(f32, -5, 5) }, .{});
+    draw.texture(texture, .{ .x = 130 + range(f32, -5, 5) }, .{});
     zia.gfx.endPass();
 
     // backbuffer rendering
@@ -111,20 +112,21 @@ fn render() !void {
     });
 
     // render the offscreen texture to the backbuffer
-    draw.tex(pass.color_texture, rt_pos);
+    draw.texture(pass.color_texture, rt_pos, .{});
+
 
     for (things) |thing| {
-        draw.tex(thing.texture, thing.pos);
+        draw.texture(thing.texture, thing.pos, .{});
     }
 
-    draw.line(camera.pos, camera.screenToWorld(zia.input.mousePos()), 1, math.Color.red);
+    draw.line(camera.position, camera.screenToWorld(zia.input.mousePos()), 1, math.Color.red);
 
-    draw.texScale(checker_tex, .{ .x = 350, .y = 50 }, 12);
+    draw.texture(checker_tex, .{ .x = 350, .y = 50 }, .{ .scale = 12});
     draw.point(.{ .x = 400, .y = 300 }, 20, math.Color.orange);
-    draw.texScale(checker_tex, .{ .x = 0, .y = 0 }, 12.5); // bl
-    draw.texScale(checker_tex, .{ .x = 800 - 50, .y = 0 }, 12.5); // br
-    draw.texScale(checker_tex, .{ .x = 800 - 50, .y = 600 - 50 }, 12.5); // tr
-    draw.texScale(checker_tex, .{ .x = 0, .y = 600 - 50 }, 12.5); // tl
+    draw.texture(checker_tex, .{ .x = 0, .y = 0 }, .{ .scale = 12.5 }); // bl
+    draw.texture(checker_tex, .{ .x = 800 - 50, .y = 0 }, .{ .scale = 12.5 }); // br
+    draw.texture(checker_tex, .{ .x = 800 - 50, .y = 600 - 50 }, .{ .scale = 12.5 }); // tr
+    draw.texture(checker_tex, .{ .x = 0, .y = 600 - 50 }, .{ .scale = 12.5 }); // tl
 
     zia.gfx.endPass();
 }

@@ -19,11 +19,11 @@ pub fn build(b: *Builder) !void {
 
     const examples = [_][2][]const u8{
         [_][]const u8{ "directions", "examples/directions.zig" },
+        [_][]const u8{ "offscreen", "examples/offscreen.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
         [_][]const u8{ "clear_imgui", "examples/clear_imgui.zig" },
         [_][]const u8{ "tri_batcher", "examples/tri_batcher.zig" },
         [_][]const u8{ "primitives", "examples/primitives.zig" },
-        [_][]const u8{ "offscreen", "examples/offscreen.zig" },
         [_][]const u8{ "batcher", "examples/batcher.zig" },
         [_][]const u8{ "meshes", "examples/meshes.zig" },
         [_][]const u8{ "clear", "examples/clear.zig" },
