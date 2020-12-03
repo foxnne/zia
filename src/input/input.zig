@@ -162,7 +162,7 @@ pub const Input = struct {
         return self.mouse_wheel_y;
     }
 
-    pub fn mousePos(self: Input) math.Vec2 {
+    pub fn mousePos(self: Input) math.Vector2 {
         var xc: c_int = undefined;
         var yc: c_int = undefined;
         _ = sdl.SDL_GetMouseState(&xc, &yc);
@@ -171,7 +171,7 @@ pub const Input = struct {
 
     // gets the scaled mouse position based on the currently bound render texture scale and offset
     // as calcuated in OffscreenPass. scale should be scale and offset_n is the calculated x, y value.
-    pub fn mousePosScaled(self: Input) math.Vec2 {
+    pub fn mousePosScaled(self: Input) math.Vector2 {
         self.mousePos(x, y);
 
         const xf = @intToFloat(f32, x.*) - @intToFloat(f32, self.res_scaler.x);
@@ -179,7 +179,7 @@ pub const Input = struct {
         return .{ .x = xf / self.res_scaler.scale, .y = yf / self.res_scaler.scale };
     }
 
-    pub fn mousePosScaledVec(self: Input) math.Vec2 {
+    pub fn mousePosScaledVec(self: Input) math.Vector2 {
         var x: i32 = undefined;
         var y: i32 = undefined;
         self.mousePosScaled(&x, &y);

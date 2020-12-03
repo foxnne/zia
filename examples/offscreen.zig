@@ -25,8 +25,8 @@ pub fn randomColor() u32 {
 
 const Thing = struct {
     texture: gfx.Texture,
-    pos: math.Vec2,
-    vel: math.Vec2,
+    pos: math.Vector2,
+    vel: math.Vector2,
     col: u32,
 
     pub fn init(tex: gfx.Texture) Thing {
@@ -50,7 +50,7 @@ var checker_tex: gfx.Texture = undefined;
 var white_tex: gfx.Texture = undefined;
 var things: []Thing = undefined;
 var pass: gfx.OffscreenPass = undefined;
-var rt_pos: math.Vec2 = .{};
+var rt_pos: math.Vector2 = .{};
 var camera: zia.utils.Camera = undefined;
 
 pub fn main() !void {

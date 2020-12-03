@@ -2,7 +2,7 @@ const std = @import("std");
 const zia = @import("zia");
 const gfx = zia.gfx;
 const Color = zia.math.Color;
-const Vec2 = zia.math.Vec2;
+const Vector2 = zia.math.Vector2;
 
 pub fn main() !void {
     try zia.run(.{
@@ -29,14 +29,14 @@ fn render() !void {
     gfx.draw.fontbook.popState();
 
     // render some primitives
-    gfx.draw.line(Vec2.init(0, 0), Vec2.init(640, 480), 2, Color.blue);
-    gfx.draw.point(Vec2.init(350, 350), 10, Color.sky_blue);
-    gfx.draw.point(Vec2.init(380, 380), 15, Color.magenta);
-    gfx.draw.rect(Vec2.init(387, 372), 40, 15, Color.dark_brown);
-    gfx.draw.hollowRect(Vec2.init(430, 372), 40, 15, 2, Color.yellow);
+    gfx.draw.line(Vector2.init(0, 0), Vector2.init(640, 480), 2, Color.blue);
+    gfx.draw.point(Vector2.init(350, 350), 10, Color.sky_blue);
+    gfx.draw.point(Vector2.init(380, 380), 15, Color.magenta);
+    gfx.draw.rect(Vector2.init(387, 372), 40, 15, Color.dark_brown);
+    gfx.draw.hollowRect(Vector2.init(430, 372), 40, 15, 2, Color.yellow);
     gfx.draw.circle(.{ .x = 400, .y = 300 }, 50, 3, 12, Color.orange);
 
-    const poly = [_]Vec2{ .{ .x = 400, .y = 30 }, .{ .x = 420, .y = 10 }, .{ .x = 430, .y = 80 }, .{ .x = 410, .y = 60 }, .{ .x = 375, .y = 40 } };
+    const poly = [_]Vector2{ .{ .x = 400, .y = 30 }, .{ .x = 420, .y = 10 }, .{ .x = 430, .y = 80 }, .{ .x = 410, .y = 60 }, .{ .x = 375, .y = 40 } };
     gfx.draw.hollowPolygon(poly[0..], 2, Color.lime);
     gfx.endPass();
 }

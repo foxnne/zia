@@ -36,8 +36,8 @@ pub fn randomColor() u32 {
 
 const Thing = struct {
     texture: gfx.Texture,
-    pos: math.Vec2,
-    vel: math.Vec2,
+    pos: math.Vector2,
+    vel: math.Vector2,
     col: u32,
 
     pub fn init(tex: gfx.Texture) Thing {

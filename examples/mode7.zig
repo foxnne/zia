@@ -12,7 +12,7 @@ const Color = zia.math.Color;
 
 const Block = struct {
     tex: Texture,
-    pos: math.Vec2,
+    pos: math.Vector2,
     scale: f32,
     dist: f32,
 };
@@ -50,7 +50,7 @@ const Camera = struct {
         self.y2 = std.math.sin(rot);
     }
 
-    pub fn toWorld(self: Camera, pos: zia.math.Vec2) zia.math.Vec2 {
+    pub fn toWorld(self: Camera, pos: zia.math.Vector2) zia.math.Vector2 {
         const sx = (self.sw / 2 - pos.x) * self.z / (self.sw / self.sh);
         const sy = (self.o * self.sh - pos.y) * (self.z / self.f);
 
@@ -60,7 +60,7 @@ const Camera = struct {
         return .{ .x = rot_x / pos.y + self.x, .y = rot_y / pos.y + self.y };
     }
 
-    pub fn toScreen(self: Camera, pos: zia.math.Vec2) struct { x: f32, y: f32, size: f32 } {
+    pub fn toScreen(self: Camera, pos: zia.math.Vector2) struct { x: f32, y: f32, size: f32 } {
         const obj_x = -(self.x - pos.x) / self.z;
         const obj_y = (self.y - pos.y) / self.z;
 
@@ -77,7 +77,7 @@ const Camera = struct {
         return .{ .x = screen_x, .y = screen_y, .size = size };
     }
 
-    pub fn placeSprite(self: *Camera, tex: zia.gfx.Texture, pos: zia.math.Vec2, scale: f32) void {
+    pub fn placeSprite(self: *Camera, tex: zia.gfx.Texture, pos: zia.math.Vector2, scale: f32) void {
         const dim = self.toScreen(pos);
         const sx2 = (dim.size * scale) / tex.width;
 
@@ -117,7 +117,7 @@ var map: Texture = undefined;
 var block: Texture = undefined;
 var mode7_shader: shaders.Mode7Shader = undefined;
 var camera: Camera = undefined;
-var blocks: std.ArrayList(math.Vec2) = undefined;
+var blocks: std.ArrayList(math.Vector2) = undefined;
 var wrap: f32 = 0;
 
 pub fn main() !void {
@@ -139,7 +139,7 @@ fn init() !void {
 
     mode7_shader = shaders.createMode7Shader();
 
-    blocks = std.ArrayList(math.Vec2).init(std.testing.allocator);
+    blocks = std.ArrayList(math.Vector2).init(std.testing.allocator);
     _ = blocks.append(.{ .x = 0, .y = 0 }) catch unreachable;
 
     // uncomment for sorting stress test

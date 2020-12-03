@@ -23,8 +23,8 @@ pub const Sprite = @import("sprite.zig").Sprite;
 pub const FontBook = @import("fontbook.zig").FontBook;
 
 pub const Vertex = extern struct {
-    pos: math.Vec2 = .{ .x = 0, .y = 0 },
-    uv: math.Vec2 = .{ .x = 0, .y = 0 },
+    pos: math.Vector2 = .{ .x = 0, .y = 0 },
+    uv: math.Vector2 = .{ .x = 0, .y = 0 },
     col: u32 = 0xFFFFFFFF,
 };
 
@@ -36,7 +36,7 @@ pub const PassConfig = struct {
     depth_action: rk.ClearAction = .dont_care,
     depth: f64 = 0,
 
-    trans_mat: ?math.Mat32 = null,
+    trans_mat: ?math.Matrix3x2 = null,
     shader: ?*Shader = null,
     pass: ?OffscreenPass = null,
 
@@ -54,7 +54,7 @@ pub const PassConfig = struct {
 
 pub var state = struct {
     shader: Shader = undefined,
-    transform_mat: math.Mat32 = math.Mat32.identity,
+    transform_mat: math.Matrix3x2 = math.Matrix3x2.identity,
 }{};
 
 pub fn init() void {
@@ -81,7 +81,7 @@ pub fn setRenderState(state: renderkit.RenderState) void {
 }
 
 pub fn beginPass(config: PassConfig) void {
-    var proj_mat: math.Mat32 = math.Mat32.init();
+    var proj_mat: math.Matrix3x2 = math.Matrix3x2.init();
     var clear_command = config.asClearCommand();
     draw.batcher.begin();
 
@@ -89,14 +89,14 @@ pub fn beginPass(config: PassConfig) void {
         rk.renderer.beginPass(pass.pass, clear_command);
         // inverted for OpenGL offscreen passes
         if (rk.current_renderer == .opengl) {
-            proj_mat = math.Mat32.initOrthoInverted(pass.color_texture.width, pass.color_texture.height);
+            proj_mat = math.Matrix3x2.initOrthoInverted(pass.color_texture.width, pass.color_texture.height);
         } else {
-            proj_mat = math.Mat32.initOrtho(pass.color_texture.width, pass.color_texture.height);
+            proj_mat = math.Matrix3x2.initOrtho(pass.color_texture.width, pass.color_texture.height);
         }
     } else {
         const size = zia.window.drawableSize();
         rk.renderer.beginDefaultPass(clear_command, size.w, size.h);
-        proj_mat = math.Mat32.initOrtho(@intToFloat(f32, size.w), @intToFloat(f32, size.h));
+        proj_mat = math.Matrix3x2.initOrtho(@intToFloat(f32, size.w), @intToFloat(f32, size.h));
     }
 
     // if we were given a transform matrix multiply it here

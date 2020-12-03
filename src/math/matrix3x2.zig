@@ -1,4 +1,4 @@
-const Vec2 = @import("vec2.zig").Vec2;
+const Vector2 = @import("vector2.zig").Vector2;
 const Color = @import("color.zig").Color;
 const Quad = @import("quad.zig").Quad;
 const Vertex = @import("../zia.zig").gfx.Vertex;
@@ -13,29 +13,29 @@ const math = std.math;
 //  0: scaleX    2: sin       4: transX
 //  1: cos       3: scaleY    5: transY
 //
-pub const Mat32 = extern struct {
+pub const Matrix3x2 = extern struct {
     data: [6]f32 = undefined,
 
     pub const TransformParams = struct { x: f32 = 0, y: f32 = 0, angle: f32 = 0, sx: f32 = 1, sy: f32 = 1, ox: f32 = 0, oy: f32 = 0 };
 
-    pub const identity = Mat32{ .data = .{ 1, 0, 0, 1, 0, 0 } };
+    pub const identity = Matrix3x2{ .data = .{ 1, 0, 0, 1, 0, 0 } };
 
-    pub fn format(self: Mat32, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+    pub fn format(self: Matrix3x2, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
         return writer.print("{d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}", .{self.data[0], self.data[1], self.data[2], self.data[3], self.data[4], self.data[5]});
     }
 
-    pub fn init() Mat32 {
+    pub fn init() Matrix3x2 {
         return identity;
     }
 
-    pub fn initTransform(vals: TransformParams) Mat32 {
-        var mat = Mat32{};
+    pub fn initTransform(vals: TransformParams) Matrix3x2 {
+        var mat = Matrix3x2{};
         mat.setTransform(vals);
         return mat;
     }
 
-    pub fn initOrthoInverted(width: f32, height: f32) Mat32 {
-        var result = Mat32{};
+    pub fn initOrthoInverted(width: f32, height: f32) Matrix3x2 {
+        var result = Matrix3x2{};
         result.data[0] = 2 / width;
         result.data[3] = 2 / height;
         result.data[4] = -1;
@@ -43,8 +43,8 @@ pub const Mat32 = extern struct {
         return result;
     }
 
-    pub fn initOrtho(width: f32, height: f32) Mat32 {
-        var result = Mat32{};
+    pub fn initOrtho(width: f32, height: f32) Matrix3x2 {
+        var result = Matrix3x2{};
         result.data[0] = 2 / width;
         result.data[3] = -2 / height;
         result.data[4] = -1;
@@ -52,7 +52,7 @@ pub const Mat32 = extern struct {
         return result;
     }
 
-    pub fn initOrthoOffCenter(width: f32, height: f32) Mat32 {
+    pub fn initOrthoOffCenter(width: f32, height: f32) Matrix3x2 {
         const half_w = @ceil(width / 2);
         const half_h = @ceil(height / 2);
 
@@ -64,7 +64,7 @@ pub const Mat32 = extern struct {
         return result;
     }
 
-    pub fn setTransform(self: *Mat32, vals: TransformParams) void {
+    pub fn setTransform(self: *Matrix3x2, vals: TransformParams) void {
         const c = math.cos(vals.angle);
         const s = math.sin(vals.angle);
 
@@ -80,8 +80,8 @@ pub const Mat32 = extern struct {
         self.data[5] = vals.y - vals.ox * self.data[1] - vals.oy * self.data[3];
     }
 
-    pub fn invert(self: Mat32) Mat32 {
-        var res = Mat32{};
+    pub fn invert(self: Matrix3x2) Matrix3x2 {
+        var res = Matrix3x2{};
         var det = 1 / (self.data[0] * self.data[3] - self.data[1] * self.data[2]);
 
         res.data[0] = self.data[3] * det;
@@ -96,8 +96,8 @@ pub const Mat32 = extern struct {
         return res;
     }
 
-    pub fn mul(self: Mat32, r: Mat32) Mat32 {
-        var result = Mat32{};
+    pub fn mul(self: Matrix3x2, r: Matrix3x2) Matrix3x2 {
+        var result = Matrix3x2{};
         result.data[0] = self.data[0] * r.data[0] + self.data[2] * r.data[1];
         result.data[1] = self.data[1] * r.data[0] + self.data[3] * r.data[1];
         result.data[2] = self.data[0] * r.data[2] + self.data[2] * r.data[3];
@@ -107,12 +107,12 @@ pub const Mat32 = extern struct {
         return result;
     }
 
-    pub fn translate(self: *Mat32, x: f32, y: f32) void {
+    pub fn translate(self: *Matrix3x2, x: f32, y: f32) void {
         self.data[4] = self.data[0] * x + self.data[2] * y + self.data[4];
         self.data[5] = self.data[1] * x + self.data[3] * y + self.data[5];
     }
 
-    pub fn rotate(self: *Mat32, rads: f32) void {
+    pub fn rotate(self: *Matrix3x2, rads: f32) void {
         const cos = math.cos(rads);
         const sin = math.sin(rads);
 
@@ -125,21 +125,21 @@ pub const Mat32 = extern struct {
         self.data[1] = nm1;
     }
 
-    pub fn scale(self: *Mat32, x: f32, y: f32) void {
+    pub fn scale(self: *Matrix3x2, x: f32, y: f32) void {
         self.data[0] *= x;
         self.data[1] *= x;
         self.data[2] *= y;
         self.data[3] *= y;
     }
 
-    pub fn transformVec2(self: Mat32, pos: Vec2) Vec2 {
+    pub fn transformVec2(self: Matrix3x2, pos: Vector2) Vector2 {
         return .{
             .x = pos.x * self.data[0] + pos.y * self.data[2] + self.data[4],
             .y = pos.x * self.data[1] + pos.y * self.data[3] + self.data[5],
         };
     }
 
-    pub fn transformVec2Slice(self: Mat32, comptime T: type, dst: []T, src: []Vec2) void {
+    pub fn transformVec2Slice(self: Matrix3x2, comptime T: type, dst: []T, src: []Vector2) void {
         for (src) |item, i| {
             const x = src[i].x * self.data[0] + src[i].y * self.data[2] + self.data[4];
             const y = src[i].x * self.data[1] + src[i].y * self.data[3] + self.data[5];
@@ -150,7 +150,7 @@ pub const Mat32 = extern struct {
 
     /// transforms the positions in Quad and copies them to dst along with the uvs and color. This could be made generic
     /// if we have other common Vertex types
-    pub fn transformQuad(self: Mat32, dst: []Vertex, quad: Quad, color: Color) void {
+    pub fn transformQuad(self: Matrix3x2, dst: []Vertex, quad: Quad, color: Color) void {
         for (dst) |*item, i| {
             item.*.pos.x = quad.positions[i].x * self.data[0] + quad.positions[i].y * self.data[2] + self.data[4];
             item.*.pos.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
@@ -159,7 +159,7 @@ pub const Mat32 = extern struct {
         }
     }
 
-    pub fn transformVertexSlice(self: Mat32, dst: []Vertex) void {
+    pub fn transformVertexSlice(self: Matrix3x2, dst: []Vertex) void {
         for (dst) |item, i| {
             const x = dst[i].pos.x * self.data[0] + dst[i].pos.y * self.data[2] + self.data[4];
             const y = dst[i].pos.x * self.data[1] + dst[i].pos.y * self.data[3] + self.data[5];
@@ -172,27 +172,27 @@ pub const Mat32 = extern struct {
 };
 
 test "mat32 tests" {
-    const i = Mat32.identity;
-    const mat1 = Mat32.initTransform(.{ .x = 10, .y = 10 });
-    var mat2 = Mat32{};
+    const i = Matrix3x2.identity;
+    const mat1 = Matrix3x2.initTransform(.{ .x = 10, .y = 10 });
+    var mat2 = Matrix3x2{};
     mat2.setTransform(.{ .x = 10, .y = 10 });
     std.testing.expectEqual(mat2, mat1);
 
-    var mat3 = Mat32.init();
+    var mat3 = Matrix3x2.init();
     mat3.setTransform(.{ .x = 10, .y = 10 });
     std.testing.expectEqual(mat3, mat1);
 
-    const mat4 = Mat32.initOrtho(640, 480);
-    const mat5 = Mat32.initOrthoOffCenter(640, 480);
+    const mat4 = Matrix3x2.initOrtho(640, 480);
+    const mat5 = Matrix3x2.initOrthoOffCenter(640, 480);
 
-    var mat6 = Mat32.init();
+    var mat6 = Matrix3x2.init();
     mat6.translate(10, 20);
     std.testing.expectEqual(mat6.data[4], 10);
 }
 
 test "mat32 transform tests" {
-    const i = Mat32.identity;
-    const vec = Vec2.init(44, 55);
+    const i = Matrix3x2.identity;
+    const vec = Vector2.init(44, 55);
     const vec_t = i.transformVec2(vec);
     std.testing.expectEqual(vec, vec_t);
 

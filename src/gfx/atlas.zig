@@ -32,7 +32,7 @@ pub const Atlas = struct {
                     .height = sprite_height,
                 };
 
-                var origin : math.Vec2 = .{.x = 0.5 * sprite_width, .y = 0.5 * sprite_height};
+                var origin : math.Vector2 = .{.x = 0.5 * sprite_width, .y = 0.5 * sprite_height};
                 
                 var sprite : Sprite = .{ .source = source, .origin = origin };
 

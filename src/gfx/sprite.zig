@@ -3,7 +3,7 @@ const math = @import("../math/math.zig");
 
 pub const Sprite = struct {
     source: math.RectF,
-    origin: math.Vec2,
+    origin: math.Vector2,
 
     pub fn init (x: f32, y: f32, width: f32, height: f32, ox: f32, oy: f32) Sprite {
         return .{

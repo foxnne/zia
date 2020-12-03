@@ -40,14 +40,14 @@ pub const draw = struct {
     // Drawing
     const TextureOptions = struct {
         scale: f32 = 1.0,
-        origin: math.Vec2 = .{},
+        origin: math.Vector2 = .{},
         color: math.Color = math.Color.white,
     };
 
-    pub fn texture(t: Texture, position: math.Vec2, options: TextureOptions) void {
+    pub fn texture(t: Texture, position: math.Vector2, options: TextureOptions) void {
         quad.setFill(t.width, t.height);
 
-        var mat = math.Mat32.initTransform(.{
+        var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
             .sx = options.scale,
@@ -66,10 +66,10 @@ pub const draw = struct {
         color: math.Color = math.Color.white
     };
 
-    pub fn sprite(atlas: zia.gfx.Atlas, index: i32, position: math.Vec2, options: SpriteOptions) void {
+    pub fn sprite(atlas: zia.gfx.Atlas, index: i32, position: math.Vector2, options: SpriteOptions) void {
         var i = @intCast(usize, index);
         var spr = atlas.sprites.items[i];
-        var mat = math.Mat32.initTransform(.{
+        var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
@@ -86,7 +86,7 @@ pub const draw = struct {
     pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {
         var book = fb orelse fontbook;
         // TODO: dont hardcode scale as 4
-        var matrix = math.Mat32.initTransform(.{ .x = x, .y = y, .sx = 2, .sy = 2 });
+        var matrix = math.Matrix3x2.initTransform(.{ .x = x, .y = y, .sx = 2, .sy = 2 });
 
         var fons_quad = book.getQuad();
         var iter = book.getTextIterator(str);
@@ -107,7 +107,7 @@ pub const draw = struct {
 
     pub fn textOptions(str: []const u8, fb: ?*gfx.FontBook, options: struct { x: f32, y: f32, rot: f32 = 0, sx: f32 = 1, sy: f32 = 1, alignment: gfx.FontBook.Align = .default, color: math.Color = math.Color.White }) void {
         var book = fb orelse fontbook;
-        var matrix = math.Mat32.initTransform(.{ .x = options.x, .y = options.y, .angle = options.rot, .sx = options.sx, .sy = options.sy });
+        var matrix = math.Matrix3x2.initTransform(.{ .x = options.x, .y = options.y, .angle = options.rot, .sx = options.sx, .sy = options.sy });
         book.setAlign(options.alignment);
 
         var fons_quad = book.getQuad();
@@ -127,34 +127,34 @@ pub const draw = struct {
         }
     }
 
-    pub fn point(position: math.Vec2, size: f32, color: math.Color) void {
+    pub fn point(position: math.Vector2, size: f32, color: math.Color) void {
         quad.setFill(size, size);
 
         const offset = if (size == 1) 0 else size * 0.5;
-        var mat = math.Mat32.initTransform(.{ .x = position.x, .y = position.y, .ox = offset, .oy = offset });
+        var mat = math.Matrix3x2.initTransform(.{ .x = position.x, .y = position.y, .ox = offset, .oy = offset });
         batcher.draw(white_tex, quad, mat, color);
     }
 
-    pub fn line(start: math.Vec2, end: math.Vec2, thickness: f32, color: math.Color) void {
+    pub fn line(start: math.Vector2, end: math.Vector2, thickness: f32, color: math.Color) void {
         quad.setFill(1, 1);
 
         const angle = start.angleBetween(end);
         const length = start.distance(end);
 
-        var mat = math.Mat32.initTransform(.{ .x = start.x, .y = start.y, .angle = angle, .sx = length, .sy = thickness });
+        var mat = math.Matrix3x2.initTransform(.{ .x = start.x, .y = start.y, .angle = angle, .sx = length, .sy = thickness });
         batcher.draw(white_tex, quad, mat, color);
     }
 
-    pub fn rect(position: math.Vec2, width: f32, height: f32, color: math.Color) void {
+    pub fn rect(position: math.Vector2, width: f32, height: f32, color: math.Color) void {
         quad.setFill(width, height);
-        var mat = math.Mat32.initTransform(.{ .x = position.x, .y = position.y });
+        var mat = math.Matrix3x2.initTransform(.{ .x = position.x, .y = position.y });
         batcher.draw(white_tex, quad, mat, color);
     }
 
-    pub fn hollowRect(position: math.Vec2, width: f32, height: f32, thickness: f32, color: math.Color) void {
-        const tr = math.Vec2{ .x = position.x + width, .y = position.y };
-        const br = math.Vec2{ .x = position.x + width, .y = position.y + height };
-        const bl = math.Vec2{ .x = position.x, .y = position.y + height };
+    pub fn hollowRect(position: math.Vector2, width: f32, height: f32, thickness: f32, color: math.Color) void {
+        const tr = math.Vector2{ .x = position.x + width, .y = position.y };
+        const br = math.Vector2{ .x = position.x + width, .y = position.y + height };
+        const bl = math.Vector2{ .x = position.x, .y = position.y + height };
 
         line(position, tr, thickness, color);
         line(tr, br, thickness, color);
@@ -162,15 +162,15 @@ pub const draw = struct {
         line(bl, position, thickness, color);
     }
 
-    pub fn circle(center: math.Vec2, radius: f32, thickness: f32, resolution: i32, color: math.Color) void {
+    pub fn circle(center: math.Vector2, radius: f32, thickness: f32, resolution: i32, color: math.Color) void {
         quad.setFill(white_tex.width, white_tex.height);
 
-        var last = math.Vec2.init(1, 0).scale(radius);
+        var last = math.Vector2.init(1, 0).scale(radius);
         var last_p = last.orthogonal();
 
         var i: usize = 0;
         while (i <= resolution) : (i += 1) {
-            const at = math.Vec2.angleToVec(@intToFloat(f32, i) * std.math.pi * 0.5 / @intToFloat(f32, resolution), radius);
+            const at = math.Vector2.angleToVec(@intToFloat(f32, i) * std.math.pi * 0.5 / @intToFloat(f32, resolution), radius);
             const at_p = at.orthogonal();
 
             line(center.add(last), center.add(at), thickness, color);
@@ -183,7 +183,7 @@ pub const draw = struct {
         }
     }
 
-    pub fn hollowPolygon(verts: []const math.Vec2, thickness: f32, color: math.Color) void {
+    pub fn hollowPolygon(verts: []const math.Vector2, thickness: f32, color: math.Color) void {
         var i: usize = 0;
         while (i < verts.len - 1) : (i += 1) {
             line(verts[i], verts[i + 1], thickness, color);

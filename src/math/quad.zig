@@ -1,12 +1,13 @@
-const Vec2 = @import("vec2.zig").Vec2;
-const Rect = @import("rect.zig").Rect;
-const RectF = @import("rect.zig").RectF;
+const math = @import("math.zig");
+const Vector2 = math.Vector2;
+const Rect = math.Rect;
+const RectF = math.RectF;
 
 pub const Quad = struct {
     img_w: f32,
     img_h: f32,
-    positions: [4]Vec2 = undefined,
-    uvs: [4]Vec2 = undefined,
+    positions: [4]Vector2 = undefined,
+    uvs: [4]Vector2 = undefined,
 
     pub fn init(x: f32, y: f32, width: f32, height: f32, img_w: f32, img_h: f32) Quad {
         var q = Quad{
@@ -27,10 +28,10 @@ pub const Quad = struct {
     }
 
     pub fn setViewport(self: *Quad, x: f32, y: f32, width: f32, height: f32) void {
-        self.positions[0] = Vec2{ .x = 0, .y = 0 }; // bl
-        self.positions[1] = Vec2{ .x = width, .y = 0 }; // br
-        self.positions[2] = Vec2{ .x = width, .y = height }; // tr
-        self.positions[3] = Vec2{ .x = 0, .y = height }; // tl
+        self.positions[0] = Vector2{ .x = 0, .y = 0 }; // bl
+        self.positions[1] = Vector2{ .x = width, .y = 0 }; // br
+        self.positions[2] = Vector2{ .x = width, .y = height }; // tr
+        self.positions[3] = Vector2{ .x = 0, .y = height }; // tl
 
         // squeeze texcoords in by 128th of a pixel to avoid bleed
         const w_tol = (1.0 / self.img_w) / 128.0;
@@ -39,10 +40,10 @@ pub const Quad = struct {
         const inv_w = 1.0 / self.img_w;
         const inv_h = 1.0 / self.img_h;
 
-        self.uvs[0] = Vec2{ .x = x * inv_w + w_tol, .y = y * inv_h + h_tol };
-        self.uvs[1] = Vec2{ .x = (x + width) * inv_w - w_tol, .y = y * inv_h + h_tol };
-        self.uvs[2] = Vec2{ .x = (x + width) * inv_w - w_tol, .y = (y + height) * inv_h - h_tol };
-        self.uvs[3] = Vec2{ .x = x * inv_w + w_tol, .y = (y + height) * inv_h - h_tol };
+        self.uvs[0] = Vector2{ .x = x * inv_w + w_tol, .y = y * inv_h + h_tol };
+        self.uvs[1] = Vector2{ .x = (x + width) * inv_w - w_tol, .y = y * inv_h + h_tol };
+        self.uvs[2] = Vector2{ .x = (x + width) * inv_w - w_tol, .y = (y + height) * inv_h - h_tol };
+        self.uvs[3] = Vector2{ .x = x * inv_w + w_tol, .y = (y + height) * inv_h - h_tol };
     }
 
     /// sets the Quad to be the full size of the texture

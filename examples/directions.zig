@@ -13,7 +13,7 @@ var k_direction: Direction = .{};
 
 var texture: zia.gfx.Texture = undefined;
 
-var position: zia.math.Vec2 = .{};
+var position: zia.math.Vector2 = .{};
 
 var atlas: zia.gfx.Atlas = undefined;
 var index: i32 = 0;

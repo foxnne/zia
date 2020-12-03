@@ -138,7 +138,7 @@ pub const Batcher = struct {
 
         var i = @intCast(usize, index);
         var spr = atlas.sprites.items[i];
-        var mat = math.Mat32.initTransform(.{
+        var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
@@ -181,7 +181,7 @@ pub const Batcher = struct {
         self.vert_index += 4;
     }
 
-    pub fn draw(self: *Batcher, texture: Texture, quad: math.Quad, mat: math.Mat32, color: math.Color) void {
+    pub fn draw(self: *Batcher, texture: Texture, quad: math.Quad, mat: math.Matrix3x2, color: math.Color) void {
         self.ensureCapacity(texture) catch |err| {
             std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
             return;

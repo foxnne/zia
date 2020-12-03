@@ -1,6 +1,5 @@
 const std = @import("std");
-
-const Vec2 = @import("vec2.zig").Vec2;
+const math = @import("math.zig");
 
 /// describes a direction as one of 8 unique byte values
 pub const Direction = packed struct {
@@ -64,7 +63,7 @@ pub const Direction = packed struct {
     }
 
     /// returns direction from first position to second
-    pub fn look(self: Direction, from: Vec2, to: Vec2) Direction {
+    pub fn look(self: Direction, from: math.Vector2, to: math.Vector2) Direction {
         return self.find(to.x - from.x, to.y - from.y);
     }
 
@@ -79,12 +78,12 @@ pub const Direction = packed struct {
     }
 
     /// returns a vector containing the vertical and horizontal axes
-    pub fn vec2(self: Direction) Vec2 {
+    pub fn vec2(self: Direction) math.Vector2 {
         return .{ .x = self.x(), .y = self.y() };
     }
 
     /// returns a normalized vector from the direction
-    pub fn normalized(self: Direction) Vec2 {
+    pub fn normalized(self: Direction)math.Vector2 {
         var nx = self.x();
         var ny = self.y();
 

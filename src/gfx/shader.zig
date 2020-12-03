@@ -6,7 +6,7 @@ const renderer = rk.renderer;
 const fs = zia.utils.fs;
 
 
-/// default params for the sprite shader. Translates the Mat32 into 2 arrays of f32 for the shader uniform slot.
+/// default params for the sprite shader. Translates the Matrix3x2 into 2 arrays of f32 for the shader uniform slot.
 pub const VertexParams = extern struct {
     pub const metadata = .{
         .uniforms = .{ .VertexParams = .{ .type = .float4, .array_count = 2 } },
@@ -15,7 +15,7 @@ pub const VertexParams = extern struct {
 
     transform_matrix: [8]f32 = [_]f32{0} ** 8,
 
-    pub fn init(mat: *math.Mat32) VertexParams {
+    pub fn init(mat: *math.Matrix3x2) VertexParams {
         var params = VertexParams{};
         std.mem.copy(f32, &params.transform_matrix, &mat.data);
         return params;
@@ -41,7 +41,7 @@ fn defaultFragmentShader() [:0]const u8 {
 pub const Shader = struct {
     shader: rk.ShaderProgram,
     onPostBind: ?fn (*Shader) void,
-    onSetTransformMatrix: ?fn (*math.Mat32) void,
+    onSetTransformMatrix: ?fn (*math.Matrix3x2) void,
 
     const Empty = struct {};
 
@@ -61,7 +61,7 @@ pub const Shader = struct {
         /// optional function that lets you override the behavior when the transform matrix is set. This is used when there is a
         /// custom vertex shader and isnt necessary if the standard sprite vertex shader is used. Note that the shader is already
         /// bound when this is called if `gfx.setShader` is used so send your uniform immediately!
-        onSetTransformMatrix: ?fn (*math.Mat32) void = null,
+        onSetTransformMatrix: ?fn (*math.Matrix3x2) void = null,
     };
 
     pub fn initDefaultSpriteShader() !Shader {
@@ -112,7 +112,7 @@ pub const Shader = struct {
         if (self.onPostBind) |onPostBind| onPostBind(self);
     }
 
-    pub fn setTransformMatrix(self: Shader, matrix: *math.Mat32) void {
+    pub fn setTransformMatrix(self: Shader, matrix: *math.Matrix3x2) void {
         if (self.onSetTransformMatrix) |setMatrix| {
             setMatrix(matrix);
         } else {
