@@ -4,7 +4,7 @@ const imgui = @import("imgui");
 const Color = zia.math.Color;
 const Direction = zia.math.Direction;
 
-//pub const enable_imgui = true;
+pub const enable_imgui = true;
 
 var camera: zia.utils.Camera = undefined;
 
@@ -34,9 +34,12 @@ fn init() !void {
 
     texture = zia.gfx.Texture.initFromFile(std.testing.allocator, "examples/assets/textures/Female_BaseNew.png", .nearest) catch unreachable;
     atlas = zia.gfx.Atlas.init(texture, 9, 2);
+
 }
 
 fn update() !void {
+
+
     k_direction = k_direction.write(zia.input.keyDown(.w), zia.input.keyDown(.s), zia.input.keyDown(.a), zia.input.keyDown(.d));
     position = position.add(k_direction.normalized().scale(2 * zia.time.dt()));
     m_direction = m_direction.look(position, camera.screenToWorld(zia.input.mousePos()));

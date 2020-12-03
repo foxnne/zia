@@ -37,7 +37,6 @@
             }
         },
         {
-<<<<<<< HEAD
             "label": "Build and Run Project (imgui)",
             "type": "shell",
             "command": "zig build run -Dimgui=true",
@@ -48,15 +47,6 @@
                 "kind": "build",
                 "isDefault": true
             },
-=======
-            "label": "Build and Run Project (x64 on arm)",
-            "type": "shell",
-            "command": "~/zig/zig-x64/zig build run",
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
->>>>>>> da63961b6253d69bc270a482ec04852942f0c65d
             "presentation": {
                 "clear": true
             }
