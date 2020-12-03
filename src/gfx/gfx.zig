@@ -23,9 +23,9 @@ pub const Sprite = @import("sprite.zig").Sprite;
 pub const FontBook = @import("fontbook.zig").FontBook;
 
 pub const Vertex = extern struct {
-    pos: math.Vector2 = .{ .x = 0, .y = 0 },
+    position: math.Vector2 = .{ .x = 0, .y = 0 },
     uv: math.Vector2 = .{ .x = 0, .y = 0 },
-    col: u32 = 0xFFFFFFFF,
+    color: u32 = 0xFFFFFFFF,
 };
 
 pub const PassConfig = struct {

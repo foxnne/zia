@@ -152,21 +152,21 @@ pub const Matrix3x2 = extern struct {
     /// if we have other common Vertex types
     pub fn transformQuad(self: Matrix3x2, dst: []Vertex, quad: Quad, color: Color) void {
         for (dst) |*item, i| {
-            item.*.pos.x = quad.positions[i].x * self.data[0] + quad.positions[i].y * self.data[2] + self.data[4];
-            item.*.pos.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
+            item.*.position.x = quad.positions[i].x * self.data[0] + quad.positions[i].y * self.data[2] + self.data[4];
+            item.*.position.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
             item.*.uv = quad.uvs[i];
-            item.*.col = color.value;
+            item.*.color = color.value;
         }
     }
 
     pub fn transformVertexSlice(self: Matrix3x2, dst: []Vertex) void {
         for (dst) |item, i| {
-            const x = dst[i].pos.x * self.data[0] + dst[i].pos.y * self.data[2] + self.data[4];
-            const y = dst[i].pos.x * self.data[1] + dst[i].pos.y * self.data[3] + self.data[5];
+            const x = dst[i].position.x * self.data[0] + dst[i].position.y * self.data[2] + self.data[4];
+            const y = dst[i].position.x * self.data[1] + dst[i].position.y * self.data[3] + self.data[5];
 
             // we defer setting because src and dst are the same
-            dst[i].pos.x = x;
-            dst[i].pos.y = y;
+            dst[i].position.x = x;
+            dst[i].position.y = y;
         }
     }
 };

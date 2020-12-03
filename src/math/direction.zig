@@ -83,7 +83,7 @@ pub const Direction = packed struct {
     }
 
     /// returns a normalized vector from the direction
-    pub fn normalized(self: Direction)math.Vector2 {
+    pub fn normalized(self: Direction) math.Vector2 {
         var nx = self.x();
         var ny = self.y();
 

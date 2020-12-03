@@ -4,7 +4,7 @@ const zia = @import("zia");
 const gfx = zia.gfx;
 const math = zia.math;
 
-pub const renderer: gk.renderkit.Renderer = .opengl;
+pub const renderer: zia.renderkit.Renderer = .opengl;
 
 var rng = std.rand.DefaultPrng.init(0x12345678);
 
@@ -73,7 +73,7 @@ pub fn main() !void {
 }
 
 fn init() !void {
-    if (use_multi_texture_batcher and gk.renderkit.current_renderer != .opengl) @panic("only OpenGL is implemented for MultiBatcher shader");
+    if (use_multi_texture_batcher and zia.renderkit.current_renderer != .opengl) @panic("only OpenGL is implemented for MultiBatcher shader");
 
     shader = if (use_multi_texture_batcher)
         try gfx.Shader.initWithFrag(MultiFragUniform, .{

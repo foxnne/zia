@@ -18,8 +18,8 @@ pub fn build(b: *Builder) !void {
     b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.arch == std.builtin.Arch.aarch64) "zig-arm-cache" else "zig-cache";
 
     const examples = [_][2][]const u8{
-        [_][]const u8{ "directions", "examples/directions.zig" },
         [_][]const u8{ "mode7", "examples/mode7.zig" },
+        [_][]const u8{ "directions", "examples/directions.zig" },
         [_][]const u8{ "offscreen", "examples/offscreen.zig" },
         [_][]const u8{ "clear_imgui", "examples/clear_imgui.zig" },
         [_][]const u8{ "tri_batcher", "examples/tri_batcher.zig" },

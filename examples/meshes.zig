@@ -21,35 +21,35 @@ fn init() !void {
     colored_tex = gfx.Texture.initSingleColor(0xFFFF0000);
 
     var vertices = [_]gfx.Vertex{
-        .{ .pos = .{ .x = 10, .y = 10 }, .uv = .{ .x = 0, .y = 0 } }, // tl
-        .{ .pos = .{ .x = 100, .y = 10 }, .uv = .{ .x = 1, .y = 0 } }, // tr
-        .{ .pos = .{ .x = 100, .y = 100 }, .uv = .{ .x = 1, .y = 1 } }, // br
-        .{ .pos = .{ .x = 50, .y = 130 }, .uv = .{ .x = 0.5, .y = 1 } }, // bc
-        .{ .pos = .{ .x = 10, .y = 100 }, .uv = .{ .x = 0, .y = 1 } }, // bl
-        .{ .pos = .{ .x = 50, .y = 50 }, .uv = .{ .x = 0.5, .y = 0.5 } }, // c
+        .{ .position = .{ .x = 10, .y = 10 }, .uv = .{ .x = 0, .y = 0 } }, // tl
+        .{ .position = .{ .x = 100, .y = 10 }, .uv = .{ .x = 1, .y = 0 } }, // tr
+        .{ .position = .{ .x = 100, .y = 100 }, .uv = .{ .x = 1, .y = 1 } }, // br
+        .{ .position = .{ .x = 50, .y = 130 }, .uv = .{ .x = 0.5, .y = 1 } }, // bc
+        .{ .position = .{ .x = 10, .y = 100 }, .uv = .{ .x = 0, .y = 1 } }, // bl
+        .{ .position = .{ .x = 50, .y = 50 }, .uv = .{ .x = 0.5, .y = 0.5 } }, // c
     };
     var indices = [_]u16{ 0, 5, 4, 5, 3, 4, 5, 2, 3, 5, 1, 2, 5, 0, 1 };
     mesh = gfx.Mesh.init(u16, indices[0..], gfx.Vertex, vertices[0..]);
 
     var dyn_vertices = [_]gfx.Vertex{
-        .{ .pos = .{ .x = 10, .y = 10 }, .uv = .{ .x = 0, .y = 0 } }, // tl
-        .{ .pos = .{ .x = 100, .y = 10 }, .uv = .{ .x = 1, .y = 0 } }, // tr
-        .{ .pos = .{ .x = 100, .y = 100 }, .uv = .{ .x = 1, .y = 1 } }, // br
-        .{ .pos = .{ .x = 10, .y = 100 }, .uv = .{ .x = 0, .y = 1 } }, // bl
+        .{ .position = .{ .x = 10, .y = 10 }, .uv = .{ .x = 0, .y = 0 } }, // tl
+        .{ .position = .{ .x = 100, .y = 10 }, .uv = .{ .x = 1, .y = 0 } }, // tr
+        .{ .position = .{ .x = 100, .y = 100 }, .uv = .{ .x = 1, .y = 1 } }, // br
+        .{ .position = .{ .x = 10, .y = 100 }, .uv = .{ .x = 0, .y = 1 } }, // bl
     };
     var dyn_indices = [_]u16{ 0, 1, 2, 2, 3, 0 };
     dyn_mesh = try gfx.DynamicMesh(u16, gfx.Vertex).init(std.testing.allocator, vertices.len, &dyn_indices);
     for (dyn_vertices) |*vert, i| {
-        vert.pos.x += 200;
-        vert.pos.y += 200;
+        vert.position.x += 200;
+        vert.position.y += 200;
         dyn_mesh.verts[i] = vert.*;
     }
 }
 
 fn update() !void {
     for (dyn_mesh.verts) |*vert| {
-        vert.pos.x += 0.1;
-        vert.pos.y += 0.1;
+        vert.position.x += 0.1;
+        vert.position.y += 0.1;
     }
     dyn_mesh.updateAllVerts();
 }

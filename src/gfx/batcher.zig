@@ -130,7 +130,7 @@ pub const Batcher = struct {
         color: math.Color = math.Color.white
     };
 
-    pub fn drawSprite (self: *Batcher, atlas: zia.gfx.Atlas, index: i32, position: math.Vec2, options: SpriteOptions) void{
+    pub fn drawSprite (self: *Batcher, atlas: zia.gfx.Atlas, index: i32, position: math.Vector2, options: SpriteOptions) void{
         self.ensureCapacity(atlas.texture) catch |err| {
             std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
             return;
@@ -153,28 +153,28 @@ pub const Batcher = struct {
         draw(atlas.texture, quad, mat, options.color);
     }
 
-    pub fn drawTex(self: *Batcher, pos: math.Vec2, col: u32, texture: Texture) void {
+    pub fn drawTex(self: *Batcher, pos: math.Vector2, col: u32, texture: Texture) void {
         self.ensureCapacity(texture) catch |err| {
             std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
             return;
         };
 
         var verts = self.mesh.verts[self.vert_index .. self.vert_index + 4];
-        verts[0].pos = pos; // tl
+        verts[0].position = pos; // tl
         verts[0].uv = .{ .x = 0, .y = 0 };
-        verts[0].col = col;
+        verts[0].color = col;
 
-        verts[1].pos = .{ .x = pos.x + texture.width, .y = pos.y }; // tr
+        verts[1].position = .{ .x = pos.x + texture.width, .y = pos.y }; // tr
         verts[1].uv = .{ .x = 1, .y = 0 };
-        verts[1].col = col;
+        verts[1].color = col;
 
-        verts[2].pos = .{ .x = pos.x + texture.width, .y = pos.y + texture.height }; // br
+        verts[2].position = .{ .x = pos.x + texture.width, .y = pos.y + texture.height }; // br
         verts[2].uv = .{ .x = 1, .y = 1 };
-        verts[2].col = col;
+        verts[2].color = col;
 
-        verts[3].pos = .{ .x = pos.x, .y = pos.y + texture.height }; // bl
+        verts[3].position = .{ .x = pos.x, .y = pos.y + texture.height }; // bl
         verts[3].uv = .{ .x = 0, .y = 1 };
-        verts[3].col = col;
+        verts[3].color = col;
 
         self.draw_calls.items[self.draw_calls.items.len - 1].quad_count += 1;
         self.quad_count += 1;

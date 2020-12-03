@@ -112,21 +112,21 @@ pub const TriangleBatcher = struct {
         }
     }
 
-    pub fn drawTriangle(self: *TriangleBatcher, pt1: math.Vec2, pt2: math.Vec2, pt3: math.Vec2, color: math.Color) void {
+    pub fn drawTriangle(self: *TriangleBatcher, pt1: math.Vector2, pt2: math.Vector2, pt3: math.Vector2, color: math.Color) void {
         self.ensureCapacity() catch |err| {
             std.debug.warn("TriangleBatcher.draw failed to append a draw call with error: {}\n", .{err});
             return;
         };
 
         // copy the triangle positions, uvs and color into vertex array transforming them with the matrix after we do it
-        self.mesh.verts[self.vert_index].pos = pt1;
-        self.mesh.verts[self.vert_index].col = color.value;
-        self.mesh.verts[self.vert_index + 1].pos = pt2;
-        self.mesh.verts[self.vert_index + 1].col = color.value;
-        self.mesh.verts[self.vert_index + 2].pos = pt3;
-        self.mesh.verts[self.vert_index + 2].col = color.value;
+        self.mesh.verts[self.vert_index].position = pt1;
+        self.mesh.verts[self.vert_index].color = color.value;
+        self.mesh.verts[self.vert_index + 1].position = pt2;
+        self.mesh.verts[self.vert_index + 1].color = color.value;
+        self.mesh.verts[self.vert_index + 2].position = pt3;
+        self.mesh.verts[self.vert_index + 2].color = color.value;
 
-        const mat = math.Mat32.identity;
+        const mat = math.Matrix3x2.identity;
         mat.transformVertexSlice(self.mesh.verts[self.vert_index .. self.vert_index + 3]);
 
         self.draw_calls.items[self.draw_calls.items.len - 1] += 3;
