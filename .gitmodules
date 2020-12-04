@@ -7,3 +7,6 @@ url=https://github.com/prime31/zig-renderkit
 [submodule "src/deps/imgui/cimgui"]
 	path = src/deps/imgui/cimgui
 	url = https://github.com/cimgui/cimgui.git
+[submodule "src/deps/ecs"]
+	path = src/deps/ecs
+	url = https://github.com/prime31/zig-ecs.git
