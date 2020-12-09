@@ -1,4 +1,5 @@
 pub const Vector2 = @import("vector2.zig").Vector2;
+pub const Point = @import("point.zig").Point;
 pub const Rect = @import("rect.zig").Rect;
 pub const RectF = @import("rect.zig").RectF;
 pub const Matrix3x2 = @import("matrix3x2.zig").Matrix3x2;

@@ -2,13 +2,13 @@ const std = @import("std");
 const math = @import("../math/math.zig");
 
 pub const Sprite = struct {
-    source: math.RectF,
-    origin: math.Vector2,
+    source: math.Rect,
+    origin: math.Point,
 
-    pub fn init (x: f32, y: f32, width: f32, height: f32, ox: f32, oy: f32) Sprite {
+    pub fn init (x: i32, y: i32, width: i32, height: i32, originX: i32, originY: i32) Sprite {
         return .{
             .source = .{ .x = x, .y = y, .width = width, .height = height},
-            .origin = .{ .x = ox, .y = oy},
+            .origin = .{ .x = originX, .y = originY},
         };
     }
 };

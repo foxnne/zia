@@ -132,7 +132,7 @@ pub const Batcher = struct {
 
     pub fn drawSprite (self: *Batcher, atlas: zia.gfx.Atlas, index: i32, position: math.Vector2, options: SpriteOptions) void{
         self.ensureCapacity(atlas.texture) catch |err| {
-            std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
+            std.debug.warn("Batcher.drawSprite failed to append a draw call with error: {}\n", .{err});
             return;
         };
 
@@ -143,11 +143,15 @@ pub const Batcher = struct {
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
             .sy = if (options.flipVertically) -options.scale else options.scale,
-            .ox = spr.origin.x,
-            .oy = spr.origin.y,
+            .ox = @intToFloat(f32, spr.origin.x),
+            .oy = @intToFloat(f32, spr.origin.y),
         });
 
-        var quad: math.Quad = .{ .img_w = atlas.texture.width, .img_h = atlas.texture.height};
+        var quad: math.Quad = .{ 
+            .img_w = atlas.texture.width, 
+            .img_h = atlas.texture.height
+        };
+
         quad.setViewportRectF(spr.source);
 
         draw(atlas.texture, quad, mat, options.color);
@@ -155,7 +159,7 @@ pub const Batcher = struct {
 
     pub fn drawTex(self: *Batcher, pos: math.Vector2, col: u32, texture: Texture) void {
         self.ensureCapacity(texture) catch |err| {
-            std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
+            std.debug.warn("Batcher.drawTex failed to append a draw call with error: {}\n", .{err});
             return;
         };
 

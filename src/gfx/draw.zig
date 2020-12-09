@@ -74,12 +74,12 @@ pub const draw = struct {
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
             .sy = if (options.flipVertically) -options.scale else options.scale,
-            .ox = spr.origin.x,
-            .oy = spr.origin.y,
+            .ox = @intToFloat(f32, spr.origin.x),
+            .oy = @intToFloat(f32, spr.origin.y),
         });
 
         quad.setImageDimensions(atlas.texture.width, atlas.texture.height);
-        quad.setViewportRectF(spr.source);
+        quad.setViewportRect(spr.source);
         batcher.draw(atlas.texture, quad, mat, options.color);
     }
 

@@ -11,30 +11,35 @@ pub const Atlas = struct {
     pub fn init(texture: zia.gfx.Texture, cols: i32, rows: i32) Atlas {
         var count: i32 = cols * rows;
 
-        var atlas : Atlas = .{
+        var atlas: Atlas = .{
             .texture = texture,
             .count = count,
             .sprites = std.ArrayList(Sprite).init(std.testing.allocator),
         };
 
-        var sprite_width = texture.width / @intToFloat(f32, cols);
-        var sprite_height = texture.height / @intToFloat(f32, rows);
+        var sprite_width = @divExact(@floatToInt(i32, texture.width), cols);
+        var sprite_height = @divExact(@floatToInt(i32, texture.height), rows);
 
         var r: i32 = 0;
         while (r < rows) : (r += 1) {
             var c: i32 = 0;
             while (c < cols) : (c += 1) {
-
-                var source: math.RectF = .{ 
-                    .x = @intToFloat(f32, c) * sprite_width,
-                    .y = @intToFloat(f32, r) * sprite_height,
+                var source: math.Rect = .{
+                    .x = c * sprite_width,
+                    .y = r * sprite_height,
                     .width = sprite_width,
                     .height = sprite_height,
                 };
 
-                var origin : math.Vector2 = .{.x = 0.5 * sprite_width, .y = 0.5 * sprite_height};
-                
-                var sprite : Sprite = .{ .source = source, .origin = origin };
+                var origin: math.Point = .{
+                    .x = @divExact(sprite_width, 2),
+                    .y = @divExact(sprite_height, 2),
+                };
+
+                var sprite: Sprite = .{
+                    .source = source,
+                    .origin = origin,
+                };
 
                 atlas.sprites.append(sprite) catch unreachable;
             }
@@ -42,8 +47,7 @@ pub const Atlas = struct {
         return atlas;
     }
 
-    pub fn deinit(self: Atlas) void
-    {
+    pub fn deinit(self: Atlas) void {
         self.sprites.deinit();
     }
 };
