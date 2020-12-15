@@ -5,16 +5,14 @@ const Sprite = @import("sprite.zig").Sprite;
 
 pub const Atlas = struct {
     texture: zia.gfx.Texture,
-    count: i32,
     sprites: std.ArrayList(Sprite),
 
-    pub fn init(texture: zia.gfx.Texture, cols: i32, rows: i32) Atlas {
+    pub fn init(allocator: *std.mem.Allocator, texture: zia.gfx.Texture, cols: i32, rows: i32) Atlas {
         var count: i32 = cols * rows;
 
         var atlas: Atlas = .{
             .texture = texture,
-            .count = count,
-            .sprites = std.ArrayList(Sprite).init(std.testing.allocator),
+            .sprites = std.ArrayList(Sprite).init(allocator),
         };
 
         var sprite_width = @divExact(@floatToInt(i32, texture.width), cols);
@@ -37,6 +35,7 @@ pub const Atlas = struct {
                 };
 
                 var sprite: Sprite = .{
+                    .name = "Sprite", // add _0, _1 etc...
                     .source = source,
                     .origin = origin,
                 };
@@ -45,6 +44,34 @@ pub const Atlas = struct {
             }
         }
         return atlas;
+    }
+
+    pub fn initFromFile (allocator: *std.mem.Allocator, texture: zia.gfx.Texture, file: []const u8) !Atlas {
+
+        const T = struct {
+            sprites: []Sprite,
+        };
+       
+        const r = try zia.utils.fs.read(allocator, file);
+        errdefer allocator.free(r);
+
+        const options = std.json.ParseOptions{ .allocator = allocator };
+        const read_atlas = try std.json.parse(T, &std.json.TokenStream.init(r), options);
+        defer std.json.parseFree(T, read_atlas, options);
+
+        var sprites = std.ArrayList(Sprite).init(allocator);
+
+        for (read_atlas.sprites) |sprite| {
+            sprites.append(sprite) catch unreachable;
+        }
+
+        var atlas: Atlas = .{
+            .texture = texture,
+            .sprites = sprites,
+        };
+
+        return atlas;
+
     }
 
     pub fn deinit(self: Atlas) void {
