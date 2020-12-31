@@ -1,29 +1,74 @@
 const std = @import("std");
 const math = @import("math.zig");
 
-/// describes a direction as one of 8 unique byte values
-pub const Direction = packed struct {
-    value: u8 = 0,
+const sqrt = 0.70710678118654752440084436210485;
+const sqrt2 = 1.4142135623730950488016887242097;
 
-    /// initializes a new direction
-    pub fn init(c: Compass) Direction {
-        return .{ .value = @enumToInt(c) };
+pub const Direction = extern enum(u8) {
+    None = 0,
+
+    S = 0b0000_0001, // 1
+    E = 0b0000_0100, // 4
+    N = 0b0000_0011, // 3
+    W = 0b0000_1100, // 12
+
+    SE = 0b0000_0101, // 7
+    NE = 0b0000_0111, // 5
+    NW = 0b0000_1111, // 13
+    SW = 0b0000_1101, // 15
+
+    pub fn init() Direction {
+        return Direction.None;
     }
 
-    /// returns the compass enum of the direction
-    pub fn get(self: Direction) Compass {
-        return @intToEnum(Compass, self.value & 15);
+    /// returns closest direction of size to the supplied vector
+    pub fn find(comptime size: usize, vx: f32, vy: f32) Direction {
+        return switch (size) {
+            4 => {
+                var d: u8 = 0;
+
+                const absx = @fabs(vx);
+                const absy = @fabs(vy);
+
+                if (absy < absx * sqrt2) {
+                    if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
+                } else {
+                    //y
+                    if (vy > 0) d = d | 0b0000_0001 else if (vy < 0) d = d | 0b0000_0011;
+                }
+
+                return @intToEnum(Direction, d);
+            },
+
+            8 => {
+                var d: u8 = 0;
+
+                const absx = @fabs(vx);
+                const absy = @fabs(vy);
+
+                if (absy < absx * (sqrt2 + 1.0)) {
+                    //x
+                    if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
+                }
+                if (absy > absx * (sqrt2 - 1.0)) {
+                    //y
+                    if (vy > 0) d = d | 0b0000_0001 else if (vy < 0) d = d | 0b0000_0011;
+                }
+
+                return @intToEnum(Direction, d);
+            },
+            else => @compileError("Direction size is unsupported"),
+        };
     }
 
-    /// sets the direction from compass enum
-    pub fn set(self: Direction, c: Compass) Direction {
-        return .{ .value = (self.value << 4) | @enumToInt(c) };
+    pub fn look(comptime size: usize, from: math.Vector2, to: math.Vector2) Direction {
+        return find(size, to.x - from.x, to.y - from.y);
     }
 
     /// writes the actual bits of the direction
     /// useful for converting input to directions
-    pub fn write(self: Direction, up: bool, dn: bool, lt: bool, rt: bool) Direction {
-        var d = self.value << 4;
+    pub fn write(up: bool, dn: bool, lt: bool, rt: bool) Direction {
+        var d: u8 = 0;
         if (lt) {
             d = d | 0b0000_1100;
         }
@@ -37,154 +82,67 @@ pub const Direction = packed struct {
             d = d | 0b0000_0001;
         }
 
-        return .{ .value = d };
+        return @intToEnum(Direction, d);
     }
 
-    /// returns the direction nearest the input vector
-    /// the sign of each axis may change based on length: {1, 0.001} -> {1, 0}
-    /// useful for axis input or character orientation
-    pub fn find(self: Direction, vx: f32, vy: f32) Direction {
-        // store current direction in first 4 bits
-        var d = self.value << 4;
-
-        const absx = @fabs(vx);
-        const absy = @fabs(vy);
-
-        if (absy < absx * 2.41421356237) {
-            //x
-            if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
-        }
-        if (absy > absx * 0.41421356237) {
-            //y
-            if (vy > 0) d = d | 0b0000_0001 else if (vy < 0) d = d | 0b0000_0011;
-        }
-
-        return .{ .value = d };
-    }
-
-    /// returns direction from first position to second
-    pub fn look(self: Direction, from: math.Vector2, to: math.Vector2) Direction {
-        return self.find(to.x - from.x, to.y - from.y);
-    }
 
     /// returns horizontal axis of the direction
     pub fn x(self: Direction) f32 {
-        return @intToFloat(f32, @bitCast(i8, self.value) << 4 >> 6);
+        return @intToFloat(f32, @bitCast(i8, @enumToInt(self)) << 4 >> 6);
     }
 
     /// returns vertical axis of the direction
     pub fn y(self: Direction) f32 {
-        return @intToFloat(f32, @bitCast(i8, self.value) << 6 >> 6);
+        return @intToFloat(f32, @bitCast(i8, @enumToInt(self)) << 6 >> 6);
     }
 
-    /// returns a vector containing the vertical and horizontal axes
-    pub fn vec2(self: Direction) math.Vector2 {
-        return .{ .x = self.x(), .y = self.y() };
+    /// returns direction as a normalized vector2
+    pub fn vector2(self: Direction) math.Vector2 {
+        return switch (self) {
+            .None => .{ .x = 0, .y = 0 },
+            .S => .{ .x = 0, .y = 1 },
+            .SE => .{ .x = sqrt, .y = sqrt },
+            .E => .{ .x = 1, .y = 0 },
+            .NE => .{ .x = sqrt, .y = -sqrt },
+            .N => .{ .x = 0, .y = -1 },
+            .NW => .{ .x = -sqrt, .y = -sqrt },
+            .W => .{ .x = -1, .y = 0 },
+            .SW => .{ .x = -sqrt, .y = sqrt },
+        };
     }
 
-    /// returns a normalized vector from the direction
-    pub fn normalized(self: Direction) math.Vector2 {
-        var nx = self.x();
-        var ny = self.y();
-
-        if ((nx > 0 or nx < 0) and (ny > 0 or ny < 0)) {
-            return .{ .x = nx * 0.707106781185, .y = ny * 0.707106781185 };
-        } else {
-            return .{ .x = nx, .y = ny };
-        }
-    }
-
-    /// returns the current direction stored in the first four bits
-    pub fn current(self: Direction) Direction {
-        return .{ .value = self.value & 0b0000_1111 };
-    }
-
-    /// returns the previous direction stored in the last four bits
-    pub fn previous(self: Direction) Direction {
-        return .{ .value = self.value >> 4 };
-    }
-
-    /// returns true if previous direction is different from current
-    pub fn changed(self: Direction) bool {
-        return !self.equals(self.previous());
-    }
-
-    /// returns true if the lowest 4 bits match
-    pub fn equals(self: Direction, other: Direction) bool {
-        return (self.value & 0b0000_1111) == (other.value & 0b0000_1111);
-    }
-
-    /// returns the direction flipped horizontally
-    pub fn flipHorizontally(self: Direction) Direction {
-        //flip the negative x bit only if the x bit is not zero
-        if (self.value & 0b0000_0100 != 0) {
-            return Direction{ .value = (self.value << 4) | (self.value & 0b0000_1111) ^ 0b0000_1000 };
-        } else return self;
-    }
-
-    /// returns the direction flipped vertically
-    pub fn flipVertically(self: Direction) Direction {
-        //flip the negative y bit only if the y bit is not zero
-        if (self.value & 0b0000_0001 != 0) {
-            return Direction{ .value = (self.value << 4) | (self.value & 0b0000_1111) ^ 0b0000_0010 };
-        } else return self;
-    }
-
+    /// returns true if direction is flipped to face west
     pub fn flippedHorizontally(self: Direction) bool {
-        return (self.value & 0b0000_1100) == 0b0000_1100;
+        return switch (self) {
+            .NW, .W, .SW => true,
+            else => false,
+        };
     }
 
+    /// returns true if direction is flipped to face north
     pub fn flippedVertically(self: Direction) bool {
-        return (self.value & 0b0000_0011) != 0b0000_0011;
+        return switch (self) {
+            .NW, .N, .NE => true,
+            else => false,
+        };
     }
-
-    pub const Compass = packed enum(u8) {
-        None = 0,
-
-        S = 0b0000_0001, // 3
-        E = 0b0000_0100, // 4
-        N = 0b0000_0011, // 1
-        W = 0b0000_1100, // 12
-
-        SE = 0b0000_0101, // 7
-        NE = 0b0000_0111, // 5
-        NW = 0b0000_1111, // 13
-        SW = 0b0000_1101, // 15
-        _,
-    };
-
-    pub const S = Direction{ .value = 0b0000_0001 };
-    pub const E = Direction{ .value = 0b0000_0100 };
-    pub const N = Direction{ .value = 0b0000_0011 };
-    pub const W = Direction{ .value = 0b0000_1100 };
-
-    pub const SE = Direction{ .value = 0b0000_0101 };
-    pub const NE = Direction{ .value = 0b0000_0111 };
-    pub const NW = Direction{ .value = 0b0000_1111 };
-    pub const SW = Direction{ .value = 0b0000_1101 };
 };
 
 test "Direction" {
+    var direction = Direction.init();
 
-    // initialization
-    var direction = Direction.init(.S);
-    std.testing.expect(direction.changed() == true);
+    direction = Direction.find(8, 1, 1);
+    std.testing.expect(direction == .SE);
+    std.testing.expectEqual(math.Vector2{ .x = sqrt, .y = sqrt }, direction.vector2());
 
-    // setting and detecting no change
-    direction = direction.set(.S);
-    std.testing.expect(direction.changed() == false);
+    direction = Direction.find(8, 0, 1);
+    std.testing.expect(direction == .S);
 
-    // further setting and detecting change
-    direction = direction.set(.E);
-    std.testing.expect(direction.changed() == true);
+    direction = Direction.find(8, -1, -1);
+    std.testing.expect(direction == .NW);
+    std.testing.expect(direction.flippedHorizontally() == true);
 
-    // writing direction bits
-    // up, down, left, right
-    direction = direction.write(false, false, false, true);
-    std.testing.expect(direction.get() == .E);
-    std.testing.expect(direction.changed() == false);
-
-    // finding the direction based on a vector
-    direction = direction.find(0, 1);
-    std.testing.expect(direction.get() == .S);
+    direction = Direction.find(4, 1, 1);
+    std.testing.expect(direction == .E);
+    std.testing.expect(direction.flippedHorizontally() == false);
 }
