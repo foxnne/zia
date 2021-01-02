@@ -12,14 +12,10 @@ pub const Direction = extern enum(u8) {
     N = 0b0000_0011, // 3
     W = 0b0000_1100, // 12
 
-    SE = 0b0000_0101, // 7
-    NE = 0b0000_0111, // 5
-    NW = 0b0000_1111, // 13
-    SW = 0b0000_1101, // 15
-
-    pub fn init() Direction {
-        return Direction.None;
-    }
+    SE = 0b0000_0101, // 5
+    NE = 0b0000_0111, // 7
+    NW = 0b0000_1111, // 15
+    SW = 0b0000_1101, // 13
 
     /// returns closest direction of size to the supplied vector
     pub fn find(comptime size: usize, vx: f32, vy: f32) Direction {
@@ -31,10 +27,11 @@ pub const Direction = extern enum(u8) {
                 const absy = @fabs(vy);
 
                 if (absy < absx * sqrt2) {
-                    if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
+                    //x
+                    if (vx > 0) d = 0b0000_0100 else if (vx < 0) d = 0b0000_1100;
                 } else {
                     //y
-                    if (vy > 0) d = d | 0b0000_0001 else if (vy < 0) d = d | 0b0000_0011;
+                    if (vy > 0) d = 0b0000_0001 else if (vy < 0) d = 0b0000_0011;
                 }
 
                 return @intToEnum(Direction, d);
@@ -48,7 +45,7 @@ pub const Direction = extern enum(u8) {
 
                 if (absy < absx * (sqrt2 + 1.0)) {
                     //x
-                    if (vx > 0) d = d | 0b0000_0100 else if (vx < 0) d = d | 0b0000_1100;
+                    if (vx > 0) d = 0b0000_0100 else if (vx < 0) d = 0b0000_1100;
                 }
                 if (absy > absx * (sqrt2 - 1.0)) {
                     //y
@@ -61,30 +58,25 @@ pub const Direction = extern enum(u8) {
         };
     }
 
-    pub fn look(comptime size: usize, from: math.Vector2, to: math.Vector2) Direction {
-        return find(size, to.x - from.x, to.y - from.y);
-    }
-
     /// writes the actual bits of the direction
     /// useful for converting input to directions
-    pub fn write(up: bool, dn: bool, lt: bool, rt: bool) Direction {
+    pub fn write(n: bool, s: bool, w: bool, e: bool) Direction {
         var d: u8 = 0;
-        if (lt) {
+        if (w) {
             d = d | 0b0000_1100;
         }
-        if (rt) {
+        if (e) {
             d = d | 0b0000_0100;
         }
-        if (up) {
+        if (n) {
             d = d | 0b0000_0011;
         }
-        if (dn) {
+        if (s) {
             d = d | 0b0000_0001;
         }
 
         return @intToEnum(Direction, d);
     }
-
 
     /// returns horizontal axis of the direction
     pub fn x(self: Direction) f32 {
@@ -96,8 +88,13 @@ pub const Direction = extern enum(u8) {
         return @intToFloat(f32, @bitCast(i8, @enumToInt(self)) << 6 >> 6);
     }
 
-    /// returns direction as a normalized vector2
+    /// returns direction as a vector2
     pub fn vector2(self: Direction) math.Vector2 {
+        return .{ .x = self.x(), .y = self.y() };
+    }
+
+    /// returns direction as a normalized vector2
+    pub fn normalized(self: Direction) math.Vector2 {
         return switch (self) {
             .None => .{ .x = 0, .y = 0 },
             .S => .{ .x = 0, .y = 1 },
@@ -129,11 +126,12 @@ pub const Direction = extern enum(u8) {
 };
 
 test "Direction" {
-    var direction = Direction.init();
+    var direction: Direction = .None;
 
     direction = Direction.find(8, 1, 1);
     std.testing.expect(direction == .SE);
-    std.testing.expectEqual(math.Vector2{ .x = sqrt, .y = sqrt }, direction.vector2());
+    std.testing.expectEqual(math.Vector2{ .x = 1, .y = 1 }, direction.vector2());
+    std.testing.expectEqual(math.Vector2{ .x = sqrt, .y = sqrt }, direction.normalized());
 
     direction = Direction.find(8, 0, 1);
     std.testing.expect(direction == .S);
