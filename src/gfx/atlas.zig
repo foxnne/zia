@@ -4,24 +4,22 @@ const math = zia.math;
 const Sprite = @import("sprite.zig").Sprite;
 
 pub const Atlas = struct {
-    texture: zia.gfx.Texture,
     sprites: std.ArrayList(Sprite),
 
-    pub fn init(allocator: *std.mem.Allocator, texture: zia.gfx.Texture, cols: i32, rows: i32) Atlas {
-        var count: i32 = cols * rows;
+    pub fn init(allocator: *std.mem.Allocator, width: i32, height: i32, columns: i32, rows: i32) Atlas {
+        var count: i32 = columns * rows;
 
         var atlas: Atlas = .{
-            .texture = texture,
             .sprites = std.ArrayList(Sprite).init(allocator),
         };
 
-        var sprite_width = @divExact(@floatToInt(i32, texture.width), cols);
-        var sprite_height = @divExact(@floatToInt(i32, texture.height), rows);
+        var sprite_width = @divExact(@floatToInt(i32, width), columns);
+        var sprite_height = @divExact(@floatToInt(i32, height), rows);
 
         var r: i32 = 0;
         while (r < rows) : (r += 1) {
             var c: i32 = 0;
-            while (c < cols) : (c += 1) {
+            while (c < columns) : (c += 1) {
                 var source: math.Rect = .{
                     .x = c * sprite_width,
                     .y = r * sprite_height,
@@ -35,7 +33,7 @@ pub const Atlas = struct {
                 };
 
                 var sprite: Sprite = .{
-                    .name = "Sprite", // add _0, _1 etc...
+                    .name = "Sprite"++(c+r), // add _0, _1 etc...
                     .source = source,
                     .origin = origin,
                 };
@@ -46,7 +44,7 @@ pub const Atlas = struct {
         return atlas;
     }
 
-    pub fn initFromFile (allocator: *std.mem.Allocator, texture: zia.gfx.Texture, file: []const u8) !Atlas {
+    pub fn initFromFile (allocator: *std.mem.Allocator, file: []const u8) !Atlas {
 
         const T = struct {
             sprites: []Sprite,
@@ -61,16 +59,27 @@ pub const Atlas = struct {
 
         var sprites = std.ArrayList(Sprite).init(allocator);
 
-        for (read_atlas.sprites) |sprite| {
-            sprites.append(sprite) catch unreachable;
+        for (read_atlas.sprites) |s| {
+            sprites.append(s) catch unreachable;
         }
 
         var atlas: Atlas = .{
-            .texture = texture,
             .sprites = sprites,
         };
 
         return atlas;
+
+    }
+
+    /// returns sprite by name
+    pub fn sprite (this: Atlas, name: []const u8) !Sprite {
+
+        for (this.sprites.items) |s|
+        {
+            if (std.mem.eql(u8, s.name, name)) //why is this never true?
+                return s;
+        }
+        return this.sprites.items[0];
 
     }
 

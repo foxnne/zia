@@ -66,21 +66,19 @@ pub const draw = struct {
         color: math.Color = math.Color.white
     };
 
-    pub fn sprite(atlas: zia.gfx.Atlas, index: i32, position: math.Vector2, options: SpriteOptions) void {
-        var i = @intCast(usize, index);
-        var spr = atlas.sprites.items[i];
+    pub fn sprite(s: zia.gfx.Sprite, t: Texture, position: math.Vector2, options: SpriteOptions) void {
         var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
             .sy = if (options.flipVertically) -options.scale else options.scale,
-            .ox = @intToFloat(f32, spr.origin.x),
-            .oy = @intToFloat(f32, spr.origin.y),
+            .ox = @intToFloat(f32, s.origin.x),
+            .oy = @intToFloat(f32, s.origin.y),
         });
 
-        quad.setImageDimensions(atlas.texture.width, atlas.texture.height);
-        quad.setViewportRect(spr.source);
-        batcher.draw(atlas.texture, quad, mat, options.color);
+        quad.setImageDimensions(t.width, t.height);
+        quad.setViewportRect(s.source);
+        batcher.draw(t, quad, mat, options.color);
     }
 
     pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {

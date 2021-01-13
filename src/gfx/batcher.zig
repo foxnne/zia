@@ -130,31 +130,29 @@ pub const Batcher = struct {
         color: math.Color = math.Color.white
     };
 
-    pub fn drawSprite (self: *Batcher, atlas: zia.gfx.Atlas, index: i32, position: math.Vector2, options: SpriteOptions) void{
+    pub fn drawSprite (self: *Batcher, sprite: zia.gfx.Sprite, texture: zia.gfx.Texture, position: math.Vector2, options: SpriteOptions) void{
         self.ensureCapacity(atlas.texture) catch |err| {
             std.debug.warn("Batcher.drawSprite failed to append a draw call with error: {}\n", .{err});
             return;
         };
 
-        var i = @intCast(usize, index);
-        var spr = atlas.sprites.items[i];
         var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
             .sx = if (options.flipHorizontally) -options.scale else options.scale,
             .sy = if (options.flipVertically) -options.scale else options.scale,
-            .ox = @intToFloat(f32, spr.origin.x),
-            .oy = @intToFloat(f32, spr.origin.y),
+            .ox = @intToFloat(f32, sprite.origin.x),
+            .oy = @intToFloat(f32, sprite.origin.y),
         });
 
         var quad: math.Quad = .{ 
-            .img_w = atlas.texture.width, 
-            .img_h = atlas.texture.height
+            .img_w = texture.width, 
+            .img_h = texture.height
         };
 
-        quad.setViewportRectF(spr.source);
+        quad.setViewportRectF(sprite.source);
 
-        draw(atlas.texture, quad, mat, options.color);
+        draw(texture, quad, mat, options.color);
     }
 
     pub fn drawTex(self: *Batcher, pos: math.Vector2, col: u32, texture: Texture) void {
