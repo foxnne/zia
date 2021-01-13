@@ -33,7 +33,7 @@ pub const Atlas = struct {
                 };
 
                 var sprite: Sprite = .{
-                    .name = "Sprite"++(c+r), // add _0, _1 etc...
+                    .name = "Sprite", // add _0, _1 etc...
                     .source = source,
                     .origin = origin,
                 };
