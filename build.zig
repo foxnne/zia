@@ -116,11 +116,16 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     ecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/ecs/");
     const ecs_pkg = ecs_builder.getPackage(prefix_path ++ "src/deps/ecs/");
 
+    // flecs
+    const flecs_builder = @import("src/deps/flecs/build.zig");
+    flecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/flecs/");
+    const flecs_pkg = std.build.Pkg { .name = "flecs", .path = prefix_path ++ "src/deps/flecs/src/flecs.zig"};
+
     // zia
     const zia_package = Pkg{
         .name = "zia",
         .path = prefix_path ++ "src/zia.zig",
-        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, ecs_pkg },
+        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, ecs_pkg, flecs_pkg },
     };
     exe.addPackage(zia_package);
 }
