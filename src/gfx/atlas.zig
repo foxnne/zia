@@ -44,42 +44,43 @@ pub const Atlas = struct {
         return atlas;
     }
 
-    pub fn initFromFile (allocator: *std.mem.Allocator, file: []const u8) !Atlas {
-
+    pub fn initFromFile(allocator: *std.mem.Allocator, file: []const u8) !Atlas {
         const T = struct {
             sprites: []Sprite,
         };
-       
+
         const r = try zia.utils.fs.read(allocator, file);
         errdefer allocator.free(r);
 
-        const options = std.json.ParseOptions{ .allocator = allocator };
+        const options = std.json.ParseOptions{ .allocator = allocator, .duplicate_field_behavior = .UseFirst };
         const read_atlas = try std.json.parse(T, &std.json.TokenStream.init(r), options);
-        defer std.json.parseFree(T, read_atlas, options);
+        // if this gets freed the names get messed up... ??
+        //defer std.json.parseFree(T, read_atlas, options);
 
-        var sprites = std.ArrayList(Sprite).init(allocator);
+        var atlas = Atlas{ .sprites = std.ArrayList(Sprite).init(allocator) };
 
-        for (read_atlas.sprites) |s| {
-            sprites.append(s) catch unreachable;
+        for (read_atlas.sprites) |s, i| {
+            atlas.sprites.append(s) catch unreachable;
         }
 
-        var atlas: Atlas = .{
-            .sprites = sprites,
-        };
-
         return atlas;
-
     }
 
     /// returns sprite by name
-    pub fn sprite (this: Atlas, name: []const u8) !Sprite {
-
-        for (this.sprites.items) |s|
-        {
+    pub fn sprite(this: Atlas, name: []const u8) !Sprite {
+        for (this.sprites.items) |s| {
             if (std.mem.eql(u8, s.name, name)) //why is this never true?
                 return s;
         }
-        return this.sprites.items[0];
+        return error.NotFound;
+    }
+
+    pub fn indexOf (this: Atlas, name: []const u8) !usize {
+        for (this.sprites.items) |s, i| {
+            if (std.mem.eql(u8, s.name, name)) //why is this never true?
+                return i;
+        }
+        return error.NotFound;
 
     }
 
