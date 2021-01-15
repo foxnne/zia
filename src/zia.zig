@@ -4,7 +4,8 @@ const imgui = @import("imgui");
 const imgui_impl = @import("imgui/implementation.zig");
 
 pub const renderkit = @import("renderkit");
-pub const ecs = @import("ecs");
+//pub const ecs = @import("ecs");
+pub const ecs = @import("ecs/ecs.zig");
 pub const flecs = @import("flecs");
 pub const utils = @import("utils/utils.zig");
 pub const math = @import("math/math.zig");
@@ -66,6 +67,7 @@ pub fn run(config: Config) !void {
     input = Input.init(window.scale());
 
     if (enable_imgui) imgui_impl.init(window.sdl_window, config.imgui_docking, config.imgui_viewports, config.imgui_icon_font);
+
 
     try config.init();
 

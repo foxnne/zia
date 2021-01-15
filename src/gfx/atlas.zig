@@ -4,13 +4,13 @@ const math = zia.math;
 const Sprite = @import("sprite.zig").Sprite;
 
 pub const Atlas = struct {
-    sprites: std.ArrayList(Sprite),
+    sprites: []Sprite,
 
     pub fn init(allocator: *std.mem.Allocator, width: i32, height: i32, columns: i32, rows: i32) Atlas {
         var count: i32 = columns * rows;
 
         var atlas: Atlas = .{
-            .sprites = std.ArrayList(Sprite).init(allocator),
+            .sprites = try allocator.alloc(Sprite, count),
         };
 
         var sprite_width = @divExact(@floatToInt(i32, width), columns);
@@ -33,58 +33,42 @@ pub const Atlas = struct {
                 };
 
                 var sprite: Sprite = .{
-                    .name = "Sprite", // add _0, _1 etc...
+                    .name = "Sprite_" ++ std.fmt.allocPrint(allocator, "{}", .{c + r}), // add _0, _1 etc...
                     .source = source,
                     .origin = origin,
                 };
 
-                atlas.sprites.append(sprite) catch unreachable;
+                atlas.sprites[c + r] = sprite;
             }
         }
         return atlas;
     }
 
     pub fn initFromFile(allocator: *std.mem.Allocator, file: []const u8) !Atlas {
-        const T = struct {
-            sprites: []Sprite,
-        };
-
         const r = try zia.utils.fs.read(allocator, file);
         errdefer allocator.free(r);
 
         const options = std.json.ParseOptions{ .allocator = allocator, .duplicate_field_behavior = .UseFirst };
-        const read_atlas = try std.json.parse(T, &std.json.TokenStream.init(r), options);
-        // if this gets freed the names get messed up... ??
-        //defer std.json.parseFree(T, read_atlas, options);
-
-        var atlas = Atlas{ .sprites = std.ArrayList(Sprite).init(allocator) };
-
-        for (read_atlas.sprites) |s, i| {
-            atlas.sprites.append(s) catch unreachable;
-        }
+        const atlas = try std.json.parse(Atlas, &std.json.TokenStream.init(r), options);
 
         return atlas;
     }
 
     /// returns sprite by name
     pub fn sprite(this: Atlas, name: []const u8) !Sprite {
-        for (this.sprites.items) |s| {
-            if (std.mem.eql(u8, s.name, name)) //why is this never true?
+        for (this.sprites) |s| {
+            if (std.mem.eql(u8, s.name, name))
                 return s;
         }
         return error.NotFound;
     }
 
-    pub fn indexOf (this: Atlas, name: []const u8) !usize {
-        for (this.sprites.items) |s, i| {
-            if (std.mem.eql(u8, s.name, name)) //why is this never true?
+    /// returns index of sprite by name
+    pub fn indexOf(this: Atlas, name: []const u8) !usize {
+        for (this.sprites) |s, i| {
+            if (std.mem.eql(u8, s.name, name))
                 return i;
         }
         return error.NotFound;
-
-    }
-
-    pub fn deinit(self: Atlas) void {
-        self.sprites.deinit();
     }
 };
