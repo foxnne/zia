@@ -10,7 +10,6 @@ pub const flecs = @import("flecs");
 pub const utils = @import("utils/utils.zig");
 pub const math = @import("math/math.zig");
 
-const Gfx = @import("gfx/gfx.zig").Gfx;
 const Window = @import("window.zig").Window;
 const WindowConfig = @import("window.zig").WindowConfig;
 const Input = @import("input/input.zig").Input;
