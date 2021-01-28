@@ -6,7 +6,6 @@ const flecs = @import("flecs");
 const imgui_impl = @import("imgui/implementation.zig");
 
 pub const renderkit = @import("renderkit");
-pub const ecs = @import("ecs");
 pub const utils = @import("utils/utils.zig");
 pub const math = @import("math/math.zig");
 
