@@ -61,8 +61,8 @@ pub const draw = struct {
 
     const SpriteOptions = struct {
         scale: f32 = 1.0,
-        flipHorizontally: bool = false,
-        flipVertically: bool = false,
+        flipX: bool = false,
+        flipY: bool = false,
         color: math.Color = math.Color.white
     };
 
@@ -70,8 +70,8 @@ pub const draw = struct {
         var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
-            .sx = if (options.flipHorizontally) -options.scale else options.scale,
-            .sy = if (options.flipVertically) -options.scale else options.scale,
+            .sx = if (options.flipX) -options.scale else options.scale,
+            .sy = if (options.flipY) -options.scale else options.scale,
             .ox = @intToFloat(f32, s.origin.x),
             .oy = @intToFloat(f32, s.origin.y),
         });

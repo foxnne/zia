@@ -1,12 +1,12 @@
 const std = @import("std");
 const sdl = @import("sdl");
 const imgui = @import("imgui");
+const flecs = @import("flecs");
+
 const imgui_impl = @import("imgui/implementation.zig");
 
 pub const renderkit = @import("renderkit");
-//pub const ecs = @import("ecs");
-pub const ecs = @import("ecs/ecs.zig");
-pub const flecs = @import("flecs");
+pub const ecs = @import("ecs");
 pub const utils = @import("utils/utils.zig");
 pub const math = @import("math/math.zig");
 
@@ -18,7 +18,7 @@ const Time = @import("time.zig").Time;
 pub const Config = struct {
     init: fn () anyerror!void,
     update: ?fn () anyerror!void = null,
-    render: fn () anyerror!void,
+    render: ?fn () anyerror!void = null,
     shutdown: ?fn () anyerror!void = null,
 
     window: WindowConfig = WindowConfig{},
@@ -73,7 +73,7 @@ pub fn run(config: Config) !void {
     while (!pollEvents()) {
         time.tick();
         if (config.update) |update| try update();
-        try config.render();
+        if (config.render) |render| try render();
 
         if (enable_imgui) {
             gfx.beginPass(.{ .color_action = .load });
