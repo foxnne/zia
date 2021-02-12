@@ -139,6 +139,13 @@ pub const Matrix3x2 = extern struct {
         };
     }
 
+    pub fn scaleVec2(self: Matrix3x2, size: Vector2) Vector2 {
+        return .{
+            .x = size.x * self.data[0],
+            .y = size.y * self.data[3],
+        };
+    }
+
     pub fn transformVec2Slice(self: Matrix3x2, comptime T: type, dst: []T, src: []Vector2) void {
         for (src) |item, i| {
             const x = src[i].x * self.data[0] + src[i].y * self.data[2] + self.data[4];
