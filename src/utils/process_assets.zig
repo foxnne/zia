@@ -77,7 +77,7 @@ pub const ProcessAssetsStep = struct {
                 std.debug.print("No assets found!", .{});
             }
         } else |err| {
-            std.debug.print("Not a directory: {}, err: {}", .{ root, err });
+            std.debug.print("Not a directory: {s}, err: {}", .{ root, err });
         }
     }
 
