@@ -9,4 +9,4 @@ url=https://github.com/prime31/zig-renderkit
 	url = https://github.com/cimgui/cimgui.git
 [submodule "src/deps/flecs"]
 	path = src/deps/flecs
-	url = https://github.com/prime31/zig-flecs.git
+	url = https://github.com/foxnne/zig-flecs.git
