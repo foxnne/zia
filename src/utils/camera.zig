@@ -1,5 +1,5 @@
 const std = @import("std");
-const zia = @import("../zia.zig");
+const zia = @import("zia");
 const math = zia.math;
 
 pub const Camera = struct {
