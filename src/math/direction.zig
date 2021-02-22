@@ -123,6 +123,34 @@ pub const Direction = extern enum(u8) {
             else => false,
         };
     }
+
+    pub fn rotateCW(self: Direction) Direction {
+        return switch (self) {
+            .S => .SW,
+            .SE => .S,
+            .E => .SE,
+            .NE => .E,
+            .N => .NE,
+            .NW => .N,
+            .W => .NW,
+            .SW => .W,
+            .None => .None,
+        };
+    }
+
+    pub fn rotateCCW(self: Direction) Direction {
+        return switch (self) {
+            .S => .SE,
+            .SE => .E,
+            .E => .NE,
+            .NE => .N,
+            .N => .NW,
+            .NW => .W,
+            .W => .SW,
+            .SW => .S,
+            .None => .None,
+        };
+    }
 };
 
 test "Direction" {
