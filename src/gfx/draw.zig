@@ -60,20 +60,23 @@ pub const draw = struct {
     }
 
     const SpriteOptions = struct {
-        scale: f32 = 1.0,
+        scaleX: f32 = 1.0,
+        scaleY: f32 = 1.0,
         flipX: bool = false,
         flipY: bool = false,
-        color: math.Color = math.Color.white
+        color: math.Color = math.Color.white,
+        rotation: f32 = 0,
     };
 
     pub fn sprite(s: zia.gfx.Sprite, t: Texture, position: math.Vector2, options: SpriteOptions) void {
         var mat = math.Matrix3x2.initTransform(.{
             .x = position.x,
             .y = position.y,
-            .sx = if (options.flipX) -options.scale else options.scale,
-            .sy = if (options.flipY) -options.scale else options.scale,
+            .sx = if (options.flipX) -options.scaleX else options.scaleX,
+            .sy = if (options.flipY) -options.scaleY else options.scaleY,
             .ox = @intToFloat(f32, s.origin.x),
             .oy = @intToFloat(f32, s.origin.y),
+            .angle =  options.rotation * std.math.pi/180,
         });
 
         quad.setImageDimensions(t.width, t.height);
