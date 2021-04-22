@@ -40,6 +40,13 @@ pub fn MultiHashMap(comptime K: type, comptime V: type) type {
         
         }
 
+        pub fn clear (self: *Self) void {
+            var iter = self.map.iterator();
+            while (iter.next()) |item| {
+                item.value.shrinkRetainingCapacity(0);
+            }
+        }
+
         pub fn get(self: Self, key: K) ?std.ArrayList(V) {
             return self.map.get(key);
         }
