@@ -27,23 +27,23 @@ pub fn MultiHashMap(comptime K: type, comptime V: type) type {
         pub fn append(self: *Self, key: K, value: V) void {
             var res = self.map.getOrPut(key) catch unreachable;
             if (!res.found_existing) {
-                res.entry.value = std.ArrayList(V).init(self.allocator);
+                res.value_ptr.* = std.ArrayList(V).init(self.allocator);
             }
 
-            for (res.entry.value.items) |item| {
+            for (res.value_ptr.items) |item| {
                 if (value == item) {
                     return;
                 }
             } 
             
-            _ = res.entry.value.append(value) catch unreachable;
+            _ = res.value_ptr.append(value) catch unreachable;
         
         }
 
         pub fn clear (self: *Self) void {
             var iter = self.map.iterator();
             while (iter.next()) |item| {
-                item.value.shrinkRetainingCapacity(0);
+                item.value_ptr.shrinkRetainingCapacity(0);
             }
         }
 
