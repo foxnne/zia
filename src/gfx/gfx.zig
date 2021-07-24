@@ -75,7 +75,8 @@ pub fn setShader(shader: ?*Shader) void {
     new_shader.setTransformMatrix(&state.transform_mat);
 }
 
-pub fn setRenderState(state: renderkit.RenderState) void {
+pub fn setRenderState(_state: renderkit.RenderState) void {
+    _ = _state;
     draw.batcher.flush();
     renderkit.renderer.setRenderState(state);
 }

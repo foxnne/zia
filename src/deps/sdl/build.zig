@@ -2,9 +2,10 @@ const builtin = @import("builtin");
 const std = @import("std");
 const Builder = std.build.Builder;
 
-pub fn build(b: *std.build.Builder) !void {}
+//pub fn build(b: *std.build.Builder) !void {}
 
 pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+    _ = target;
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
     exe.linkSystemLibrary("c");
     exe.linkSystemLibrary("sdl2");
@@ -29,6 +30,6 @@ pub fn getPackage(comptime prefix_path: []const u8) std.build.Pkg {
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
     return .{
         .name = "sdl",
-        .path = prefix_path ++ "src/deps/sdl/sdl.zig",
+        .path = .{ .path = prefix_path ++ "src/deps/sdl/sdl.zig"},
     };
 }

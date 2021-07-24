@@ -65,7 +65,7 @@ pub const Events = struct {
     }
 
     pub fn deinit(self: Events) void {
-        if (clipboard_text) |txt| sdl.SDL_free(clipboard_text);
+        if (clipboard_text) |_| sdl.SDL_free(clipboard_text);
 
         // Destroy SDL mouse cursors
         for (self.mouse_cursors) |cursor| {
@@ -74,6 +74,7 @@ pub const Events = struct {
     }
 
     fn getClipboardTextFn(ctx: ?*c_void) callconv(.C) [*c]const u8 {
+        _ = ctx;
         if (clipboard_text) |txt| {
             sdl.SDL_free(txt);
             clipboard_text = null;
@@ -83,6 +84,7 @@ pub const Events = struct {
     }
 
     fn setClipboardTextFn(ctx: ?*c_void, text: [*c]const u8) callconv(.C) void {
+        _ = ctx;
         _ = sdl.SDL_SetClipboardText(text);
     }
 

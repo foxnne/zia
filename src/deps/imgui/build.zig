@@ -68,6 +68,6 @@ pub fn getImGuiPackage(comptime prefix_path: []const u8) std.build.Pkg {
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
     return .{
         .name = "imgui",
-        .path = prefix_path ++ "src/deps/imgui/imgui.zig",
+        .path = .{ .path = prefix_path ++ "src/deps/imgui/imgui.zig"},
     };
 }

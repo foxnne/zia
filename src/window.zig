@@ -155,7 +155,7 @@ pub const Window = struct {
         return (sdl.SDL_GetWindowFlags(self.sdl_window) & @intCast(u32, @enumToInt(sdl.SDL_WindowFlags.SDL_WINDOW_RESIZABLE))) != 0;
     }
 
-    pub fn setResizable(self: Window, resizable: bool) void {
-        sdl.SDL_SetWindowResizable(self.sdl_window, resizable);
+    pub fn setResizable(self: Window, _resizable: bool) void {
+        sdl.SDL_SetWindowResizable(self.sdl_window, _resizable);
     }
 };

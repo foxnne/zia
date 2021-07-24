@@ -12,7 +12,6 @@ var enable_imgui: ?bool = null;
 
 pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{});
-    const mode = b.standardReleaseOptions();
 
     // use a different cache folder for macos arm builds
     b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.arch == std.builtin.Arch.aarch64) "zig-arm-cache" else "zig-cache";
@@ -85,8 +84,6 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
     exe.addBuildOption(bool, "enable_imgui", enable_imgui.?);
 
-    var dependencies = std.ArrayList(Pkg).init(b.allocator);
-
     // sdl
     const sdl_builder = @import("src/deps/sdl/build.zig");
     sdl_builder.linkArtifact(b, exe, target, prefix_path);
@@ -114,12 +111,12 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     // flecs
     const flecs_builder = @import("src/deps/flecs/build.zig");
     flecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/flecs/");
-    const flecs_pkg = std.build.Pkg { .name = "flecs", .path = prefix_path ++ "src/deps/flecs/src/flecs.zig"};
+    const flecs_pkg = std.build.Pkg { .name = "flecs", .path = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig"}};
 
     // zia
     const zia_package = Pkg{
         .name = "zia",
-        .path = prefix_path ++ "src/zia.zig",
+        .path = .{ .path = prefix_path ++ "src/zia.zig"},
         .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg },
     };
     exe.addPackage(zia_package);

@@ -9,7 +9,7 @@ pub const struct_exception = extern struct {
 };
 pub const SDL_FALSE = @enumToInt(enum_unnamed_14.SDL_FALSE);
 pub const SDL_TRUE = @enumToInt(enum_unnamed_14.SDL_TRUE);
-const enum_unnamed_14 = extern enum(c_int) {
+const enum_unnamed_14 = enum(c_int) {
     SDL_FALSE = 0,
     SDL_TRUE = 1,
     _,
@@ -32,7 +32,7 @@ pub const SDL_compile_time_assert_sint32 = [1]c_int;
 pub const SDL_compile_time_assert_uint64 = [1]c_int;
 pub const SDL_compile_time_assert_sint64 = [1]c_int;
 pub const DUMMY_ENUM_VALUE = @enumToInt(enum_unnamed_15.DUMMY_ENUM_VALUE);
-const enum_unnamed_15 = extern enum(c_int) {
+const enum_unnamed_15 = enum(c_int) {
     DUMMY_ENUM_VALUE,
     _,
 };
@@ -168,7 +168,7 @@ pub const SDL_ASSERTION_BREAK = @enumToInt(enum_unnamed_16.SDL_ASSERTION_BREAK);
 pub const SDL_ASSERTION_ABORT = @enumToInt(enum_unnamed_16.SDL_ASSERTION_ABORT);
 pub const SDL_ASSERTION_IGNORE = @enumToInt(enum_unnamed_16.SDL_ASSERTION_IGNORE);
 pub const SDL_ASSERTION_ALWAYS_IGNORE = @enumToInt(enum_unnamed_16.SDL_ASSERTION_ALWAYS_IGNORE);
-const enum_unnamed_16 = extern enum(c_int) {
+const enum_unnamed_16 = enum(c_int) {
     SDL_ASSERTION_RETRY,
     SDL_ASSERTION_BREAK,
     SDL_ASSERTION_ABORT,
@@ -221,7 +221,7 @@ pub const SDL_EFWRITE = @enumToInt(enum_unnamed_18.SDL_EFWRITE);
 pub const SDL_EFSEEK = @enumToInt(enum_unnamed_18.SDL_EFSEEK);
 pub const SDL_UNSUPPORTED = @enumToInt(enum_unnamed_18.SDL_UNSUPPORTED);
 pub const SDL_LASTERROR = @enumToInt(enum_unnamed_18.SDL_LASTERROR);
-const enum_unnamed_18 = extern enum(c_int) {
+const enum_unnamed_18 = enum(c_int) {
     SDL_ENOMEM,
     SDL_EFREAD,
     SDL_EFWRITE,
@@ -271,7 +271,7 @@ pub const SDL_THREAD_PRIORITY_LOW = @enumToInt(enum_unnamed_19.SDL_THREAD_PRIORI
 pub const SDL_THREAD_PRIORITY_NORMAL = @enumToInt(enum_unnamed_19.SDL_THREAD_PRIORITY_NORMAL);
 pub const SDL_THREAD_PRIORITY_HIGH = @enumToInt(enum_unnamed_19.SDL_THREAD_PRIORITY_HIGH);
 pub const SDL_THREAD_PRIORITY_TIME_CRITICAL = @enumToInt(enum_unnamed_19.SDL_THREAD_PRIORITY_TIME_CRITICAL);
-const enum_unnamed_19 = extern enum(c_int) {
+const enum_unnamed_19 = enum(c_int) {
     SDL_THREAD_PRIORITY_LOW,
     SDL_THREAD_PRIORITY_NORMAL,
     SDL_THREAD_PRIORITY_HIGH,
@@ -389,7 +389,7 @@ pub extern fn SDL_OpenAudioDevice(device: [*c]const u8, iscapture: c_int, desire
 pub const SDL_AUDIO_STOPPED = @enumToInt(enum_unnamed_24.SDL_AUDIO_STOPPED);
 pub const SDL_AUDIO_PLAYING = @enumToInt(enum_unnamed_24.SDL_AUDIO_PLAYING);
 pub const SDL_AUDIO_PAUSED = @enumToInt(enum_unnamed_24.SDL_AUDIO_PAUSED);
-const enum_unnamed_24 = extern enum(c_int) {
+const enum_unnamed_24 = enum(c_int) {
     SDL_AUDIO_STOPPED = 0,
     SDL_AUDIO_PLAYING = 1,
     SDL_AUDIO_PAUSED = 2,
@@ -461,7 +461,7 @@ pub const SDL_PIXELTYPE_ARRAYU16 = @enumToInt(enum_unnamed_29.SDL_PIXELTYPE_ARRA
 pub const SDL_PIXELTYPE_ARRAYU32 = @enumToInt(enum_unnamed_29.SDL_PIXELTYPE_ARRAYU32);
 pub const SDL_PIXELTYPE_ARRAYF16 = @enumToInt(enum_unnamed_29.SDL_PIXELTYPE_ARRAYF16);
 pub const SDL_PIXELTYPE_ARRAYF32 = @enumToInt(enum_unnamed_29.SDL_PIXELTYPE_ARRAYF32);
-const enum_unnamed_29 = extern enum(c_int) {
+const enum_unnamed_29 = enum(c_int) {
     SDL_PIXELTYPE_UNKNOWN,
     SDL_PIXELTYPE_INDEX1,
     SDL_PIXELTYPE_INDEX4,
@@ -480,7 +480,7 @@ pub const SDL_PixelType = enum_unnamed_29;
 pub const SDL_BITMAPORDER_NONE = @enumToInt(enum_unnamed_30.SDL_BITMAPORDER_NONE);
 pub const SDL_BITMAPORDER_4321 = @enumToInt(enum_unnamed_30.SDL_BITMAPORDER_4321);
 pub const SDL_BITMAPORDER_1234 = @enumToInt(enum_unnamed_30.SDL_BITMAPORDER_1234);
-const enum_unnamed_30 = extern enum(c_int) {
+const enum_unnamed_30 = enum(c_int) {
     SDL_BITMAPORDER_NONE,
     SDL_BITMAPORDER_4321,
     SDL_BITMAPORDER_1234,
@@ -496,7 +496,7 @@ pub const SDL_PACKEDORDER_XBGR = @enumToInt(enum_unnamed_31.SDL_PACKEDORDER_XBGR
 pub const SDL_PACKEDORDER_BGRX = @enumToInt(enum_unnamed_31.SDL_PACKEDORDER_BGRX);
 pub const SDL_PACKEDORDER_ABGR = @enumToInt(enum_unnamed_31.SDL_PACKEDORDER_ABGR);
 pub const SDL_PACKEDORDER_BGRA = @enumToInt(enum_unnamed_31.SDL_PACKEDORDER_BGRA);
-const enum_unnamed_31 = extern enum(c_int) {
+const enum_unnamed_31 = enum(c_int) {
     SDL_PACKEDORDER_NONE,
     SDL_PACKEDORDER_XRGB,
     SDL_PACKEDORDER_RGBX,
@@ -516,7 +516,7 @@ pub const SDL_ARRAYORDER_ARGB = @enumToInt(enum_unnamed_32.SDL_ARRAYORDER_ARGB);
 pub const SDL_ARRAYORDER_BGR = @enumToInt(enum_unnamed_32.SDL_ARRAYORDER_BGR);
 pub const SDL_ARRAYORDER_BGRA = @enumToInt(enum_unnamed_32.SDL_ARRAYORDER_BGRA);
 pub const SDL_ARRAYORDER_ABGR = @enumToInt(enum_unnamed_32.SDL_ARRAYORDER_ABGR);
-const enum_unnamed_32 = extern enum(c_int) {
+const enum_unnamed_32 = enum(c_int) {
     SDL_ARRAYORDER_NONE,
     SDL_ARRAYORDER_RGB,
     SDL_ARRAYORDER_RGBA,
@@ -536,7 +536,7 @@ pub const SDL_PACKEDLAYOUT_565 = @enumToInt(enum_unnamed_33.SDL_PACKEDLAYOUT_565
 pub const SDL_PACKEDLAYOUT_8888 = @enumToInt(enum_unnamed_33.SDL_PACKEDLAYOUT_8888);
 pub const SDL_PACKEDLAYOUT_2101010 = @enumToInt(enum_unnamed_33.SDL_PACKEDLAYOUT_2101010);
 pub const SDL_PACKEDLAYOUT_1010102 = @enumToInt(enum_unnamed_33.SDL_PACKEDLAYOUT_1010102);
-const enum_unnamed_33 = extern enum(c_int) {
+const enum_unnamed_33 = enum(c_int) {
     SDL_PACKEDLAYOUT_NONE,
     SDL_PACKEDLAYOUT_332,
     SDL_PACKEDLAYOUT_4444,
@@ -599,7 +599,7 @@ pub const SDL_PIXELFORMAT_YVYU = @enumToInt(enum_unnamed_34.SDL_PIXELFORMAT_YVYU
 pub const SDL_PIXELFORMAT_NV12 = @enumToInt(enum_unnamed_34.SDL_PIXELFORMAT_NV12);
 pub const SDL_PIXELFORMAT_NV21 = @enumToInt(enum_unnamed_34.SDL_PIXELFORMAT_NV21);
 pub const SDL_PIXELFORMAT_EXTERNAL_OES = @enumToInt(enum_unnamed_34.SDL_PIXELFORMAT_EXTERNAL_OES);
-const enum_unnamed_34 = extern enum(c_int) {
+const enum_unnamed_34 = enum(c_int) {
     SDL_PIXELFORMAT_UNKNOWN = 0,
     SDL_PIXELFORMAT_INDEX1LSB = 286261504,
     SDL_PIXELFORMAT_INDEX1MSB = 287310080,
@@ -752,7 +752,7 @@ pub const SDL_BLENDMODE_ADD = @enumToInt(enum_unnamed_35.SDL_BLENDMODE_ADD);
 pub const SDL_BLENDMODE_MOD = @enumToInt(enum_unnamed_35.SDL_BLENDMODE_MOD);
 pub const SDL_BLENDMODE_MUL = @enumToInt(enum_unnamed_35.SDL_BLENDMODE_MUL);
 pub const SDL_BLENDMODE_INVALID = @enumToInt(enum_unnamed_35.SDL_BLENDMODE_INVALID);
-const enum_unnamed_35 = extern enum(c_int) {
+const enum_unnamed_35 = enum(c_int) {
     SDL_BLENDMODE_NONE = 0,
     SDL_BLENDMODE_BLEND = 1,
     SDL_BLENDMODE_ADD = 2,
@@ -767,7 +767,7 @@ pub const SDL_BLENDOPERATION_SUBTRACT = @enumToInt(enum_unnamed_36.SDL_BLENDOPER
 pub const SDL_BLENDOPERATION_REV_SUBTRACT = @enumToInt(enum_unnamed_36.SDL_BLENDOPERATION_REV_SUBTRACT);
 pub const SDL_BLENDOPERATION_MINIMUM = @enumToInt(enum_unnamed_36.SDL_BLENDOPERATION_MINIMUM);
 pub const SDL_BLENDOPERATION_MAXIMUM = @enumToInt(enum_unnamed_36.SDL_BLENDOPERATION_MAXIMUM);
-const enum_unnamed_36 = extern enum(c_int) {
+const enum_unnamed_36 = enum(c_int) {
     SDL_BLENDOPERATION_ADD = 1,
     SDL_BLENDOPERATION_SUBTRACT = 2,
     SDL_BLENDOPERATION_REV_SUBTRACT = 3,
@@ -786,7 +786,7 @@ pub const SDL_BLENDFACTOR_DST_COLOR = @enumToInt(enum_unnamed_37.SDL_BLENDFACTOR
 pub const SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR = @enumToInt(enum_unnamed_37.SDL_BLENDFACTOR_ONE_MINUS_DST_COLOR);
 pub const SDL_BLENDFACTOR_DST_ALPHA = @enumToInt(enum_unnamed_37.SDL_BLENDFACTOR_DST_ALPHA);
 pub const SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA = @enumToInt(enum_unnamed_37.SDL_BLENDFACTOR_ONE_MINUS_DST_ALPHA);
-const enum_unnamed_37 = extern enum(c_int) {
+const enum_unnamed_37 = enum(c_int) {
     SDL_BLENDFACTOR_ZERO = 1,
     SDL_BLENDFACTOR_ONE = 2,
     SDL_BLENDFACTOR_SRC_COLOR = 3,
@@ -822,7 +822,7 @@ pub const SDL_YUV_CONVERSION_JPEG = @enumToInt(enum_unnamed_38.SDL_YUV_CONVERSIO
 pub const SDL_YUV_CONVERSION_BT601 = @enumToInt(enum_unnamed_38.SDL_YUV_CONVERSION_BT601);
 pub const SDL_YUV_CONVERSION_BT709 = @enumToInt(enum_unnamed_38.SDL_YUV_CONVERSION_BT709);
 pub const SDL_YUV_CONVERSION_AUTOMATIC = @enumToInt(enum_unnamed_38.SDL_YUV_CONVERSION_AUTOMATIC);
-const enum_unnamed_38 = extern enum(c_int) {
+const enum_unnamed_38 = enum(c_int) {
     SDL_YUV_CONVERSION_JPEG,
     SDL_YUV_CONVERSION_BT601,
     SDL_YUV_CONVERSION_BT709,
@@ -899,7 +899,7 @@ pub const SDL_WINDOW_TOOLTIP = @enumToInt(enum_unnamed_40.SDL_WINDOW_TOOLTIP);
 pub const SDL_WINDOW_POPUP_MENU = @enumToInt(enum_unnamed_40.SDL_WINDOW_POPUP_MENU);
 pub const SDL_WINDOW_VULKAN = @enumToInt(enum_unnamed_40.SDL_WINDOW_VULKAN);
 pub const SDL_WINDOW_METAL = @enumToInt(enum_unnamed_40.SDL_WINDOW_METAL);
-const enum_unnamed_40 = extern enum(c_int) {
+const enum_unnamed_40 = enum(c_int) {
     SDL_WINDOW_FULLSCREEN = 1,
     SDL_WINDOW_OPENGL = 2,
     SDL_WINDOW_SHOWN = 4,
@@ -942,7 +942,7 @@ pub const SDL_WINDOWEVENT_FOCUS_LOST = @enumToInt(enum_unnamed_41.SDL_WINDOWEVEN
 pub const SDL_WINDOWEVENT_CLOSE = @enumToInt(enum_unnamed_41.SDL_WINDOWEVENT_CLOSE);
 pub const SDL_WINDOWEVENT_TAKE_FOCUS = @enumToInt(enum_unnamed_41.SDL_WINDOWEVENT_TAKE_FOCUS);
 pub const SDL_WINDOWEVENT_HIT_TEST = @enumToInt(enum_unnamed_41.SDL_WINDOWEVENT_HIT_TEST);
-const enum_unnamed_41 = extern enum(c_int) {
+const enum_unnamed_41 = enum(c_int) {
     SDL_WINDOWEVENT_NONE,
     SDL_WINDOWEVENT_SHOWN,
     SDL_WINDOWEVENT_HIDDEN,
@@ -967,7 +967,7 @@ pub const SDL_DISPLAYEVENT_NONE = @enumToInt(enum_unnamed_42.SDL_DISPLAYEVENT_NO
 pub const SDL_DISPLAYEVENT_ORIENTATION = @enumToInt(enum_unnamed_42.SDL_DISPLAYEVENT_ORIENTATION);
 pub const SDL_DISPLAYEVENT_CONNECTED = @enumToInt(enum_unnamed_42.SDL_DISPLAYEVENT_CONNECTED);
 pub const SDL_DISPLAYEVENT_DISCONNECTED = @enumToInt(enum_unnamed_42.SDL_DISPLAYEVENT_DISCONNECTED);
-const enum_unnamed_42 = extern enum(c_int) {
+const enum_unnamed_42 = enum(c_int) {
     SDL_DISPLAYEVENT_NONE,
     SDL_DISPLAYEVENT_ORIENTATION,
     SDL_DISPLAYEVENT_CONNECTED,
@@ -980,7 +980,7 @@ pub const SDL_ORIENTATION_LANDSCAPE = @enumToInt(enum_unnamed_43.SDL_ORIENTATION
 pub const SDL_ORIENTATION_LANDSCAPE_FLIPPED = @enumToInt(enum_unnamed_43.SDL_ORIENTATION_LANDSCAPE_FLIPPED);
 pub const SDL_ORIENTATION_PORTRAIT = @enumToInt(enum_unnamed_43.SDL_ORIENTATION_PORTRAIT);
 pub const SDL_ORIENTATION_PORTRAIT_FLIPPED = @enumToInt(enum_unnamed_43.SDL_ORIENTATION_PORTRAIT_FLIPPED);
-const enum_unnamed_43 = extern enum(c_int) {
+const enum_unnamed_43 = enum(c_int) {
     SDL_ORIENTATION_UNKNOWN,
     SDL_ORIENTATION_LANDSCAPE,
     SDL_ORIENTATION_LANDSCAPE_FLIPPED,
@@ -1017,7 +1017,7 @@ pub const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE = @enumToInt(enum_unnamed_44.SDL_GL_FR
 pub const SDL_GL_CONTEXT_RELEASE_BEHAVIOR = @enumToInt(enum_unnamed_44.SDL_GL_CONTEXT_RELEASE_BEHAVIOR);
 pub const SDL_GL_CONTEXT_RESET_NOTIFICATION = @enumToInt(enum_unnamed_44.SDL_GL_CONTEXT_RESET_NOTIFICATION);
 pub const SDL_GL_CONTEXT_NO_ERROR = @enumToInt(enum_unnamed_44.SDL_GL_CONTEXT_NO_ERROR);
-const enum_unnamed_44 = extern enum(c_int) {
+const enum_unnamed_44 = enum(c_int) {
     SDL_GL_RED_SIZE,
     SDL_GL_GREEN_SIZE,
     SDL_GL_BLUE_SIZE,
@@ -1051,7 +1051,7 @@ pub const SDL_GLattr = enum_unnamed_44;
 pub const SDL_GL_CONTEXT_PROFILE_CORE = @enumToInt(enum_unnamed_45.SDL_GL_CONTEXT_PROFILE_CORE);
 pub const SDL_GL_CONTEXT_PROFILE_COMPATIBILITY = @enumToInt(enum_unnamed_45.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 pub const SDL_GL_CONTEXT_PROFILE_ES = @enumToInt(enum_unnamed_45.SDL_GL_CONTEXT_PROFILE_ES);
-const enum_unnamed_45 = extern enum(c_int) {
+const enum_unnamed_45 = enum(c_int) {
     SDL_GL_CONTEXT_PROFILE_CORE = 1,
     SDL_GL_CONTEXT_PROFILE_COMPATIBILITY = 2,
     SDL_GL_CONTEXT_PROFILE_ES = 4,
@@ -1062,7 +1062,7 @@ pub const SDL_GL_CONTEXT_DEBUG_FLAG = @enumToInt(enum_unnamed_46.SDL_GL_CONTEXT_
 pub const SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = @enumToInt(enum_unnamed_46.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 pub const SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG = @enumToInt(enum_unnamed_46.SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG);
 pub const SDL_GL_CONTEXT_RESET_ISOLATION_FLAG = @enumToInt(enum_unnamed_46.SDL_GL_CONTEXT_RESET_ISOLATION_FLAG);
-const enum_unnamed_46 = extern enum(c_int) {
+const enum_unnamed_46 = enum(c_int) {
     SDL_GL_CONTEXT_DEBUG_FLAG = 1,
     SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = 2,
     SDL_GL_CONTEXT_ROBUST_ACCESS_FLAG = 4,
@@ -1072,7 +1072,7 @@ const enum_unnamed_46 = extern enum(c_int) {
 pub const SDL_GLcontextFlag = enum_unnamed_46;
 pub const SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE = @enumToInt(enum_unnamed_47.SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE);
 pub const SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH = @enumToInt(enum_unnamed_47.SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH);
-const enum_unnamed_47 = extern enum(c_int) {
+const enum_unnamed_47 = enum(c_int) {
     SDL_GL_CONTEXT_RELEASE_BEHAVIOR_NONE = 0,
     SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH = 1,
     _,
@@ -1080,7 +1080,7 @@ const enum_unnamed_47 = extern enum(c_int) {
 pub const SDL_GLcontextReleaseFlag = enum_unnamed_47;
 pub const SDL_GL_CONTEXT_RESET_NO_NOTIFICATION = @enumToInt(enum_unnamed_48.SDL_GL_CONTEXT_RESET_NO_NOTIFICATION);
 pub const SDL_GL_CONTEXT_RESET_LOSE_CONTEXT = @enumToInt(enum_unnamed_48.SDL_GL_CONTEXT_RESET_LOSE_CONTEXT);
-const enum_unnamed_48 = extern enum(c_int) {
+const enum_unnamed_48 = enum(c_int) {
     SDL_GL_CONTEXT_RESET_NO_NOTIFICATION = 0,
     SDL_GL_CONTEXT_RESET_LOSE_CONTEXT = 1,
     _,
@@ -1158,7 +1158,7 @@ pub const SDL_HITTEST_RESIZE_BOTTOMRIGHT = @enumToInt(enum_unnamed_49.SDL_HITTES
 pub const SDL_HITTEST_RESIZE_BOTTOM = @enumToInt(enum_unnamed_49.SDL_HITTEST_RESIZE_BOTTOM);
 pub const SDL_HITTEST_RESIZE_BOTTOMLEFT = @enumToInt(enum_unnamed_49.SDL_HITTEST_RESIZE_BOTTOMLEFT);
 pub const SDL_HITTEST_RESIZE_LEFT = @enumToInt(enum_unnamed_49.SDL_HITTEST_RESIZE_LEFT);
-const enum_unnamed_49 = extern enum(c_int) {
+const enum_unnamed_49 = enum(c_int) {
     SDL_HITTEST_NORMAL,
     SDL_HITTEST_DRAGGABLE,
     SDL_HITTEST_RESIZE_TOPLEFT,
@@ -1438,7 +1438,7 @@ pub const SDL_SCANCODE_APP2 = @enumToInt(enum_unnamed_50.SDL_SCANCODE_APP2);
 pub const SDL_SCANCODE_AUDIOREWIND = @enumToInt(enum_unnamed_50.SDL_SCANCODE_AUDIOREWIND);
 pub const SDL_SCANCODE_AUDIOFASTFORWARD = @enumToInt(enum_unnamed_50.SDL_SCANCODE_AUDIOFASTFORWARD);
 pub const SDL_NUM_SCANCODES = @enumToInt(enum_unnamed_50.SDL_NUM_SCANCODES);
-const enum_unnamed_50 = extern enum(c_int) {
+const enum_unnamed_50 = enum(c_int) {
     SDL_SCANCODE_UNKNOWN = 0,
     SDL_SCANCODE_A = 4,
     SDL_SCANCODE_B = 5,
@@ -1927,7 +1927,7 @@ pub const SDLK_APP1 = @enumToInt(enum_unnamed_51.SDLK_APP1);
 pub const SDLK_APP2 = @enumToInt(enum_unnamed_51.SDLK_APP2);
 pub const SDLK_AUDIOREWIND = @enumToInt(enum_unnamed_51.SDLK_AUDIOREWIND);
 pub const SDLK_AUDIOFASTFORWARD = @enumToInt(enum_unnamed_51.SDLK_AUDIOFASTFORWARD);
-const enum_unnamed_51 = extern enum(c_int) {
+const enum_unnamed_51 = enum(c_int) {
     SDLK_UNKNOWN = 0,
     SDLK_RETURN = 13,
     SDLK_ESCAPE = 27,
@@ -2188,7 +2188,7 @@ pub const KMOD_CTRL = @enumToInt(enum_unnamed_52.KMOD_CTRL);
 pub const KMOD_SHIFT = @enumToInt(enum_unnamed_52.KMOD_SHIFT);
 pub const KMOD_ALT = @enumToInt(enum_unnamed_52.KMOD_ALT);
 pub const KMOD_GUI = @enumToInt(enum_unnamed_52.KMOD_GUI);
-const enum_unnamed_52 = extern enum(c_int) {
+const enum_unnamed_52 = enum(c_int) {
     KMOD_NONE = 0,
     KMOD_LSHIFT = 1,
     KMOD_RSHIFT = 2,
@@ -2247,7 +2247,7 @@ pub const SDL_SYSTEM_CURSOR_SIZEALL = @enumToInt(enum_unnamed_53.SDL_SYSTEM_CURS
 pub const SDL_SYSTEM_CURSOR_NO = @enumToInt(enum_unnamed_53.SDL_SYSTEM_CURSOR_NO);
 pub const SDL_SYSTEM_CURSOR_HAND = @enumToInt(enum_unnamed_53.SDL_SYSTEM_CURSOR_HAND);
 pub const SDL_NUM_SYSTEM_CURSORS = @enumToInt(enum_unnamed_53.SDL_NUM_SYSTEM_CURSORS);
-const enum_unnamed_53 = extern enum(c_int) {
+const enum_unnamed_53 = enum(c_int) {
     SDL_SYSTEM_CURSOR_ARROW,
     SDL_SYSTEM_CURSOR_IBEAM,
     SDL_SYSTEM_CURSOR_WAIT,
@@ -2266,7 +2266,7 @@ const enum_unnamed_53 = extern enum(c_int) {
 pub const SDL_SystemCursor = enum_unnamed_53;
 pub const SDL_MOUSEWHEEL_NORMAL = @enumToInt(enum_unnamed_54.SDL_MOUSEWHEEL_NORMAL);
 pub const SDL_MOUSEWHEEL_FLIPPED = @enumToInt(enum_unnamed_54.SDL_MOUSEWHEEL_FLIPPED);
-const enum_unnamed_54 = extern enum(c_int) {
+const enum_unnamed_54 = enum(c_int) {
     SDL_MOUSEWHEEL_NORMAL,
     SDL_MOUSEWHEEL_FLIPPED,
     _,
@@ -2306,7 +2306,7 @@ pub const SDL_JOYSTICK_TYPE_GUITAR = @enumToInt(enum_unnamed_56.SDL_JOYSTICK_TYP
 pub const SDL_JOYSTICK_TYPE_DRUM_KIT = @enumToInt(enum_unnamed_56.SDL_JOYSTICK_TYPE_DRUM_KIT);
 pub const SDL_JOYSTICK_TYPE_ARCADE_PAD = @enumToInt(enum_unnamed_56.SDL_JOYSTICK_TYPE_ARCADE_PAD);
 pub const SDL_JOYSTICK_TYPE_THROTTLE = @enumToInt(enum_unnamed_56.SDL_JOYSTICK_TYPE_THROTTLE);
-const enum_unnamed_56 = extern enum(c_int) {
+const enum_unnamed_56 = enum(c_int) {
     SDL_JOYSTICK_TYPE_UNKNOWN,
     SDL_JOYSTICK_TYPE_GAMECONTROLLER,
     SDL_JOYSTICK_TYPE_WHEEL,
@@ -2327,7 +2327,7 @@ pub const SDL_JOYSTICK_POWER_MEDIUM = @enumToInt(enum_unnamed_57.SDL_JOYSTICK_PO
 pub const SDL_JOYSTICK_POWER_FULL = @enumToInt(enum_unnamed_57.SDL_JOYSTICK_POWER_FULL);
 pub const SDL_JOYSTICK_POWER_WIRED = @enumToInt(enum_unnamed_57.SDL_JOYSTICK_POWER_WIRED);
 pub const SDL_JOYSTICK_POWER_MAX = @enumToInt(enum_unnamed_57.SDL_JOYSTICK_POWER_MAX);
-const enum_unnamed_57 = extern enum(c_int) {
+const enum_unnamed_57 = enum(c_int) {
     SDL_JOYSTICK_POWER_UNKNOWN = -1,
     SDL_JOYSTICK_POWER_EMPTY = 0,
     SDL_JOYSTICK_POWER_LOW = 1,
@@ -2396,7 +2396,7 @@ pub const SDL_CONTROLLER_TYPE_PS4 = @enumToInt(enum_unnamed_58.SDL_CONTROLLER_TY
 pub const SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO = @enumToInt(enum_unnamed_58.SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO);
 pub const SDL_CONTROLLER_TYPE_VIRTUAL = @enumToInt(enum_unnamed_58.SDL_CONTROLLER_TYPE_VIRTUAL);
 pub const SDL_CONTROLLER_TYPE_PS5 = @enumToInt(enum_unnamed_58.SDL_CONTROLLER_TYPE_PS5);
-const enum_unnamed_58 = extern enum(c_int) {
+const enum_unnamed_58 = enum(c_int) {
     SDL_CONTROLLER_TYPE_UNKNOWN = 0,
     SDL_CONTROLLER_TYPE_XBOX360 = 1,
     SDL_CONTROLLER_TYPE_XBOXONE = 2,
@@ -2412,7 +2412,7 @@ pub const SDL_CONTROLLER_BINDTYPE_NONE = @enumToInt(enum_unnamed_59.SDL_CONTROLL
 pub const SDL_CONTROLLER_BINDTYPE_BUTTON = @enumToInt(enum_unnamed_59.SDL_CONTROLLER_BINDTYPE_BUTTON);
 pub const SDL_CONTROLLER_BINDTYPE_AXIS = @enumToInt(enum_unnamed_59.SDL_CONTROLLER_BINDTYPE_AXIS);
 pub const SDL_CONTROLLER_BINDTYPE_HAT = @enumToInt(enum_unnamed_59.SDL_CONTROLLER_BINDTYPE_HAT);
-const enum_unnamed_59 = extern enum(c_int) {
+const enum_unnamed_59 = enum(c_int) {
     SDL_CONTROLLER_BINDTYPE_NONE = 0,
     SDL_CONTROLLER_BINDTYPE_BUTTON = 1,
     SDL_CONTROLLER_BINDTYPE_AXIS = 2,
@@ -2466,7 +2466,7 @@ pub const SDL_CONTROLLER_AXIS_RIGHTY = @enumToInt(enum_unnamed_62.SDL_CONTROLLER
 pub const SDL_CONTROLLER_AXIS_TRIGGERLEFT = @enumToInt(enum_unnamed_62.SDL_CONTROLLER_AXIS_TRIGGERLEFT);
 pub const SDL_CONTROLLER_AXIS_TRIGGERRIGHT = @enumToInt(enum_unnamed_62.SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
 pub const SDL_CONTROLLER_AXIS_MAX = @enumToInt(enum_unnamed_62.SDL_CONTROLLER_AXIS_MAX);
-const enum_unnamed_62 = extern enum(c_int) {
+const enum_unnamed_62 = enum(c_int) {
     SDL_CONTROLLER_AXIS_INVALID = -1,
     SDL_CONTROLLER_AXIS_LEFTX = 0,
     SDL_CONTROLLER_AXIS_LEFTY = 1,
@@ -2504,7 +2504,7 @@ pub const SDL_CONTROLLER_BUTTON_PADDLE2 = @enumToInt(enum_unnamed_63.SDL_CONTROL
 pub const SDL_CONTROLLER_BUTTON_PADDLE3 = @enumToInt(enum_unnamed_63.SDL_CONTROLLER_BUTTON_PADDLE3);
 pub const SDL_CONTROLLER_BUTTON_PADDLE4 = @enumToInt(enum_unnamed_63.SDL_CONTROLLER_BUTTON_PADDLE4);
 pub const SDL_CONTROLLER_BUTTON_MAX = @enumToInt(enum_unnamed_63.SDL_CONTROLLER_BUTTON_MAX);
-const enum_unnamed_63 = extern enum(c_int) {
+const enum_unnamed_63 = enum(c_int) {
     SDL_CONTROLLER_BUTTON_INVALID = -1,
     SDL_CONTROLLER_BUTTON_A = 0,
     SDL_CONTROLLER_BUTTON_B = 1,
@@ -2544,7 +2544,7 @@ pub const SDL_TOUCH_DEVICE_INVALID = @enumToInt(enum_unnamed_64.SDL_TOUCH_DEVICE
 pub const SDL_TOUCH_DEVICE_DIRECT = @enumToInt(enum_unnamed_64.SDL_TOUCH_DEVICE_DIRECT);
 pub const SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE = @enumToInt(enum_unnamed_64.SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE);
 pub const SDL_TOUCH_DEVICE_INDIRECT_RELATIVE = @enumToInt(enum_unnamed_64.SDL_TOUCH_DEVICE_INDIRECT_RELATIVE);
-const enum_unnamed_64 = extern enum(c_int) {
+const enum_unnamed_64 = enum(c_int) {
     SDL_TOUCH_DEVICE_INVALID = -1,
     SDL_TOUCH_DEVICE_DIRECT = 0,
     SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE = 1,
@@ -2621,7 +2621,7 @@ pub const SDL_RENDER_TARGETS_RESET = @enumToInt(enum_unnamed_65.SDL_RENDER_TARGE
 pub const SDL_RENDER_DEVICE_RESET = @enumToInt(enum_unnamed_65.SDL_RENDER_DEVICE_RESET);
 pub const SDL_USEREVENT = @enumToInt(enum_unnamed_65.SDL_USEREVENT);
 pub const SDL_LASTEVENT = @enumToInt(enum_unnamed_65.SDL_LASTEVENT);
-const enum_unnamed_65 = extern enum(c_int) {
+const enum_unnamed_65 = enum(c_int) {
     SDL_FIRSTEVENT = 0,
     SDL_QUIT = 256,
     SDL_APP_TERMINATING = 257,
@@ -2968,7 +2968,7 @@ pub extern fn SDL_PumpEvents() void;
 pub const SDL_ADDEVENT = @enumToInt(enum_unnamed_66.SDL_ADDEVENT);
 pub const SDL_PEEKEVENT = @enumToInt(enum_unnamed_66.SDL_PEEKEVENT);
 pub const SDL_GETEVENT = @enumToInt(enum_unnamed_66.SDL_GETEVENT);
-const enum_unnamed_66 = extern enum(c_int) {
+const enum_unnamed_66 = enum(c_int) {
     SDL_ADDEVENT,
     SDL_PEEKEVENT,
     SDL_GETEVENT,
@@ -3129,7 +3129,7 @@ pub extern fn SDL_HapticRumbleStop(haptic: ?*SDL_Haptic) c_int;
 pub const SDL_HINT_DEFAULT = @enumToInt(enum_unnamed_67.SDL_HINT_DEFAULT);
 pub const SDL_HINT_NORMAL = @enumToInt(enum_unnamed_67.SDL_HINT_NORMAL);
 pub const SDL_HINT_OVERRIDE = @enumToInt(enum_unnamed_67.SDL_HINT_OVERRIDE);
-const enum_unnamed_67 = extern enum(c_int) {
+const enum_unnamed_67 = enum(c_int) {
     SDL_HINT_DEFAULT,
     SDL_HINT_NORMAL,
     SDL_HINT_OVERRIDE,
@@ -3167,7 +3167,7 @@ pub const SDL_LOG_CATEGORY_RESERVED8 = @enumToInt(enum_unnamed_68.SDL_LOG_CATEGO
 pub const SDL_LOG_CATEGORY_RESERVED9 = @enumToInt(enum_unnamed_68.SDL_LOG_CATEGORY_RESERVED9);
 pub const SDL_LOG_CATEGORY_RESERVED10 = @enumToInt(enum_unnamed_68.SDL_LOG_CATEGORY_RESERVED10);
 pub const SDL_LOG_CATEGORY_CUSTOM = @enumToInt(enum_unnamed_68.SDL_LOG_CATEGORY_CUSTOM);
-const enum_unnamed_68 = extern enum(c_int) {
+const enum_unnamed_68 = enum(c_int) {
     SDL_LOG_CATEGORY_APPLICATION,
     SDL_LOG_CATEGORY_ERROR,
     SDL_LOG_CATEGORY_ASSERT,
@@ -3198,7 +3198,7 @@ pub const SDL_LOG_PRIORITY_WARN = @enumToInt(enum_unnamed_69.SDL_LOG_PRIORITY_WA
 pub const SDL_LOG_PRIORITY_ERROR = @enumToInt(enum_unnamed_69.SDL_LOG_PRIORITY_ERROR);
 pub const SDL_LOG_PRIORITY_CRITICAL = @enumToInt(enum_unnamed_69.SDL_LOG_PRIORITY_CRITICAL);
 pub const SDL_NUM_LOG_PRIORITIES = @enumToInt(enum_unnamed_69.SDL_NUM_LOG_PRIORITIES);
-const enum_unnamed_69 = extern enum(c_int) {
+const enum_unnamed_69 = enum(c_int) {
     SDL_LOG_PRIORITY_VERBOSE = 1,
     SDL_LOG_PRIORITY_DEBUG = 2,
     SDL_LOG_PRIORITY_INFO = 3,
@@ -3230,7 +3230,7 @@ pub const SDL_MESSAGEBOX_WARNING = @enumToInt(enum_unnamed_70.SDL_MESSAGEBOX_WAR
 pub const SDL_MESSAGEBOX_INFORMATION = @enumToInt(enum_unnamed_70.SDL_MESSAGEBOX_INFORMATION);
 pub const SDL_MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = @enumToInt(enum_unnamed_70.SDL_MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT);
 pub const SDL_MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = @enumToInt(enum_unnamed_70.SDL_MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT);
-const enum_unnamed_70 = extern enum(c_int) {
+const enum_unnamed_70 = enum(c_int) {
     SDL_MESSAGEBOX_ERROR = 16,
     SDL_MESSAGEBOX_WARNING = 32,
     SDL_MESSAGEBOX_INFORMATION = 64,
@@ -3241,7 +3241,7 @@ const enum_unnamed_70 = extern enum(c_int) {
 pub const SDL_MessageBoxFlags = enum_unnamed_70;
 pub const SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = @enumToInt(enum_unnamed_71.SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT);
 pub const SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = @enumToInt(enum_unnamed_71.SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT);
-const enum_unnamed_71 = extern enum(c_int) {
+const enum_unnamed_71 = enum(c_int) {
     SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = 1,
     SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = 2,
     _,
@@ -3265,7 +3265,7 @@ pub const SDL_MESSAGEBOX_COLOR_BUTTON_BORDER = @enumToInt(enum_unnamed_74.SDL_ME
 pub const SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND = @enumToInt(enum_unnamed_74.SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND);
 pub const SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED = @enumToInt(enum_unnamed_74.SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED);
 pub const SDL_MESSAGEBOX_COLOR_MAX = @enumToInt(enum_unnamed_74.SDL_MESSAGEBOX_COLOR_MAX);
-const enum_unnamed_74 = extern enum(c_int) {
+const enum_unnamed_74 = enum(c_int) {
     SDL_MESSAGEBOX_COLOR_BACKGROUND,
     SDL_MESSAGEBOX_COLOR_TEXT,
     SDL_MESSAGEBOX_COLOR_BUTTON_BORDER,
@@ -3301,7 +3301,7 @@ pub const SDL_POWERSTATE_ON_BATTERY = @enumToInt(enum_unnamed_77.SDL_POWERSTATE_
 pub const SDL_POWERSTATE_NO_BATTERY = @enumToInt(enum_unnamed_77.SDL_POWERSTATE_NO_BATTERY);
 pub const SDL_POWERSTATE_CHARGING = @enumToInt(enum_unnamed_77.SDL_POWERSTATE_CHARGING);
 pub const SDL_POWERSTATE_CHARGED = @enumToInt(enum_unnamed_77.SDL_POWERSTATE_CHARGED);
-const enum_unnamed_77 = extern enum(c_int) {
+const enum_unnamed_77 = enum(c_int) {
     SDL_POWERSTATE_UNKNOWN,
     SDL_POWERSTATE_ON_BATTERY,
     SDL_POWERSTATE_NO_BATTERY,
@@ -3315,7 +3315,7 @@ pub const SDL_RENDERER_SOFTWARE = @enumToInt(enum_unnamed_78.SDL_RENDERER_SOFTWA
 pub const SDL_RENDERER_ACCELERATED = @enumToInt(enum_unnamed_78.SDL_RENDERER_ACCELERATED);
 pub const SDL_RENDERER_PRESENTVSYNC = @enumToInt(enum_unnamed_78.SDL_RENDERER_PRESENTVSYNC);
 pub const SDL_RENDERER_TARGETTEXTURE = @enumToInt(enum_unnamed_78.SDL_RENDERER_TARGETTEXTURE);
-const enum_unnamed_78 = extern enum(c_int) {
+const enum_unnamed_78 = enum(c_int) {
     SDL_RENDERER_SOFTWARE = 1,
     SDL_RENDERER_ACCELERATED = 2,
     SDL_RENDERER_PRESENTVSYNC = 4,
@@ -3335,7 +3335,7 @@ pub const SDL_RendererInfo = struct_SDL_RendererInfo;
 pub const SDL_ScaleModeNearest = @enumToInt(enum_unnamed_79.SDL_ScaleModeNearest);
 pub const SDL_ScaleModeLinear = @enumToInt(enum_unnamed_79.SDL_ScaleModeLinear);
 pub const SDL_ScaleModeBest = @enumToInt(enum_unnamed_79.SDL_ScaleModeBest);
-const enum_unnamed_79 = extern enum(c_int) {
+const enum_unnamed_79 = enum(c_int) {
     SDL_ScaleModeNearest,
     SDL_ScaleModeLinear,
     SDL_ScaleModeBest,
@@ -3345,7 +3345,7 @@ pub const SDL_ScaleMode = enum_unnamed_79;
 pub const SDL_TEXTUREACCESS_STATIC = @enumToInt(enum_unnamed_80.SDL_TEXTUREACCESS_STATIC);
 pub const SDL_TEXTUREACCESS_STREAMING = @enumToInt(enum_unnamed_80.SDL_TEXTUREACCESS_STREAMING);
 pub const SDL_TEXTUREACCESS_TARGET = @enumToInt(enum_unnamed_80.SDL_TEXTUREACCESS_TARGET);
-const enum_unnamed_80 = extern enum(c_int) {
+const enum_unnamed_80 = enum(c_int) {
     SDL_TEXTUREACCESS_STATIC,
     SDL_TEXTUREACCESS_STREAMING,
     SDL_TEXTUREACCESS_TARGET,
@@ -3355,7 +3355,7 @@ pub const SDL_TextureAccess = enum_unnamed_80;
 pub const SDL_TEXTUREMODULATE_NONE = @enumToInt(enum_unnamed_81.SDL_TEXTUREMODULATE_NONE);
 pub const SDL_TEXTUREMODULATE_COLOR = @enumToInt(enum_unnamed_81.SDL_TEXTUREMODULATE_COLOR);
 pub const SDL_TEXTUREMODULATE_ALPHA = @enumToInt(enum_unnamed_81.SDL_TEXTUREMODULATE_ALPHA);
-const enum_unnamed_81 = extern enum(c_int) {
+const enum_unnamed_81 = enum(c_int) {
     SDL_TEXTUREMODULATE_NONE = 0,
     SDL_TEXTUREMODULATE_COLOR = 1,
     SDL_TEXTUREMODULATE_ALPHA = 2,
@@ -3365,7 +3365,7 @@ pub const SDL_TextureModulate = enum_unnamed_81;
 pub const SDL_FLIP_NONE = @enumToInt(enum_unnamed_82.SDL_FLIP_NONE);
 pub const SDL_FLIP_HORIZONTAL = @enumToInt(enum_unnamed_82.SDL_FLIP_HORIZONTAL);
 pub const SDL_FLIP_VERTICAL = @enumToInt(enum_unnamed_82.SDL_FLIP_VERTICAL);
-const enum_unnamed_82 = extern enum(c_int) {
+const enum_unnamed_82 = enum(c_int) {
     SDL_FLIP_NONE = 0,
     SDL_FLIP_HORIZONTAL = 1,
     SDL_FLIP_VERTICAL = 2,
@@ -3455,7 +3455,7 @@ pub const SDL_SENSOR_INVALID = @enumToInt(enum_unnamed_83.SDL_SENSOR_INVALID);
 pub const SDL_SENSOR_UNKNOWN = @enumToInt(enum_unnamed_83.SDL_SENSOR_UNKNOWN);
 pub const SDL_SENSOR_ACCEL = @enumToInt(enum_unnamed_83.SDL_SENSOR_ACCEL);
 pub const SDL_SENSOR_GYRO = @enumToInt(enum_unnamed_83.SDL_SENSOR_GYRO);
-const enum_unnamed_83 = extern enum(c_int) {
+const enum_unnamed_83 = enum(c_int) {
     SDL_SENSOR_INVALID = -1,
     SDL_SENSOR_UNKNOWN = 0,
     SDL_SENSOR_ACCEL = 1,
@@ -3485,7 +3485,7 @@ pub const ShapeModeDefault = @enumToInt(enum_unnamed_84.ShapeModeDefault);
 pub const ShapeModeBinarizeAlpha = @enumToInt(enum_unnamed_84.ShapeModeBinarizeAlpha);
 pub const ShapeModeReverseBinarizeAlpha = @enumToInt(enum_unnamed_84.ShapeModeReverseBinarizeAlpha);
 pub const ShapeModeColorKey = @enumToInt(enum_unnamed_84.ShapeModeColorKey);
-const enum_unnamed_84 = extern enum(c_int) {
+const enum_unnamed_84 = enum(c_int) {
     ShapeModeDefault,
     ShapeModeBinarizeAlpha,
     ShapeModeReverseBinarizeAlpha,

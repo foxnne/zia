@@ -27,7 +27,7 @@ extern fn _ogListBoxHeaderVec2(label: [*c]const u8, size: *const ImVec2) bool;
 
 // implementations for ABI incompatibility bugs
 pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
-    const white = ImVec4{ .x = 1, .y = 1, .z = 1, .w = 1 };
+    //const white = ImVec4{ .x = 1, .y = 1, .z = 1, .w = 1 };
     var size = ImVec2{ .x = @intToFloat(f32, width), .y = @intToFloat(f32, height) };
     // TODO: remove when windows can handle passing ImVec4s and arm can handle ImVec2s
     // igImage(texture, size, ImVec2{}, ImVec2{ .x = 1, .y = 1 }, white, .{});
@@ -35,6 +35,8 @@ pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
 }
 
 pub fn ogImageButton(texture: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, frame_padding: c_int, bg_col: ImVec4, tint_col: ImVec4) bool {
+    _ = tint_col;
+    _ = bg_col;
     // TODO: remove when windows can handle passing ImVec4s
     // return igImageButton(texture, size, uv0, uv1, frame_padding, bg_col, tint_col);
     return _ogImageButton(texture, size, uv0, uv1, frame_padding);

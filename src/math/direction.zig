@@ -4,7 +4,7 @@ const math = @import("math.zig");
 const sqrt = 0.70710678118654752440084436210485;
 const sqrt2 = 1.4142135623730950488016887242097;
 
-pub const Direction = extern enum(u8) {
+pub const Direction = enum(u8) {
     None = 0,
 
     S = 0b0000_0001, // 1

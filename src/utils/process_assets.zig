@@ -14,7 +14,7 @@ pub const ProcessAssetsStep = struct {
     pub fn init(builder: *Builder, comptime assets_path: []const u8, comptime output_path: []const u8) *ProcessAssetsStep {
         const self = builder.allocator.create(ProcessAssetsStep) catch unreachable;
         self.* = .{
-            .step = Step.init(.Custom, "process-assets", builder.allocator, process),
+            .step = Step.init(.custom, "process-assets", builder.allocator, process),
             .builder = builder,
             .assets_root_path = assets_path,
             .output_path = output_path,
@@ -28,7 +28,7 @@ pub const ProcessAssetsStep = struct {
         const root = self.assets_root_path;
         const output = self.output_path;
 
-        if (std.fs.cwd().openDir(root, .{ .iterate = true })) |dir| {
+        if (std.fs.cwd().openDir(root, .{ .iterate = true })) |_| {
             // path passed is a directory
             var files = getAllFiles(self.builder.allocator, root, true);
 

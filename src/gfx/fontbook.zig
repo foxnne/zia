@@ -127,6 +127,7 @@ pub const FontBook = struct {
     }
 
     pub fn getQuad(self: FontBook) fons.Quad {
+        _ = self;
         return std.mem.zeroes(fons.Quad);
     }
 
@@ -152,6 +153,7 @@ pub const FontBook = struct {
     }
 
     fn renderUpdate(ctx: ?*c_void, rect: [*c]c_int, data: [*c]const u8) callconv(.C) c_int {
+        _ = rect;
         // TODO: only update the rect that changed
         var self = @ptrCast(*FontBook, @alignCast(@alignOf(FontBook), ctx));
         if (!self.tex_dirty or self.last_update == zia.time.frames()) {
