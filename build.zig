@@ -82,7 +82,9 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     // only add the build option once!
     if (enable_imgui == null)
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
-    exe.addBuildOption(bool, "enable_imgui", enable_imgui.?);
+        
+    const options = b.addOptions();
+    options.addOption(bool, "enable_imgui", enable_imgui.?);
 
     // sdl
     const sdl_builder = @import("src/deps/sdl/build.zig");

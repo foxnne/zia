@@ -46,18 +46,22 @@ pub const ProcessAssetsStep = struct {
                     const base = std.fs.path.basename(file);
                     const ext_ind = std.mem.lastIndexOf(u8, base, ".");
                     const name = base[0..ext_ind.?];
-                  
+
+                    var path_fixed = try self.builder.allocator.alloc(u8, file.len);
+                    _ = std.mem.replace(u8, file, "\\", "/", path_fixed);
+                    
+
                     // pngs
                     if (std.mem.eql(u8, ext, ".png")) {
                         try writer.print("pub const {s}{s} = struct {{\n", .{ name, "_png"});
-                        try writer.print("  pub const path = \"{s}\";\n", .{file});
+                        try writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
                         try writer.print("}};\n\n", .{});
                     }
 
                     // atlases
                     if (std.mem.eql(u8, ext, ".atlas")) {
                         try writer.print("pub const {s}{s} = struct {{\n", .{name, "_atlas"});
-                        try writer.print("  pub const path = \"{s}\";\n", .{file});
+                        try writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
 
                         var atlas = Atlas.initFromFile(self.builder.allocator, file) catch unreachable;
                         

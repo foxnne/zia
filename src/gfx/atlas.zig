@@ -32,13 +32,13 @@ pub const Atlas = struct {
                     .y = @divExact(sprite_height, 2),
                 };
 
-                var sprite: Sprite = .{
+                var s: Sprite = .{
                     .name = "Sprite_" ++ std.fmt.allocPrint(allocator, "{}", .{c + r}), // add _0, _1 etc...
                     .source = source,
                     .origin = origin,
                 };
 
-                atlas.sprites[c + r] = sprite;
+                atlas.sprites[c + r] = s;
             }
         }
         return atlas;
