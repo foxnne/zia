@@ -5,17 +5,17 @@ const sqrt = 0.70710678118654752440084436210485;
 const sqrt2 = 1.4142135623730950488016887242097;
 
 pub const Direction = enum(u8) {
-    None = 0,
+    none = 0,
 
-    S = 0b0000_0001, // 1
-    E = 0b0000_0100, // 4
-    N = 0b0000_0011, // 3
-    W = 0b0000_1100, // 12
+    s = 0b0000_0001, // 1
+    e = 0b0000_0100, // 4
+    n = 0b0000_0011, // 3
+    w = 0b0000_1100, // 12
 
-    SE = 0b0000_0101, // 5
-    NE = 0b0000_0111, // 7
-    NW = 0b0000_1111, // 15
-    SW = 0b0000_1101, // 13
+    se = 0b0000_0101, // 5
+    ne = 0b0000_0111, // 7
+    nw = 0b0000_1111, // 15
+    sw = 0b0000_1101, // 13
 
     /// returns closest direction of size to the supplied vector
     pub fn find(comptime size: usize, vx: f32, vy: f32) Direction {
@@ -96,22 +96,22 @@ pub const Direction = enum(u8) {
     /// returns direction as a normalized vector2
     pub fn normalized(self: Direction) math.Vector2 {
         return switch (self) {
-            .None => .{ .x = 0, .y = 0 },
-            .S => .{ .x = 0, .y = 1 },
-            .SE => .{ .x = sqrt, .y = sqrt },
-            .E => .{ .x = 1, .y = 0 },
-            .NE => .{ .x = sqrt, .y = -sqrt },
-            .N => .{ .x = 0, .y = -1 },
-            .NW => .{ .x = -sqrt, .y = -sqrt },
-            .W => .{ .x = -1, .y = 0 },
-            .SW => .{ .x = -sqrt, .y = sqrt },
+            .none => .{ .x = 0, .y = 0 },
+            .s => .{ .x = 0, .y = 1 },
+            .se => .{ .x = sqrt, .y = sqrt },
+            .e => .{ .x = 1, .y = 0 },
+            .ne => .{ .x = sqrt, .y = -sqrt },
+            .n => .{ .x = 0, .y = -1 },
+            .nw => .{ .x = -sqrt, .y = -sqrt },
+            .w => .{ .x = -1, .y = 0 },
+            .sw => .{ .x = -sqrt, .y = sqrt },
         };
     }
 
     /// returns true if direction is flipped to face west
     pub fn flippedHorizontally(self: Direction) bool {
         return switch (self) {
-            .NW, .W, .SW => true,
+            .nw, .w, .sw => true,
             else => false,
         };
     }
@@ -119,56 +119,56 @@ pub const Direction = enum(u8) {
     /// returns true if direction is flipped to face north
     pub fn flippedVertically(self: Direction) bool {
         return switch (self) {
-            .NW, .N, .NE => true,
+            .nw, .n, .ne => true,
             else => false,
         };
     }
 
     pub fn rotateCW(self: Direction) Direction {
         return switch (self) {
-            .S => .SW,
-            .SE => .S,
-            .E => .SE,
-            .NE => .E,
-            .N => .NE,
-            .NW => .N,
-            .W => .NW,
-            .SW => .W,
-            .None => .None,
+            .s => .sw,
+            .se => .s,
+            .e => .se,
+            .ne => .e,
+            .n => .ne,
+            .nw => .n,
+            .w => .nw,
+            .sw => .w,
+            .none => .none,
         };
     }
 
     pub fn rotateCCW(self: Direction) Direction {
         return switch (self) {
-            .S => .SE,
-            .SE => .E,
-            .E => .NE,
-            .NE => .N,
-            .N => .NW,
-            .NW => .W,
-            .W => .SW,
-            .SW => .S,
-            .None => .None,
+            .s => .se,
+            .se => .e,
+            .e => .ne,
+            .ne => .n,
+            .n => .nw,
+            .nw => .w,
+            .w => .sw,
+            .sw => .s,
+            .none => .none,
         };
     }
 };
 
 test "Direction" {
-    var direction: Direction = .None;
+    var direction: Direction = .none;
 
     direction = Direction.find(8, 1, 1);
-    std.testing.expect(direction == .SE);
+    std.testing.expect(direction == .se);
     std.testing.expectEqual(math.Vector2{ .x = 1, .y = 1 }, direction.vector2());
     std.testing.expectEqual(math.Vector2{ .x = sqrt, .y = sqrt }, direction.normalized());
 
     direction = Direction.find(8, 0, 1);
-    std.testing.expect(direction == .S);
+    std.testing.expect(direction == .s);
 
     direction = Direction.find(8, -1, -1);
-    std.testing.expect(direction == .NW);
+    std.testing.expect(direction == .nw);
     std.testing.expect(direction.flippedHorizontally() == true);
 
     direction = Direction.find(4, 1, 1);
-    std.testing.expect(direction == .E);
+    std.testing.expect(direction == .e);
     std.testing.expect(direction.flippedHorizontally() == false);
 }
