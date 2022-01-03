@@ -1,7 +1,7 @@
 const std = @import("std");
 
 /// reads the contents of a file. Returned value is owned by the caller and must be freed!
-pub fn read(allocator: *std.mem.Allocator, filename: []const u8) ![]u8 {
+pub fn read(allocator: std.mem.Allocator, filename: []const u8) ![]u8 {
     const file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
@@ -13,7 +13,7 @@ pub fn read(allocator: *std.mem.Allocator, filename: []const u8) ![]u8 {
 }
 
 /// reads the contents of a file. Returned value is owned by the caller and must be freed!
-pub fn readZ(allocator: *std.mem.Allocator, filename: []const u8) ![:0]u8 {
+pub fn readZ(allocator: std.mem.Allocator, filename: []const u8) ![:0]u8 {
     const file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 

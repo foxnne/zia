@@ -23,7 +23,7 @@ pub const Batcher = struct {
         quad_count: i32,
     };
 
-    fn createDynamicMesh(allocator: *std.mem.Allocator, max_sprites: u16) !zia.gfx.DynamicMesh(u16, Vertex) {
+    fn createDynamicMesh(allocator: std.mem.Allocator, max_sprites: u16) !zia.gfx.DynamicMesh(u16, Vertex) {
         var indices = allocator.alloc(u16, max_sprites * 6) catch unreachable;
         defer allocator.free(indices);
         var i: usize = 0;
@@ -39,7 +39,7 @@ pub const Batcher = struct {
         return try zia.gfx.DynamicMesh(u16, Vertex).init(allocator, max_sprites * 4, indices);
     }
 
-    pub fn init(allocator: *std.mem.Allocator, max_sprites: u16) Batcher {
+    pub fn init(allocator: std.mem.Allocator, max_sprites: u16) Batcher {
         if (max_sprites * 6 > std.math.maxInt(u16)) @panic("max_sprites exceeds u16 index buffer size");
 
         return .{
@@ -131,7 +131,7 @@ pub const Batcher = struct {
     };
 
     pub fn drawSprite (self: *Batcher, sprite: zia.gfx.Sprite, texture: zia.gfx.Texture, position: math.Vector2, options: SpriteOptions) void{
-        self.ensureCapacity(atlas.texture) catch |err| {
+        self.ensureCapacity(texture) catch |err| {
             std.debug.warn("Batcher.drawSprite failed to append a draw call with error: {}\n", .{err});
             return;
         };
@@ -185,7 +185,7 @@ pub const Batcher = struct {
 
     pub fn draw(self: *Batcher, texture: Texture, quad: math.Quad, mat: math.Matrix3x2, color: math.Color) void {
         self.ensureCapacity(texture) catch |err| {
-            std.debug.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
+            std.log.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
             return;
         };
 

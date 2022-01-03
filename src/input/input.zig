@@ -81,10 +81,10 @@ pub const Input = struct {
                 self.mouse_rel_x = event.motion.xrel;
                 self.mouse_rel_y = event.motion.yrel;
             },
-            sdl.SDL_CONTROLLERAXISMOTION => std.debug.warn("SDL_CONTROLLERAXISMOTION\n", .{}),
-            sdl.SDL_CONTROLLERBUTTONDOWN, sdl.SDL_CONTROLLERBUTTONUP => std.debug.warn("SDL_CONTROLLERBUTTONUP/DOWN\n", .{}),
-            sdl.SDL_CONTROLLERDEVICEADDED, sdl.SDL_CONTROLLERDEVICEREMOVED => std.debug.warn("SDL_CONTROLLERDEVICEADDED/REMOVED\n", .{}),
-            sdl.SDL_CONTROLLERDEVICEREMAPPED => std.debug.warn("SDL_CONTROLLERDEVICEREMAPPED\n", .{}),
+            sdl.SDL_CONTROLLERAXISMOTION => std.log.warn("SDL_CONTROLLERAXISMOTION\n", .{}),
+            sdl.SDL_CONTROLLERBUTTONDOWN, sdl.SDL_CONTROLLERBUTTONUP => std.log.warn("SDL_CONTROLLERBUTTONUP/DOWN\n", .{}),
+            sdl.SDL_CONTROLLERDEVICEADDED, sdl.SDL_CONTROLLERDEVICEREMOVED => std.log.warn("SDL_CONTROLLERDEVICEADDED/REMOVED\n", .{}),
+            sdl.SDL_CONTROLLERDEVICEREMAPPED => std.log.warn("SDL_CONTROLLERDEVICEREMAPPED\n", .{}),
             sdl.SDL_TEXTEDITING,sdl.SDL_TEXTINPUT => {
                 self.text_input_buffer = event.text.text;
                 const end = std.mem.indexOfScalar(u8, &self.text_input_buffer, 0).?;
@@ -171,13 +171,14 @@ pub const Input = struct {
 
     // gets the scaled mouse position based on the currently bound render texture scale and offset
     // as calcuated in OffscreenPass. scale should be scale and offset_n is the calculated x, y value.
-    pub fn mousePosScaled(self: Input) math.Vector2 {
-        self.mousePos(x, y);
+    // pub fn mousePosScaled(self: Input) math.Vector2 {
+    //     self.mousePos(self);
+        
 
-        const xf = @intToFloat(f32, x.*) - @intToFloat(f32, self.res_scaler.x);
-        const yf = @intToFloat(f32, y.*) - @intToFloat(f32, self.res_scaler.y);
-        return .{ .x = xf / self.res_scaler.scale, .y = yf / self.res_scaler.scale };
-    }
+    //     const xf = @intToFloat(f32, x.*) - @intToFloat(f32, self.res_scaler.x);
+    //     const yf = @intToFloat(f32, y.*) - @intToFloat(f32, self.res_scaler.y);
+    //     return .{ .x = xf / self.res_scaler.scale, .y = yf / self.res_scaler.scale };
+    // }
 
     pub fn mousePosScaledVec(self: Input) math.Vector2 {
         var x: i32 = undefined;

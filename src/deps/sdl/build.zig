@@ -4,13 +4,13 @@ const Builder = std.build.Builder;
 
 //pub fn build(b: *std.build.Builder) !void {}
 
-pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     _ = target;
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
     exe.linkSystemLibrary("c");
     exe.linkSystemLibrary("sdl2");
 
-    if (std.builtin.os.tag == .windows) {
+    if (builtin.os.tag == .windows) {
         // Windows include dirs for SDL2. This requires downloading SDL2 dev and extracting to c:\SDL2
         exe.addLibPath("c:\\SDL2\\lib\\x64");
 

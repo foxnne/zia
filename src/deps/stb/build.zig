@@ -4,7 +4,7 @@ const Builder = std.build.Builder;
 
 //pub fn build(b: *std.build.Builder) !void {}
 
-pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     _ = b;
     _ = target;
     exe.linkLibC();

@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const imgui = @import("imgui");
 const sdl = @import("sdl");
 const zia = @import("../zia.zig");
@@ -73,7 +74,7 @@ pub const Events = struct {
         }
     }
 
-    fn getClipboardTextFn(ctx: ?*c_void) callconv(.C) [*c]const u8 {
+    fn getClipboardTextFn(ctx: ?*anyopaque) callconv(.C) [*c]const u8 {
         _ = ctx;
         if (clipboard_text) |txt| {
             sdl.SDL_free(txt);
@@ -83,7 +84,7 @@ pub const Events = struct {
         return clipboard_text;
     }
 
-    fn setClipboardTextFn(ctx: ?*c_void, text: [*c]const u8) callconv(.C) void {
+    fn setClipboardTextFn(ctx: ?*anyopaque, text: [*c]const u8) callconv(.C) void {
         _ = ctx;
         _ = sdl.SDL_SetClipboardText(text);
     }
@@ -133,7 +134,7 @@ pub const Events = struct {
         _ = sdl.SDL_GetGlobalMouseState(&mouse_x_global, &mouse_y_global);
 
         if (io.ConfigFlags & imgui.ImGuiConfigFlags_ViewportsEnable != 0) {
-            std.debug.warn("viewports not implemented\n", .{});
+            std.log.warn("viewports not implemented\n", .{});
         } else if (sdl.SDL_GetWindowFlags(window) | @intCast(u32, @enumToInt(sdl.SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS)) != 1) {
             var win_x: i32 = undefined;
             var win_y: i32 = undefined;
@@ -192,7 +193,7 @@ pub const Events = struct {
                 io.KeyShift = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_SHIFT)) != 0;
                 io.KeyCtrl = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_CTRL)) != 0;
                 io.KeyAlt = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_ALT)) != 0;
-                if (std.Target.current.os.tag == .windows) io.KeySuper = false else io.KeySuper = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_GUI)) != 0;
+                if (builtin.os.tag == .windows) io.KeySuper = false else io.KeySuper = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_GUI)) != 0;
                 return io.WantCaptureKeyboard;
             },
             sdl.SDL_WINDOWEVENT => {

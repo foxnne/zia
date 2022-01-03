@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const zia = @import("../zia.zig");
 const math = zia.math;
 const Sprite = @import("sprite.zig").Sprite;
@@ -44,7 +45,7 @@ pub const Atlas = struct {
         return atlas;
     }
 
-    pub fn initFromFile(allocator: *std.mem.Allocator, file: []const u8) !Atlas {
+    pub fn initFromFile(allocator: std.mem.Allocator, file: []const u8) !Atlas {
         const r = try zia.utils.fs.read(allocator, file);
         errdefer allocator.free(r);
 

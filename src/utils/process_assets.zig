@@ -85,11 +85,11 @@ pub const ProcessAssetsStep = struct {
         }
     }
 
-    fn getAllFiles(allocator: *std.mem.Allocator, root_directory: []const u8, recurse: bool) [][:0]const u8 {
+    fn getAllFiles(allocator: std.mem.Allocator, root_directory: []const u8, recurse: bool) [][:0]const u8 {
         var list = std.ArrayList([:0]const u8).init(allocator);
 
         var recursor = struct {
-            fn search(alloc: *std.mem.Allocator, directory: []const u8, recursive: bool, filelist: *std.ArrayList([:0]const u8)) void {
+            fn search(alloc: std.mem.Allocator, directory: []const u8, recursive: bool, filelist: *std.ArrayList([:0]const u8)) void {
                 var dir = std.fs.cwd().openDir(directory, .{ .iterate = true }) catch unreachable;
                 defer dir.close();
 

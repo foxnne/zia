@@ -2,7 +2,7 @@ const std = @import("std");
 const zia = @import("../zia.zig");
 const rk = @import("renderkit");
 const math = zia.math;
-
+const Self = @This();
 // high level wrapper objects that use the low-level backend api
 pub const Texture = @import("texture.zig").Texture;
 pub const OffscreenPass = @import("offscreen_pass.zig").OffscreenPass;
@@ -59,32 +59,32 @@ pub var state = struct {
 
 pub fn init() void {
     state.shader = Shader.initDefaultSpriteShader() catch unreachable;
-    draw.init();
+    Self.draw.init();
 }
 
 pub fn deinit() void {
-    draw.deinit();
+    Self.draw.deinit();
     state.shader.deinit();
 }
 
 pub fn setShader(shader: ?*Shader) void {
     const new_shader = shader orelse &state.shader;
 
-    draw.batcher.flush();
+    Self.draw.batcher.flush();
     new_shader.bind();
     new_shader.setTransformMatrix(&state.transform_mat);
 }
 
-pub fn setRenderState(_state: renderkit.RenderState) void {
+pub fn setRenderState(_state: rk.RenderState) void {
     _ = _state;
-    draw.batcher.flush();
-    renderkit.renderer.setRenderState(state);
+    Self.draw.batcher.flush();
+    rk.renderer.setRenderState(state);
 }
 
 pub fn beginPass(config: PassConfig) void {
     var proj_mat: math.Matrix3x2 = math.Matrix3x2.init();
     var clear_command = config.asClearCommand();
-    draw.batcher.begin();
+    Self.draw.batcher.begin();
 
     if (config.pass) |pass| {
         rk.renderer.beginPass(pass.pass, clear_command);
@@ -113,7 +113,7 @@ pub fn beginPass(config: PassConfig) void {
 
 pub fn endPass() void {
     setShader(null);
-    draw.batcher.end();
+    Self.draw.batcher.end();
     rk.renderer.endPass();
 }
 

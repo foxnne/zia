@@ -76,7 +76,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
 }
 
 /// adds gamekit, renderkit, stb and sdl packages to the LibExeObjStep
-pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
 
     // only add the build option once!
