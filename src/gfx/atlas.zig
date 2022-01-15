@@ -3,9 +3,11 @@ const builtin = @import("builtin");
 const zia = @import("../zia.zig");
 const math = zia.math;
 const Sprite = @import("sprite.zig").Sprite;
+const Animation = @import("animation.zig").Animation;
 
 pub const Atlas = struct {
     sprites: []Sprite,
+    animations: []Animation,
 
     pub fn init(allocator: *std.mem.Allocator, width: i32, height: i32, columns: i32, rows: i32) Atlas {
         var count: i32 = columns * rows;
@@ -49,7 +51,7 @@ pub const Atlas = struct {
         const r = try zia.utils.fs.read(allocator, file);
         errdefer allocator.free(r);
 
-        const options = std.json.ParseOptions{ .allocator = allocator, .duplicate_field_behavior = .UseFirst };
+        const options = std.json.ParseOptions{ .allocator = allocator, .duplicate_field_behavior = .UseFirst,  .ignore_unknown_fields = true, .allow_trailing_data = true};
         const atlas = try std.json.parse(Atlas, &std.json.TokenStream.init(r), options);
 
         return atlas;

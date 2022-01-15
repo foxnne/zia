@@ -1,3 +1,5 @@
+pub const sqrt2: f32 =  1.414213562373095;
+
 pub const Vector2 = @import("vector2.zig").Vector2;
 pub const Point = @import("point.zig").Point;
 pub const Rect = @import("rect.zig").Rect;

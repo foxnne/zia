@@ -9,15 +9,17 @@ pub const ProcessAssetsStep = struct {
     step: Step,
     builder: *Builder,
     assets_root_path: []const u8,
-    output_path: []const u8,
+    assets_output_path: []const u8,
+    animations_output_path: []const u8,
 
-    pub fn init(builder: *Builder, comptime assets_path: []const u8, comptime output_path: []const u8) *ProcessAssetsStep {
+    pub fn init(builder: *Builder, comptime assets_path: []const u8, comptime assets_output_path: []const u8, comptime animations_output_path: []const u8) *ProcessAssetsStep {
         const self = builder.allocator.create(ProcessAssetsStep) catch unreachable;
         self.* = .{
             .step = Step.init(.custom, "process-assets", builder.allocator, process),
             .builder = builder,
             .assets_root_path = assets_path,
-            .output_path = output_path,
+            .assets_output_path = assets_output_path,
+            .animations_output_path = animations_output_path,
         };
 
         return self;
@@ -26,21 +28,24 @@ pub const ProcessAssetsStep = struct {
     fn process(step: *Step) !void {
         const self = @fieldParentPtr(ProcessAssetsStep, "step", step);
         const root = self.assets_root_path;
-        const output = self.output_path;
+        const assets_output = self.assets_output_path;
+        const animations_output = self.animations_output_path;
 
         if (std.fs.cwd().openDir(root, .{ .iterate = true })) |_| {
             // path passed is a directory
             var files = getAllFiles(self.builder.allocator, root, true);
 
             if (files.len > 0) {
+                var assets_array_list = std.ArrayList(u8).init(self.builder.allocator);
+                var assets_writer = assets_array_list.writer();
 
-                var array_list = std.ArrayList(u8).init(self.builder.allocator);
-                var writer = array_list.writer();
+                // disclaimer
+                try assets_writer.writeAll("// This is a generated file, do not edit.\n");
 
-                // top level declarations
-                try writer.writeAll("const std = @import(\"std\");\n\n");
+                // top level assets declarations
+                try assets_writer.writeAll("const std = @import(\"std\");\n\n");
 
-                // iterate all files 
+                // iterate all files
                 for (files) |file| {
                     const ext = std.fs.path.extension(file);
                     const base = std.fs.path.basename(file);
@@ -49,34 +54,65 @@ pub const ProcessAssetsStep = struct {
 
                     var path_fixed = try self.builder.allocator.alloc(u8, file.len);
                     _ = std.mem.replace(u8, file, "\\", "/", path_fixed);
-                    
 
                     // pngs
                     if (std.mem.eql(u8, ext, ".png")) {
-                        try writer.print("pub const {s}{s} = struct {{\n", .{ name, "_png"});
-                        try writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
-                        try writer.print("}};\n\n", .{});
+                        try assets_writer.print("pub const {s}{s} = struct {{\n", .{ name, "_png" });
+                        try assets_writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
+                        try assets_writer.print("}};\n\n", .{});
                     }
 
                     // atlases
                     if (std.mem.eql(u8, ext, ".atlas")) {
-                        try writer.print("pub const {s}{s} = struct {{\n", .{name, "_atlas"});
-                        try writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
+                        try assets_writer.print("pub const {s}{s} = struct {{\n", .{ name, "_atlas" });
+                        try assets_writer.print("  pub const path = \"{s}\";\n", .{path_fixed});
 
                         var atlas = Atlas.initFromFile(self.builder.allocator, file) catch unreachable;
-                        
+
                         for (atlas.sprites) |sprite, i| {
-                            var ind = std.mem.lastIndexOf(u8, sprite.name, ".");
-                            var sprite_name = sprite.name[0..ind.?];
-                            try writer.print("  pub const {s} = {};\n", .{sprite_name, i});
+                            var sprite_name = try self.builder.allocator.alloc(u8, sprite.name.len);
+                            _ = std.mem.replace(u8, sprite.name, " ", "_", sprite_name);
+                            _ = std.mem.replace(u8, sprite_name, ".", "_", sprite_name);
+
+                            try assets_writer.print("  pub const {s} = {};\n", .{ sprite_name, i });
                         }
 
-                        try writer.print("}};\n\n", .{});
+                        try assets_writer.print("}};\n\n", .{});
+
+                        // write an animations file if animations are present in the atlas
+                        if (atlas.animations.len > 0) {
+                            var animations_array_list = std.ArrayList(u8).init(self.builder.allocator);
+                            var animations_writer = animations_array_list.writer();
+
+                            // disclaimer
+                            try animations_writer.writeAll("// This is a generated file, do not edit.\n");
+
+                            // top level animations declarations
+                            try animations_writer.writeAll("const std = @import(\"std\");\n");
+                            try animations_writer.writeAll("const assets = @import(\"assets.zig\");\n\n");
+
+                            for (atlas.animations) |animation| {
+                                var animation_name = try self.builder.allocator.alloc(u8, animation.name.len);
+                                _ = std.mem.replace(u8, animation.name, " ", "_", animation_name);
+                                _ = std.mem.replace(u8, animation_name, ".", "_", animation_name);
+
+                                try animations_writer.print("pub var {s} = [_]usize {{\n", .{animation_name});
+                                for (animation.indexes) |index| {
+                                    var sprite_name = try self.builder.allocator.alloc(u8, atlas.sprites[index].name.len);
+                                    _ = std.mem.replace(u8, atlas.sprites[index].name, " ", "_", sprite_name);
+                                    _ = std.mem.replace(u8, sprite_name, ".", "_", sprite_name);
+
+                                    try animations_writer.print("    assets.{s}_atlas.{s},\n", .{name, sprite_name});
+                                }
+                                try animations_writer.print("}};\n", .{});
+                            }
+
+                            try std.fs.cwd().writeFile(animations_output, animations_array_list.items);
+                        }
                     }
                 }
 
-                try std.fs.cwd().writeFile(output, array_list.items);
-
+                try std.fs.cwd().writeFile(assets_output, assets_array_list.items);
             } else {
                 std.debug.print("No assets found!", .{});
             }
