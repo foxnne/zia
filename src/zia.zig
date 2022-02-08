@@ -2,6 +2,7 @@ const std = @import("std");
 const sdl = @import("sdl");
 const imgui = @import("imgui");
 const flecs = @import("flecs");
+const net = @import("net");
 
 const imgui_impl = @import("imgui/implementation.zig");
 
@@ -19,7 +20,7 @@ pub const Config = struct {
     update: ?fn () anyerror!void = null,
     render: ?fn () anyerror!void = null,
     shutdown: ?fn () anyerror!void = null,
-
+    
     window: WindowConfig = WindowConfig{},
 
     update_rate: f64 = 60, // desired fps

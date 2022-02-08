@@ -109,6 +109,7 @@ const Camera = struct {
     }
 
     fn sort(ctx: void, a: Block, b: Block) bool {
+        _ = ctx;
         return a.dist < b.dist;
     }
 };

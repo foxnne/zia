@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 const LibExeObjStep = std.build.LibExeObjStep;
 const Builder = std.build.Builder;
@@ -12,9 +13,6 @@ var enable_imgui: ?bool = null;
 
 pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{});
-
-    // use a different cache folder for macos arm builds
-    b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.arch == std.builtin.Arch.aarch64) "zig-arm-cache" else "zig-cache";
 
     const examples = [_][2][]const u8{
         [_][]const u8{ "mode7", "examples/mode7.zig" },
@@ -61,7 +59,7 @@ pub fn build(b: *Builder) !void {
     comple_shaders_step.dependOn(&res.step);
 }
 
-fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []const u8) *std.build.LibExeObjStep {
+fn createExe(b: *Builder, target: std.zig.CrossTarget, name: []const u8, source: []const u8) *std.build.LibExeObjStep {
     var exe = b.addExecutable(name, source);
     exe.setBuildMode(b.standardReleaseOptions());
     exe.setOutputDir(std.fs.path.join(b.allocator, &[_][]const u8{ b.cache_root, "bin" }) catch unreachable);
@@ -115,11 +113,15 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     flecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/flecs/");
     const flecs_pkg = std.build.Pkg { .name = "flecs", .path = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig"}};
 
+    // networking
+    const net_pkg = std.build.Pkg { .name = "net", .path = .{ .path = prefix_path ++ "src/deps/zig-network/network.zig"}};
+
+
     // zia
     const zia_package = Pkg{
         .name = "zia",
         .path = .{ .path = prefix_path ++ "src/zia.zig"},
-        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg },
+        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg, net_pkg },
     };
     exe.addPackage(zia_package);
 }
