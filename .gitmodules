@@ -10,6 +10,3 @@ url=https://github.com/foxnne/zig-renderkit
 [submodule "src/deps/flecs"]
 	path = src/deps/flecs
 	url = https://github.com/foxnne/zig-flecs.git
-[submodule "src/deps/zig-network"]
-	path = src/deps/zig-network
-	url = https://github.com/foxnne/zig-network.git

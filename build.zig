@@ -80,7 +80,7 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     // only add the build option once!
     if (enable_imgui == null)
         enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
-        
+
     const options = b.addOptions();
     options.addOption(bool, "enable_imgui", enable_imgui.?);
 
@@ -111,17 +111,13 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     // flecs
     const flecs_builder = @import("src/deps/flecs/build.zig");
     flecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/flecs/");
-    const flecs_pkg = std.build.Pkg { .name = "flecs", .path = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig"}};
-
-    // networking
-    const net_pkg = std.build.Pkg { .name = "net", .path = .{ .path = prefix_path ++ "src/deps/zig-network/network.zig"}};
-
+    const flecs_pkg = std.build.Pkg{ .name = "flecs", .path = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig" } };
 
     // zia
     const zia_package = Pkg{
         .name = "zia",
-        .path = .{ .path = prefix_path ++ "src/zia.zig"},
-        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg, net_pkg },
+        .path = .{ .path = prefix_path ++ "src/zia.zig" },
+        .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg },
     };
     exe.addPackage(zia_package);
 }
