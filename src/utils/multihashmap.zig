@@ -31,7 +31,7 @@ pub fn MultiHashMap(comptime K: type, comptime V: type) type {
             }
 
             for (res.value_ptr.items) |item| {
-                if (value == item) {
+                if (std.meta.eql(value, item)) {
                     return;
                 }
             } 
