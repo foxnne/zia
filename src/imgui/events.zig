@@ -66,7 +66,7 @@ pub const Events = struct {
     }
 
     pub fn deinit(self: Events) void {
-        if (clipboard_text) |txt| sdl.SDL_free(txt);
+        if (clipboard_text) |_| sdl.SDL_free(clipboard_text);
 
         // Destroy SDL mouse cursors
         for (self.mouse_cursors) |cursor| {
@@ -193,7 +193,7 @@ pub const Events = struct {
                 io.KeyShift = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_SHIFT)) != 0;
                 io.KeyCtrl = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_CTRL)) != 0;
                 io.KeyAlt = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_ALT)) != 0;
-                if (@import("builtin").target.os.tag == .windows) io.KeySuper = false else io.KeySuper = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_GUI)) != 0;
+                if (builtin.os.tag == .windows) io.KeySuper = false else io.KeySuper = (mod_state & @enumToInt(sdl.SDL_Keymod.KMOD_GUI)) != 0;
                 return io.WantCaptureKeyboard;
             },
             sdl.SDL_WINDOWEVENT => {

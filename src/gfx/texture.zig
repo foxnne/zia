@@ -3,6 +3,7 @@ const stb_image = @import("stb");
 const zia = @import("../zia.zig");
 const imgui = @import("imgui");
 const renderkit = @import("renderkit");
+const renderer = renderkit.renderer;
 const fs = zia.utils.fs;
 
 pub const Texture = struct {
@@ -15,7 +16,7 @@ pub const Texture = struct {
     }
 
     pub fn initDynamic(width: i32, height: i32, filter: renderkit.TextureFilter, wrap: renderkit.TextureWrap) Texture {
-        const img = renderkit.createImage(.{
+        const img = renderer.createImage(.{
             .width = width,
             .height = height,
             .usage = .dynamic,
@@ -34,7 +35,7 @@ pub const Texture = struct {
 
     pub fn initFromFile(allocator: std.mem.Allocator, file: []const u8, filter: renderkit.TextureFilter) !Texture {
         const image_contents = try fs.read(allocator, file);
-        defer allocator.free(image_contents);
+        errdefer allocator.free(image_contents);
 
         var w: c_int = undefined;
         var h: c_int = undefined;
@@ -51,7 +52,7 @@ pub const Texture = struct {
     }
 
     pub fn initWithDataOptions(comptime T: type, width: i32, height: i32, pixels: []T, filter: renderkit.TextureFilter, wrap: renderkit.TextureWrap) Texture {
-        const img = renderkit.createImage(.{
+        const img = renderer.createImage(.{
             .width = width,
             .height = height,
             .min_filter = filter,
@@ -85,7 +86,7 @@ pub const Texture = struct {
     }
 
     pub fn initOffscreen(width: i32, height: i32, filter: renderkit.TextureFilter, wrap: renderkit.TextureWrap) Texture {
-        const img = renderkit.createImage(.{
+        const img = renderer.createImage(.{
             .render_target = true,
             .width = width,
             .height = height,
@@ -102,9 +103,9 @@ pub const Texture = struct {
     }
 
     pub fn initStencil(width: i32, height: i32, filter: renderkit.TextureFilter, wrap: renderkit.TextureWrap) Texture {
-        const img = renderkit.createImage(.{
+        const img = renderer.createImage(.{
             .render_target = true,
-            .pixel_format = .depth_stencil,
+            .pixel_format = .stencil,
             .width = width,
             .height = height,
             .min_filter = filter,
@@ -120,11 +121,11 @@ pub const Texture = struct {
     }
 
     pub fn deinit(self: *const Texture) void {
-        renderkit.destroyImage(self.img);
+        renderer.destroyImage(self.img);
     }
 
     pub fn setData(self: *Texture, comptime T: type, data: []T) void {
-        renderkit.updateImage(T, self.img, data);
+        renderer.updateImage(T, self.img, data);
     }
 
     pub fn imTextureID(self: Texture) imgui.ImTextureID {

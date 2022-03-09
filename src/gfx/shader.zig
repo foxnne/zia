@@ -2,6 +2,7 @@ const std = @import("std");
 const zia = @import("../zia.zig");
 const math = zia.math;
 const rk = zia.renderkit;
+const renderer = rk.renderer;
 const fs = zia.utils.fs;
 
 
@@ -22,11 +23,19 @@ pub const VertexParams = extern struct {
 };
 
 fn defaultVertexShader() [:0]const u8 {
-    return @embedFile("../assets/sprite_vs.glsl");
+    return switch (rk.current_renderer) {
+        .opengl => @embedFile("shaders/sprite_vs.glsl"),
+        .metal => @embedFile("shaders/sprite_vs.metal"),
+        else => @panic("no default vert shader for renderer: " ++ rk.current_renderer),
+    };
 }
 
 fn defaultFragmentShader() [:0]const u8 {
-    return @embedFile("../assets/sprite_fs.glsl");
+    return switch (rk.current_renderer) {
+        .opengl => @embedFile("shaders/sprite_fs.glsl"),
+        .metal => @embedFile("shaders/sprite_fs.metal"),
+        else => @panic("no default vert shader for renderer: " ++ rk.current_renderer),
+    };
 }
 
 pub const Shader = struct {
@@ -69,7 +78,7 @@ pub const Shader = struct {
             if (options.vert) |vert| {
                 // if we were provided an allocator that means this is a file
                 if (options.allocator) |allocator| {
-                    const vert_path = try std.mem.concat(allocator, u8, &[_][]const u8{ vert, ".glsl\x00" });
+                    const vert_path = try std.mem.concat(allocator, u8, &[_][]const u8{ vert, rk.shaderFileExtension(), "\x00" });
                     defer allocator.free(vert_path);
                     break :blk try fs.readZ(allocator, vert_path);
                 }
@@ -80,7 +89,7 @@ pub const Shader = struct {
         };
         const frag = blk: {
             if (options.allocator) |allocator| {
-                const frag_path = try std.mem.concat(allocator, u8, &[_][]const u8{ options.frag, ".glsl" });
+                const frag_path = try std.mem.concat(allocator, u8, &[_][]const u8{ options.frag, rk.shaderFileExtension() });
                 defer allocator.free(frag_path);
                 break :blk try fs.readZ(allocator, frag_path);
             }
@@ -88,18 +97,18 @@ pub const Shader = struct {
         };
 
         return Shader{
-            .shader = rk.createShaderProgram(VertUniformT, FragUniformT, .{ .vs = vert, .fs = frag }),
+            .shader = renderer.createShaderProgram(VertUniformT, FragUniformT, .{ .vs = vert, .fs = frag }),
             .onPostBind = options.onPostBind,
             .onSetTransformMatrix = options.onSetTransformMatrix,
         };
     }
 
     pub fn deinit(self: Shader) void {
-        rk.destroyShaderProgram(self.shader);
+        renderer.destroyShaderProgram(self.shader);
     }
 
     pub fn bind(self: *Shader) void {
-        rk.useShaderProgram(self.shader);
+        renderer.useShaderProgram(self.shader);
         if (self.onPostBind) |onPostBind| onPostBind(self);
     }
 
@@ -113,11 +122,11 @@ pub const Shader = struct {
     }
 
     pub fn setVertUniform(self: Shader, comptime VertUniformT: type, value: *VertUniformT) void {
-        rk.setShaderProgramUniformBlock(VertUniformT, self.shader, .vs, value);
+        renderer.setShaderProgramUniformBlock(VertUniformT, self.shader, .vs, value);
     }
 
     pub fn setFragUniform(self: Shader, comptime FragUniformT: type, value: *FragUniformT) void {
-        rk.setShaderProgramUniformBlock(FragUniformT, self.shader, .fs, value);
+        renderer.setShaderProgramUniformBlock(FragUniformT, self.shader, .fs, value);
     }
 };
 

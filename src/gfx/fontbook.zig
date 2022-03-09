@@ -118,7 +118,7 @@ pub const FontBook = struct {
     pub fn getTextIterator(self: *FontBook, str: []const u8) fons.TextIter {
         var iter = std.mem.zeroes(fons.TextIter);
         const res = fons.fonsTextIterInit(self.stash, &iter, 0, 0, str.ptr, @intCast(c_int, str.len));
-        if (res == 0) std.log.warn("getTextIterator failed! Make sure you have added a font.\n", .{});
+        if (res == 0) std.log.debug("getTextIterator failed! Make sure you have added a font.\n", .{});
         return iter;
     }
 
@@ -153,9 +153,8 @@ pub const FontBook = struct {
     }
 
     fn renderUpdate(ctx: ?*anyopaque, rect: [*c]c_int, data: [*c]const u8) callconv(.C) c_int {
-        // TODO: only update the rect that changed
         _ = rect;
-
+        // TODO: only update the rect that changed
         var self = @ptrCast(*FontBook, @alignCast(@alignOf(FontBook), ctx));
         if (!self.tex_dirty or self.last_update == zia.time.frames()) {
             self.tex_dirty = true;

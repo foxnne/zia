@@ -3,6 +3,7 @@ const zia = @import("zia");
 const gfx = zia.gfx;
 usingnamespace @import("imgui");
 
+pub const renderer: zia.renderkit.Renderer = .opengl;
 pub const enable_imgui = true;
 
 var clear_color = zia.math.Color.zia;
@@ -22,7 +23,7 @@ fn init() !void {
 }
 
 fn update() !void {
-    imgui.igShowDemoWindow(null);
+    igShowDemoWindow(null);
 
     if (zia.input.keyDown(.a)) {
         camera.position.x += 100 * zia.time.dt();
@@ -39,7 +40,7 @@ fn update() !void {
 fn render() !void {
     gfx.beginPass(.{ .color = clear_color, .trans_mat = camera.transMat() });
 
-    imgui.igText("WASD moves camera " ++ imgui.icons.camera);
+    igText("WASD moves camera " ++ icons.camera);
 
     var color = clear_color.asArray();
     if (igColorEdit4("Clear Color", &color[0], ImGuiColorEditFlags_NoInputs)) {
@@ -54,10 +55,10 @@ fn render() !void {
     var world = camera.screenToWorld(mouse);
 
     str = try std.fmt.bufPrintZ(&buf, "Mouse Pos: {d:.2}, {d:.2}", .{ mouse.x, mouse.y });
-    imgui.igText(str);
+    igText(str);
 
     str = try std.fmt.bufPrintZ(&buf, "World Pos: {d:.2}, {d:.2}", .{ world.x, world.y });
-    imgui.igText(str);
+    igText(str);
 
     if (ogButton("Camera Pos to 0,0")) camera.position = .{};
     if (ogButton("Camera Pos to screen center")) {

@@ -5,6 +5,8 @@ const gfx = zia.gfx;
 const math = zia.math;
 const shaders = @import("assets/shaders.zig");
 
+pub const renderer: zia.renderkit.Renderer = .opengl;
+
 const Texture = zia.gfx.Texture;
 const Color = zia.math.Color;
 
@@ -251,7 +253,7 @@ fn updateMode7Uniforms() void {
 }
 
 fn drawPlane() void {
-    // bind our map to the second texture slot and we need a full screen render for the shader so we just draw a full screen rect
+    // bind out map to the second texture slot and we need a full screen render for the shader so we just draw a full screen rect
     gfx.draw.bindTexture(map, 1);
     const drawable_size = zia.window.size();
     gfx.draw.rect(.{}, @intToFloat(f32, drawable_size.w), @intToFloat(f32, drawable_size.h), math.Color.white);

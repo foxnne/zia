@@ -3,6 +3,7 @@ const zia = @import("zia");
 const math = zia.math;
 const Color = math.Color;
 
+pub const renderer: zia.renderkit.Renderer = .opengl;
 var tri_batch: zia.gfx.TriangleBatcher = undefined;
 
 pub fn main() !void {
