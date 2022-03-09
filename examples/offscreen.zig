@@ -4,14 +4,13 @@ const math = zia.math;
 const gfx = zia.gfx;
 const draw = gfx.draw;
 
-pub const renderer: zia.renderkit.Renderer = .opengl;
 var rng = std.rand.DefaultPrng.init(0x12345678);
 
 pub fn range(comptime T: type, at_least: T, less_than: T) T {
     if (@typeInfo(T) == .Int) {
-        return rng.random.intRangeLessThanBiased(T, at_least, less_than);
+        return rng.random().intRangeLessThanBiased(T, at_least, less_than);
     } else if (@typeInfo(T) == .Float) {
-        return at_least + rng.random.float(T) * (less_than - at_least);
+        return at_least + rng.random().float(T) * (less_than - at_least);
     }
     unreachable;
 }
@@ -134,7 +133,7 @@ fn render() !void {
 fn makeThings(n: usize, tex: gfx.Texture) []Thing {
     var the_things = std.testing.allocator.alloc(Thing, n) catch unreachable;
 
-    for (the_things) |*thing, i| {
+    for (the_things) |*thing| {
         thing.* = Thing.init(tex);
     }
 

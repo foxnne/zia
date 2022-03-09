@@ -20,10 +20,10 @@ pub const Matrix3x2 = extern struct {
 
     pub const identity = Matrix3x2{ .data = .{ 1, 0, 0, 1, 0, 0 } };
 
-    pub fn format(self: Matrix3x2, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
+    pub fn format(self: Mat32, comptime fmt: []const u8, options: std.fmt.FormatOptions, writer: anytype) !void {
         _ = fmt;
         _ = options;
-        return writer.print("{d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}", .{self.data[0], self.data[1], self.data[2], self.data[3], self.data[4], self.data[5]});
+        return writer.print("{d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}, {d:0.6}", .{ self.data[0], self.data[1], self.data[2], self.data[3], self.data[4], self.data[5] });
     }
 
     pub fn init() Matrix3x2 {
@@ -141,14 +141,7 @@ pub const Matrix3x2 = extern struct {
         };
     }
 
-    pub fn scaleVec2(self: Matrix3x2, size: Vector2) Vector2 {
-        return .{
-            .x = size.x * self.data[0],
-            .y = size.y * self.data[3],
-        };
-    }
-
-    pub fn transformVec2Slice(self: Matrix3x2, comptime T: type, dst: []T, src: []Vector2) void {
+    pub fn transformVec2Slice(self: Mat32, comptime T: type, dst: []T, src: []Vec2) void {
         for (src) |_, i| {
             const x = src[i].x * self.data[0] + src[i].y * self.data[2] + self.data[4];
             const y = src[i].x * self.data[1] + src[i].y * self.data[3] + self.data[5];
@@ -168,10 +161,10 @@ pub const Matrix3x2 = extern struct {
         }
     }
 
-    pub fn transformVertexSlice(self: Matrix3x2, dst: []Vertex) void {
+    pub fn transformVertexSlice(self: Mat32, dst: []Vertex) void {
         for (dst) |_, i| {
-            const x = dst[i].position.x * self.data[0] + dst[i].position.y * self.data[2] + self.data[4];
-            const y = dst[i].position.x * self.data[1] + dst[i].position.y * self.data[3] + self.data[5];
+            const x = dst[i].pos.x * self.data[0] + dst[i].pos.y * self.data[2] + self.data[4];
+            const y = dst[i].pos.x * self.data[1] + dst[i].pos.y * self.data[3] + self.data[5];
 
             // we defer setting because src and dst are the same
             dst[i].position.x = x;
@@ -191,8 +184,10 @@ test "mat32 tests" {
     mat3.setTransform(.{ .x = 10, .y = 10 });
     std.testing.expectEqual(mat3, mat1);
 
-    _ = Matrix3x2.initOrtho(640, 480);
-    _ = Matrix3x2.initOrthoOffCenter(640, 480);
+    const mat4 = Matrix3x2.initOrtho(640, 480);
+    _ = mat4;
+    const mat5 = Matrix3x2.initOrthoOffCenter(640, 480);
+    _ = mat5;
 
     var mat6 = Matrix3x2.init();
     mat6.translate(10, 20);

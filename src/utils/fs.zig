@@ -7,7 +7,8 @@ pub fn read(allocator: std.mem.Allocator, filename: []const u8) ![]u8 {
 
     const file_size = try file.getEndPos();
     var buffer = try allocator.alloc(u8, file_size);
-    _ = try file.read(buffer[0..buffer.len]);
+    const bytes_read = try file.read(buffer[0..buffer.len]);
+    _ = bytes_read;
 
     return buffer;
 }
@@ -19,8 +20,9 @@ pub fn readZ(allocator: std.mem.Allocator, filename: []const u8) ![:0]u8 {
 
     const file_size = try file.getEndPos();
     var buffer = try allocator.alloc(u8, file_size + 1);
-    _ = try file.read(buffer[0..file_size]);
+    const bytes_read = try file.read(buffer[0..file_size]);
+    _ = bytes_read;
     buffer[file_size] = 0;
 
-    return buffer[0..file_size: 0];
+    return buffer[0..file_size :0];
 }

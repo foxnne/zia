@@ -1,4 +1,3 @@
-
 pub extern var stbi_write_tga_with_rle: c_int;
 pub extern var stbi_write_png_compression_level: c_int;
 pub extern var stbi_write_force_png_filter: c_int;

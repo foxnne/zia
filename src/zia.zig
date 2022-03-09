@@ -48,17 +48,10 @@ pub var input: Input = undefined;
 pub fn run(config: Config) !void {
     window = try Window.init(config.window);
 
-    var metal_setup = renderkit.MetalSetup{};
-    if (renderkit.current_renderer == .metal) {
-        var metal_view = sdl.SDL_Metal_CreateView(window.sdl_window);
-        metal_setup.ca_layer = sdl.SDL_Metal_GetLayer(metal_view);
-    }
-    renderkit.renderer.setup(.{
-        .allocator = &std.testing.allocator,
+    renderkit.setup(.{
         .gl_loader = sdl.SDL_GL_GetProcAddress,
         .disable_vsync = config.window.disable_vsync,
-        .metal = metal_setup,
-    });
+    }, std.heap.c_allocator);
 
     gfx.init();
     time = Time.init(config.update_rate);
@@ -78,10 +71,10 @@ pub fn run(config: Config) !void {
             gfx.beginPass(.{ .color_action = .load });
             imgui_impl.render();
             gfx.endPass();
-            if (renderkit.current_renderer == .opengl) _ = sdl.SDL_GL_MakeCurrent(window.sdl_window, window.gl_ctx);
+            _ = sdl.SDL_GL_MakeCurrent(window.sdl_window, window.gl_ctx);
         }
 
-        if (renderkit.current_renderer == .opengl) sdl.SDL_GL_SwapWindow(window.sdl_window);
+        sdl.SDL_GL_SwapWindow(window.sdl_window);
         gfx.commitFrame();
         input.newFrame();
     }
@@ -89,7 +82,7 @@ pub fn run(config: Config) !void {
     if (enable_imgui) imgui_impl.deinit();
     if (config.shutdown) |shutdown| try shutdown();
     gfx.deinit();
-    renderkit.renderer.shutdown();
+    renderkit.shutdown();
     window.deinit();
     sdl.SDL_Quit();
 }

@@ -47,7 +47,7 @@ pub const Time = struct {
     }
 
     pub fn ticks(self: Time) u32 {
-         _ = self;
+        _ = self;
         return sdl.SDL_GetTicks();
     }
 
@@ -74,14 +74,15 @@ pub const Time = struct {
     }
 
     /// returns the time in milliseconds since the last call
-    pub fn laptime(self: Time, last_time: *u64) f64 {
-        const tmp = last_time;
-        const _now = self.now();
+    pub fn laptime(self: Time, last_time: *f64) f64 {
+        var tmp = last_time;
+        // now
+        const n = self.now();
 
-        const _dt: f64 = if (tmp.* != 0) {
-            @intToFloat(f64, ((_now - tmp.*) * 1000.0) / @intToFloat(f64, sdl.SDL_GetPerformanceFrequency()));
+        const curr_dt: f64 = if (tmp.* != 0) {
+            @intToFloat(f64, ((n - tmp.*) * 1000.0) / @intToFloat(f64, sdl.SDL_GetPerformanceFrequency()));
         } else 0;
-        return _dt;
+        return curr_dt;
     }
 
     pub fn toSeconds(self: Time, perf_counter_time: u64) f64 {
@@ -174,6 +175,15 @@ pub const Time = struct {
 
             // spiral of death protection
             if (self.frame_accumulator > self.desired_frametime * 8) self.resync = true;
+
+            // TODO: why does vsync not work on x64 macs all of a sudden?!?! forced sleep.
+            if (@import("builtin").os.tag == .macos and @import("builtin").target.cpu.arch == std.Target.Cpu.Arch.x86_64) {
+                const elapsed = self.desired_frametime - delta_time;
+                if (elapsed > 0) {
+                    const diff = @intToFloat(f32, elapsed) / @intToFloat(f32, sdl.SDL_GetPerformanceFrequency());
+                    std.time.sleep(@floatToInt(u64, diff * 1000000000));
+                }
+            }
 
             // TODO: should we zero out the frame_accumulator here? timer resync if requested so reset all state
             if (self.resync) {

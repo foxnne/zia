@@ -7,8 +7,14 @@ const renderkit = zia.renderkit;
 pub const Mode7Shader = gfx.ShaderState(Mode7Params);
 
 pub fn createMode7Shader() Mode7Shader {
-    const frag = if (renderkit.current_renderer == .opengl) @embedFile("shaders/mode7_fs.glsl") else @embedFile("shaders/mode7_fs.metal");
+    const frag = @embedFile("shaders/mode7_fs.glsl");
     return Mode7Shader.init(.{ .frag = frag, .onPostBind = Mode7Shader.onPostBind });
+}
+
+pub fn createMrtShader() !gfx.Shader {
+    const vert = @embedFile("shaders/sprite_vs.glsl");
+    const frag = @embedFile("shaders/mrt_fs.glsl");
+    return try gfx.Shader.initWithVertFrag(VertexParams, struct { pub const metadata = .{ .images = .{ "main_tex" } }; }, .{ .frag = frag, .vert = vert });
 }
 
 

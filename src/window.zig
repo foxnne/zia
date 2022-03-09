@@ -35,11 +35,7 @@ pub const Window = struct {
         if (config.fullscreen) flags |= sdl.SDL_WINDOW_FULLSCREEN_DESKTOP;
         if (config.maximized) flags |= sdl.SDL_WINDOW_MAXIMIZED;
 
-        switch (renderkit.current_renderer) {
-            .opengl => window.createOpenGlWindow(config, flags),
-            .metal => window.createMetalWindow(config, flags),
-            else => unreachable,
-        }
+        window.createOpenGlWindow(config, flags);
 
         if (config.disable_vsync) _ = sdl.SDL_GL_SetSwapInterval(0);
 
@@ -49,7 +45,7 @@ pub const Window = struct {
 
     pub fn deinit(self: Window) void {
         sdl.SDL_DestroyWindow(self.sdl_window);
-        if (renderkit.current_renderer == .opengl) sdl.SDL_GL_DeleteContext(self.gl_ctx);
+        sdl.SDL_GL_DeleteContext(self.gl_ctx);
     }
 
     fn createOpenGlWindow(self: *Window, config: WindowConfig, flags: c_int) void {
@@ -69,17 +65,6 @@ pub const Window = struct {
         };
 
         self.gl_ctx = sdl.SDL_GL_CreateContext(self.sdl_window);
-    }
-
-    fn createMetalWindow(self: *Window, config: WindowConfig, flags: c_int) void {
-        _ = sdl.SDL_SetHint(sdl.SDL_HINT_RENDER_DRIVER, "metal");
-        _ = sdl.SDL_InitSubSystem(sdl.SDL_INIT_VIDEO);
-
-        var window_flags = flags | sdl.SDL_WINDOW_METAL;
-        self.sdl_window = sdl.SDL_CreateWindow(config.title, sdl.SDL_WINDOWPOS_UNDEFINED, sdl.SDL_WINDOWPOS_UNDEFINED, config.width, config.height, @bitCast(u32, window_flags)) orelse {
-            sdl.SDL_Log("Unable to create window: %s", sdl.SDL_GetError());
-            @panic("no window");
-        };
     }
 
     pub fn handleEvent(self: *Window, event: *sdl.SDL_WindowEvent) void {
@@ -112,11 +97,7 @@ pub const Window = struct {
     pub fn drawableSize(self: Window) struct { w: c_int, h: c_int } {
         var w: c_int = 0;
         var h: c_int = 0;
-        switch (renderkit.current_renderer) {
-            .opengl => sdl.SDL_GL_GetDrawableSize(self.sdl_window, &w, &h),
-            .metal => sdl.SDL_Metal_GetDrawableSize(self.sdl_window, &w, &h),
-            else => unreachable,
-        }
+        sdl.SDL_GL_GetDrawableSize(self.sdl_window, &w, &h);
 
         return .{ .w = w, .h = h };
     }
@@ -155,7 +136,7 @@ pub const Window = struct {
         return (sdl.SDL_GetWindowFlags(self.sdl_window) & @intCast(u32, @enumToInt(sdl.SDL_WindowFlags.SDL_WINDOW_RESIZABLE))) != 0;
     }
 
-    pub fn setResizable(self: Window, _resizable: bool) void {
-        sdl.SDL_SetWindowResizable(self.sdl_window, _resizable);
+    pub fn setResizable(self: Window, new_resizable: bool) void {
+        sdl.SDL_SetWindowResizable(self.sdl_window, new_resizable);
     }
 };

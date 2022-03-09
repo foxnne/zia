@@ -1,4 +1,5 @@
-pub usingnamespace @import("wrapper.zig");
+const w = @import("wrapper.zig");
+pub usingnamespace w;
 
 const Self = @This();
 
@@ -38,7 +39,6 @@ pub const struct___sFILE = extern struct {
     _offset: fpos_t,
 };
 pub const FILE = struct___sFILE;
-
 
 pub const struct_ImGuiViewportP = extern struct {
     _ImGuiViewport: ImGuiViewport,
@@ -2900,17 +2900,17 @@ pub extern fn igGetIDStrStr(str_id_begin: [*c]const u8, str_id_end: [*c]const u8
 pub extern fn igGetIDPtr(ptr_id: ?*const anyopaque) ImGuiID;
 pub extern fn igTextUnformatted(text: [*c]const u8, text_end: [*c]const u8) void;
 pub extern fn igText(fmt: [*c]const u8, ...) void;
-pub extern fn igTextV(fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igTextV(fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igTextColored(col: ImVec4, fmt: [*c]const u8, ...) void;
-pub extern fn igTextColoredV(col: ImVec4, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igTextColoredV(col: ImVec4, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igTextDisabled(fmt: [*c]const u8, ...) void;
-pub extern fn igTextDisabledV(fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igTextDisabledV(fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igTextWrapped(fmt: [*c]const u8, ...) void;
-pub extern fn igTextWrappedV(fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igTextWrappedV(fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igLabelText(label: [*c]const u8, fmt: [*c]const u8, ...) void;
-pub extern fn igLabelTextV(label: [*c]const u8, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igLabelTextV(label: [*c]const u8, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igBulletText(fmt: [*c]const u8, ...) void;
-pub extern fn igBulletTextV(fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igBulletTextV(fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igButton(label: [*c]const u8, size: ImVec2) bool;
 pub extern fn igSmallButton(label: [*c]const u8) bool;
 pub extern fn igInvisibleButton(str_id: [*c]const u8, size: ImVec2, flags: ImGuiButtonFlags) bool;
@@ -2977,13 +2977,13 @@ pub extern fn igSetColorEditOptions(flags: ImGuiColorEditFlags) void;
 pub extern fn igTreeNodeStr(label: [*c]const u8) bool;
 pub extern fn igTreeNodeStrStr(str_id: [*c]const u8, fmt: [*c]const u8, ...) bool;
 pub extern fn igTreeNodePtr(ptr_id: ?*const anyopaque, fmt: [*c]const u8, ...) bool;
-pub extern fn igTreeNodeVStr(str_id: [*c]const u8, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) bool;
-pub extern fn igTreeNodeVPtr(ptr_id: ?*const anyopaque, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) bool;
+pub extern fn igTreeNodeVStr(str_id: [*c]const u8, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) bool;
+pub extern fn igTreeNodeVPtr(ptr_id: ?*const anyopaque, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) bool;
 pub extern fn igTreeNodeExStr(label: [*c]const u8, flags: ImGuiTreeNodeFlags) bool;
 pub extern fn igTreeNodeExStrStr(str_id: [*c]const u8, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, ...) bool;
 pub extern fn igTreeNodeExPtr(ptr_id: ?*const anyopaque, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, ...) bool;
-pub extern fn igTreeNodeExVStr(str_id: [*c]const u8, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) bool;
-pub extern fn igTreeNodeExVPtr(ptr_id: ?*const anyopaque, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) bool;
+pub extern fn igTreeNodeExVStr(str_id: [*c]const u8, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) bool;
+pub extern fn igTreeNodeExVPtr(ptr_id: ?*const anyopaque, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) bool;
 pub extern fn igTreePushStr(str_id: [*c]const u8) void;
 pub extern fn igTreePushPtr(ptr_id: ?*const anyopaque) void;
 pub extern fn igTreePop() void;
@@ -3017,7 +3017,7 @@ pub extern fn igMenuItemBoolPtr(label: [*c]const u8, shortcut: [*c]const u8, p_s
 pub extern fn igBeginTooltip() void;
 pub extern fn igEndTooltip() void;
 pub extern fn igSetTooltip(fmt: [*c]const u8, ...) void;
-pub extern fn igSetTooltipV(fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn igSetTooltipV(fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn igBeginPopup(str_id: [*c]const u8, flags: ImGuiWindowFlags) bool;
 pub extern fn igBeginPopupModal(name: [*c]const u8, p_open: [*c]bool, flags: ImGuiWindowFlags) bool;
 pub extern fn igEndPopup() void;
@@ -3187,7 +3187,7 @@ pub extern fn ImGuiTextBuffer_clear(self: [*c]ImGuiTextBuffer) void;
 pub extern fn ImGuiTextBuffer_reserve(self: [*c]ImGuiTextBuffer, capacity: c_int) void;
 pub extern fn ImGuiTextBuffer_c_str(self: [*c]ImGuiTextBuffer) [*c]const u8;
 pub extern fn ImGuiTextBuffer_append(self: [*c]ImGuiTextBuffer, str: [*c]const u8, str_end: [*c]const u8) void;
-pub extern fn ImGuiTextBuffer_appendfv(self: [*c]ImGuiTextBuffer, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) void;
+pub extern fn ImGuiTextBuffer_appendfv(self: [*c]ImGuiTextBuffer, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) void;
 pub extern fn ImGuiStoragePair_ImGuiStoragePairInt(_key: ImGuiID, _val_i: c_int) [*c]ImGuiStoragePair;
 pub extern fn ImGuiStoragePair_destroy(self: [*c]ImGuiStoragePair) void;
 pub extern fn ImGuiStoragePair_ImGuiStoragePairFloat(_key: ImGuiID, _val_f: f32) [*c]ImGuiStoragePair;
@@ -3382,7 +3382,7 @@ pub extern fn igImStristr(haystack: [*c]const u8, haystack_end: [*c]const u8, ne
 pub extern fn igImStrTrimBlanks(str: [*c]u8) void;
 pub extern fn igImStrSkipBlank(str: [*c]const u8) [*c]const u8;
 pub extern fn igImFormatString(buf: [*c]u8, buf_size: usize, fmt: [*c]const u8, ...) c_int;
-pub extern fn igImFormatStringV(buf: [*c]u8, buf_size: usize, fmt: [*c]const u8, args: [*c]Self.struct___va_list_tag) c_int;
+pub extern fn igImFormatStringV(buf: [*c]u8, buf_size: usize, fmt: [*c]const u8, args: [*c]w.struct___va_list_tag) c_int;
 pub extern fn igImParseFormatFindStart(format: [*c]const u8) [*c]const u8;
 pub extern fn igImParseFormatFindEnd(format: [*c]const u8) [*c]const u8;
 pub extern fn igImParseFormatTrimDecorations(format: [*c]const u8, buf: [*c]u8, buf_size: usize) [*c]const u8;

@@ -65,7 +65,7 @@ pub const Quad = extern struct {
     t1: f32,
 };
 
-pub const FONSfont =opaque{};
+pub const FONSfont = opaque {};
 
 pub const TextIter = extern struct {
     x: f32,
