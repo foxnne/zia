@@ -35,12 +35,8 @@ pub const Window = struct {
         if (config.fullscreen) flags |= sdl.SDL_WINDOW_FULLSCREEN_DESKTOP;
         if (config.maximized) flags |= sdl.SDL_WINDOW_MAXIMIZED;
 
-        switch (renderkit.current_renderer) {
-            .opengl => window.createOpenGlWindow(config, flags),
-            .metal => window.createMetalWindow(config, flags),
-            else => unreachable,
-        }
-
+        window.createOpenGlWindow(config, flags);
+            
         if (config.disable_vsync) _ = sdl.SDL_GL_SetSwapInterval(0);
 
         window.id = sdl.SDL_GetWindowID(window.sdl_window);
@@ -49,7 +45,7 @@ pub const Window = struct {
 
     pub fn deinit(self: Window) void {
         sdl.SDL_DestroyWindow(self.sdl_window);
-        if (renderkit.current_renderer == .opengl) sdl.SDL_GL_DeleteContext(self.gl_ctx);
+        sdl.SDL_GL_DeleteContext(self.gl_ctx);
     }
 
     fn createOpenGlWindow(self: *Window, config: WindowConfig, flags: c_int) void {
@@ -112,11 +108,7 @@ pub const Window = struct {
     pub fn drawableSize(self: Window) struct { w: c_int, h: c_int } {
         var w: c_int = 0;
         var h: c_int = 0;
-        switch (renderkit.current_renderer) {
-            .opengl => sdl.SDL_GL_GetDrawableSize(self.sdl_window, &w, &h),
-            .metal => sdl.SDL_Metal_GetDrawableSize(self.sdl_window, &w, &h),
-            else => unreachable,
-        }
+        sdl.SDL_GL_GetDrawableSize(self.sdl_window, &w, &h);
 
         return .{ .w = w, .h = h };
     }

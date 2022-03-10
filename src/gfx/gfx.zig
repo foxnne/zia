@@ -29,11 +29,17 @@ pub const Vertex = extern struct {
 };
 
 pub const PassConfig = struct {
-    color_action: rk.ClearAction = .clear,
+    pub const ColorAttachmentAction = extern struct {
+        clear: bool = true,
+        color: math.Color = math.Color.zia,
+    };
+
+    clear_color: bool = true,
     color: math.Color = math.Color.zia,
-    stencil_action: rk.ClearAction = .dont_care,
+    mrt_colors: [3]ColorAttachmentAction = [_]ColorAttachmentAction{.{}} ** 3,
+    clear_stencil: bool = false,
     stencil: u8 = 0,
-    depth_action: rk.ClearAction = .dont_care,
+    clear_depth: bool = false,
     depth: f64 = 0,
 
     trans_mat: ?math.Matrix3x2 = null,
@@ -41,14 +47,22 @@ pub const PassConfig = struct {
     pass: ?OffscreenPass = null,
 
     pub fn asClearCommand(self: PassConfig) rk.ClearCommand {
-        return .{
-            .color = self.color.asArray(),
-            .color_action = self.color_action,
-            .stencil_action = self.stencil_action,
-            .stencil = self.stencil,
-            .depth_action = self.depth_action,
-            .depth = self.depth,
-        };
+        var cmd = rk.ClearCommand{};
+        cmd.colors[0].clear = self.clear_color;
+        cmd.colors[0].color = self.color.asArray();
+
+        for (self.mrt_colors) |mrt_color, i| {
+            cmd.colors[i + 1] = .{
+                .clear = mrt_color.clear,
+                .color = mrt_color.color.asArray(),
+            };
+        }
+
+        cmd.clear_stencil = self.clear_stencil;
+        cmd.stencil = self.stencil;
+        cmd.clear_depth = self.clear_depth;
+        cmd.depth = self.depth;
+        return cmd;
     }
 };
 
@@ -87,16 +101,14 @@ pub fn beginPass(config: PassConfig) void {
     Self.draw.batcher.begin();
 
     if (config.pass) |pass| {
-        rk.renderer.beginPass(pass.pass, clear_command);
+        rk.beginPass(pass.pass, clear_command);
         // inverted for OpenGL offscreen passes
-        if (rk.current_renderer == .opengl) {
-            proj_mat = math.Matrix3x2.initOrthoInverted(pass.color_texture.width, pass.color_texture.height);
-        } else {
-            proj_mat = math.Matrix3x2.initOrtho(pass.color_texture.width, pass.color_texture.height);
-        }
+        
+         proj_mat = math.Matrix3x2.initOrthoInverted(pass.color_texture.width, pass.color_texture.height);
+        
     } else {
         const size = zia.window.drawableSize();
-        rk.renderer.beginDefaultPass(clear_command, size.w, size.h);
+        rk.beginDefaultPass(clear_command, size.w, size.h);
         proj_mat = math.Matrix3x2.initOrtho(@intToFloat(f32, size.w), @intToFloat(f32, size.h));
     }
 
@@ -114,12 +126,12 @@ pub fn beginPass(config: PassConfig) void {
 pub fn endPass() void {
     setShader(null);
     Self.draw.batcher.end();
-    rk.renderer.endPass();
+    rk.endPass();
 }
 
 /// if we havent yet blitted to the screen do so now
 pub fn commitFrame() void {
-    rk.renderer.commitFrame();
+    rk.commitFrame();
 }
 
 // import all the drawing methods
