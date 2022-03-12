@@ -31,7 +31,7 @@ pub const Vertex = extern struct {
 pub const PassConfig = struct {
     pub const ColorAttachmentAction = extern struct {
         clear: bool = true,
-        color: math.Color = math.Color.zia,
+        color: math.Color = math.Color.black,
     };
 
     clear_color: bool = true,
