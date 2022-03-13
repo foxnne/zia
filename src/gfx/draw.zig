@@ -14,7 +14,7 @@ pub const draw = struct {
 
     pub fn init() void {
         white_tex = Texture.initSingleColor(0xFFFFFFFF);
-        batcher = gfx.Batcher.init(std.testing.allocator, 1000);
+        batcher = gfx.Batcher.init(std.heap.c_allocator, 1000);
 
         fontbook = gfx.FontBook.init(std.testing.allocator, 128, 128, .nearest) catch unreachable;
         _ = fontbook.addFontMem("ProggyTiny", @embedFile("../assets/ProggyTiny.ttf"), false);
@@ -76,7 +76,7 @@ pub const draw = struct {
             .sy = if (options.flipY) -options.scaleY else options.scaleY,
             .ox = @intToFloat(f32, s.origin.x),
             .oy = @intToFloat(f32, s.origin.y),
-            .angle =  options.rotation * std.math.pi/180,
+            .angle = options.rotation * std.math.pi / 180,
         });
 
         quad.setImageDimensions(t.width, t.height);
@@ -84,10 +84,17 @@ pub const draw = struct {
         batcher.draw(t, quad, mat, options.color);
     }
 
-    pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook) void {
+    const TextOptions = struct {
+        rotation: f32 = 0,
+        scale_x: f32 = 1,
+        scale_y: f32 = 1,
+        alignment: gfx.FontBook.Align = .default,
+        color: math.Color = math.Color.white,
+    };
+
+    pub fn text(str: []const u8, x: f32, y: f32, fb: ?*gfx.FontBook, options: TextOptions) void {
         var book = fb orelse fontbook;
-        // TODO: dont hardcode scale as 4
-        var matrix = math.Matrix3x2.initTransform(.{ .x = x, .y = y, .sx = 2, .sy = 2 });
+        var matrix = math.Matrix3x2.initTransform(.{ .x = x, .y = y, .sx = options.scale_x, .sy = options.scale_y, .angle = options.rotation });
 
         var fons_quad = book.getQuad();
         var iter = book.getTextIterator(str);
@@ -102,29 +109,7 @@ pub const draw = struct {
             quad.uvs[2] = .{ .x = fons_quad.s1, .y = fons_quad.t1 };
             quad.uvs[3] = .{ .x = fons_quad.s0, .y = fons_quad.t1 };
 
-            batcher.draw(book.texture.?, quad, matrix, math.Color{ .value = iter.color });
-        }
-    }
-
-    pub fn textOptions(str: []const u8, fb: ?*gfx.FontBook, options: struct { x: f32, y: f32, rot: f32 = 0, sx: f32 = 1, sy: f32 = 1, alignment: gfx.FontBook.Align = .default, color: math.Color = math.Color.white }) void {
-        var book = fb orelse fontbook;
-        var matrix = math.Matrix3x2.initTransform(.{ .x = options.x, .y = options.y, .angle = options.rot, .sx = options.sx, .sy = options.sy });
-        book.setAlign(options.alignment);
-
-        var fons_quad = book.getQuad();
-        var iter = book.getTextIterator(str);
-        while (book.textIterNext(&iter, &fons_quad)) {
-            quad.positions[0] = .{ .x = fons_quad.x0, .y = fons_quad.y0 };
-            quad.positions[1] = .{ .x = fons_quad.x1, .y = fons_quad.y0 };
-            quad.positions[2] = .{ .x = fons_quad.x1, .y = fons_quad.y1 };
-            quad.positions[3] = .{ .x = fons_quad.x0, .y = fons_quad.y1 };
-
-            quad.uvs[0] = .{ .x = fons_quad.s0, .y = fons_quad.t0 };
-            quad.uvs[1] = .{ .x = fons_quad.s1, .y = fons_quad.t0 };
-            quad.uvs[2] = .{ .x = fons_quad.s1, .y = fons_quad.t1 };
-            quad.uvs[3] = .{ .x = fons_quad.s0, .y = fons_quad.t1 };
-
-            batcher.draw(book.texture.?, quad, matrix, options.color);
+            batcher.draw(book.texture.?, quad, matrix,  options.color);
         }
     }
 
