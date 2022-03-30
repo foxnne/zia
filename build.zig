@@ -128,6 +128,7 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     const zenet_builder = @import("src/deps/zenet/build.zig");
     const zenet_pkg = std.build.Pkg{ .name = "zenet", .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig"}};
     zenet_builder.link(b, exe);
+    exe.addPackage(zenet_pkg);
 
     // zia
     const zia_package = Pkg{
