@@ -9,8 +9,6 @@ const Pkg = std.build.Pkg;
 const renderkit_build = @import("src/deps/renderkit/build.zig");
 const ShaderCompileStep = renderkit_build.ShaderCompileStep;
 
-var enable_imgui: ?bool = null;
-
 pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{});
 
@@ -78,11 +76,24 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
 
     // only add the build option once!
-    if (enable_imgui == null)
-        enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
+    // if (enable_imgui == null)
+    //     enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
 
-    const options = b.addOptions();
-    options.addOption(bool, "enable_imgui", enable_imgui.?);
+    const exe_options = b.addOptions();
+    exe.addOptions("build_options", exe_options);
+
+    //const options = b.addOptions();
+    exe_options.addOption(
+        bool, 
+        "enable_imgui", 
+        b.option(bool, "enable_imgui", "Sets enable_imgui flag to true.") orelse false,
+    );
+
+    exe_options.addOption(
+        bool, 
+        "is_server", 
+        b.option(bool, "is_server", "Sets is_server flag to true.") orelse false,
+    );
 
     // sdl
     const sdl_builder = @import("src/deps/sdl/build.zig");
