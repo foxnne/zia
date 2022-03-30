@@ -2,7 +2,7 @@ const std = @import("std");
 const sdl = @import("sdl");
 const imgui = @import("imgui");
 const flecs = @import("flecs");
-const net = @import("net");
+const zenet = @import("zenet");
 
 const imgui_impl = @import("imgui/implementation.zig");
 
