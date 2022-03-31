@@ -67,6 +67,51 @@ pub fn link(b: *std.build.Builder, step: *std.build.LibExeObjStep) void {
     step.linkLibrary(lib);
 }
 
+pub fn linkArtifact(b: *std.build.Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
+    _ = b;
+    _ = target;
+    exe.linkLibC();
+    exe.addIncludeDir(prefix_path ++ "src/deps/zenet/libs/enet/include");
+
+    if (target.isWindows()) {
+        exe.linkSystemLibrary("ws2_32");
+        exe.linkSystemLibrary("winmm");
+    }
+
+    const cflags = &[_][]const u8{
+        "-DHAS_FCNTL=1",
+        "-DHAS_POLL=1",
+        "-DHAS_GETNAMEINFO=1",
+        "-DHAS_GETADDRINFO=1",
+        "-DHAS_GETHOSTBYNAME_R=1",
+        "-DHAS_GETHOSTBYADDR_R=1",
+        "-DHAS_INET_PTON=1",
+        "-DHAS_INET_NTOP=1",
+        "-DHAS_MSGHDR_FLAGS=1",
+        "-DHAS_SOCKLEN_T=1",
+        "-fno-sanitize=undefined",
+    };
+
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/callbacks.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/compress.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/host.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/list.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/packet.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/peer.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/protocol.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/unix.c", cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/zenet/libs/enet/win32.c", cflags);
+
+    exe.addPackage(getPackage(prefix_path));
+}
+
+pub fn getPackage(comptime prefix_path: []const u8) std.build.Pkg {
+    return .{
+        .name = "zenet",
+        .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" },
+    };
+}
+
 fn thisDir() []const u8 {
     return std.fs.path.dirname(@src().file) orelse ".";
 }

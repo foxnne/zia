@@ -75,23 +75,19 @@ fn createExe(b: *Builder, target: std.zig.CrossTarget, name: []const u8, source:
 pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
 
-    // only add the build option once!
-    // if (enable_imgui == null)
-    //     enable_imgui = b.option(bool, "imgui", "enable imgui") orelse false;
-
     const exe_options = b.addOptions();
     exe.addOptions("build_options", exe_options);
 
     //const options = b.addOptions();
     exe_options.addOption(
-        bool, 
-        "enable_imgui", 
+        bool,
+        "enable_imgui",
         b.option(bool, "enable_imgui", "Sets enable_imgui flag to true.") orelse false,
     );
 
     exe_options.addOption(
-        bool, 
-        "is_server", 
+        bool,
+        "is_server",
         b.option(bool, "is_server", "Sets is_server flag to true.") orelse false,
     );
 
@@ -126,9 +122,8 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
 
     // zenet
     const zenet_builder = @import("src/deps/zenet/build.zig");
-    const zenet_pkg = std.build.Pkg{ .name = "zenet", .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig"}};
-    zenet_builder.link(b, exe);
-    exe.addPackage(zenet_pkg);
+    zenet_builder.linkArtifact(b, exe, target, prefix_path);
+    const zenet_pkg = std.build.Pkg{ .name = "zenet", .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" } };
 
     // zia
     const zia_package = Pkg{

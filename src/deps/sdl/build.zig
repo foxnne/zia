@@ -7,8 +7,8 @@ const Builder = std.build.Builder;
 pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     _ = target;
     if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
-    exe.linkSystemLibrary("c");
-    exe.linkSystemLibrary("sdl2");
+    exe.linkLibC();
+    exe.linkSystemLibraryName("sdl2");
 
     if (builtin.os.tag == .windows) {
         // Windows include dirs for SDL2. This requires downloading SDL2 dev and extracting to c:\SDL2
