@@ -56,7 +56,7 @@ pub const draw = struct {
             .oy = options.origin.y,
         });
 
-        batcher.draw(t, quad, mat, options.color);
+        batcher.draw(t, quad, mat, options.color, .{});
     }
 
     const SpriteOptions = struct {
@@ -65,7 +65,11 @@ pub const draw = struct {
         flipX: bool = false,
         flipY: bool = false,
         color: math.Color = math.Color.white,
+        height: f32 = 0,
         rotation: f32 = 0,
+        frag_mode: f32 = 0,
+        vert_mode: f32 = 0,
+        time: f32 = 0,
     };
 
     pub fn sprite(s: zia.gfx.Sprite, t: Texture, position: math.Vector2, options: SpriteOptions) void {
@@ -81,7 +85,7 @@ pub const draw = struct {
 
         quad.setImageDimensions(t.width, t.height);
         quad.setViewportRect(s.source);
-        batcher.draw(t, quad, mat, options.color);
+        batcher.draw(t, quad, mat, options.color, .{ .height = options.height, .frag_mode = options.frag_mode, .vert_mode = options.vert_mode, .time = options.time });
     }
 
     const TextOptions = struct {
@@ -118,7 +122,7 @@ pub const draw = struct {
 
         const offset = if (size == 1) 0 else size * 0.5;
         var mat = math.Matrix3x2.initTransform(.{ .x = position.x, .y = position.y, .ox = offset, .oy = offset });
-        batcher.draw(white_tex, quad, mat, color);
+        batcher.draw(white_tex, quad, mat, color, .{});
     }
 
     pub fn line(start: math.Vector2, end: math.Vector2, thickness: f32, color: math.Color) void {
@@ -128,13 +132,13 @@ pub const draw = struct {
         const length = start.distance(end);
 
         var mat = math.Matrix3x2.initTransform(.{ .x = start.x, .y = start.y, .angle = angle, .sx = length, .sy = thickness });
-        batcher.draw(white_tex, quad, mat, color);
+        batcher.draw(white_tex, quad, mat, color, .{});
     }
 
     pub fn rect(position: math.Vector2, width: f32, height: f32, color: math.Color) void {
         quad.setFill(width, height);
         var mat = math.Matrix3x2.initTransform(.{ .x = position.x, .y = position.y });
-        batcher.draw(white_tex, quad, mat, color);
+        batcher.draw(white_tex, quad, mat, color, .{});
     }
 
     pub fn hollowRect(position: math.Vector2, width: f32, height: f32, thickness: f32, color: math.Color) void {

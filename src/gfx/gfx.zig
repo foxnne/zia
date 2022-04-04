@@ -22,10 +22,18 @@ pub const Sprite = @import("sprite.zig").Sprite;
 
 pub const FontBook = @import("fontbook.zig").FontBook;
 
+pub const VertexOptions = extern struct {
+    height: f32 = 0,
+    frag_mode: f32 = 0,
+    vert_mode: f32 = 0,
+    time: f32 = 0,
+};
+
 pub const Vertex = extern struct {
     position: math.Vector2 = .{ .x = 0, .y = 0 },
     uv: math.Vector2 = .{ .x = 0, .y = 0 },
     color: u32 = 0xFFFFFFFF,
+    options: VertexOptions = .{},
 };
 
 pub const PassConfig = struct {

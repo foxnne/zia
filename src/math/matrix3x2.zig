@@ -2,6 +2,7 @@ const Vector2 = @import("vector2.zig").Vector2;
 const Color = @import("color.zig").Color;
 const Quad = @import("quad.zig").Quad;
 const Vertex = @import("../zia.zig").gfx.Vertex;
+const VertexOptions = @import("../zia.zig").gfx.VertexOptions;
 const std = @import("std");
 const math = std.math;
 
@@ -159,12 +160,13 @@ pub const Matrix3x2 = extern struct {
 
     /// transforms the positions in Quad and copies them to dst along with the uvs and color. This could be made generic
     /// if we have other common Vertex types
-    pub fn transformQuad(self: Matrix3x2, dst: []Vertex, quad: Quad, color: Color) void {
+    pub fn transformQuad(self: Matrix3x2, dst: []Vertex, quad: Quad, color: Color, options: VertexOptions) void {
         for (dst) |*item, i| {
             item.*.position.x = quad.positions[i].x * self.data[0] + quad.positions[i].y * self.data[2] + self.data[4];
             item.*.position.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
             item.*.uv = quad.uvs[i];
             item.*.color = color.value;
+            item.*.options = options;
         }
     }
 

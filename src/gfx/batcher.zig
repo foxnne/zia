@@ -116,7 +116,10 @@ pub const Batcher = struct {
         scale: f32 = 1.0,
         flipHorizontally: bool = false,
         flipVertically: bool = false,
-        color: math.Color = math.Color.white
+        color: math.Color = math.Color.white,
+        height: f32 = 0,
+        frag_mode: f32 = 0,
+        vert_mode: f32 = 0,
     };
 
     pub fn drawSprite (self: *Batcher, sprite: zia.gfx.Sprite, texture: zia.gfx.Texture, position: math.Vector2, options: SpriteOptions) void{
@@ -141,7 +144,7 @@ pub const Batcher = struct {
 
         quad.setViewportRectF(sprite.source);
 
-        draw(texture, quad, mat, options.color);
+        draw(texture, quad, mat, options.color, .{ .height = options.height, .frag_mode = options.frag_mode, .vert_mode = options.vert_mode });
     }
 
     pub fn drawTex(self: *Batcher, pos: math.Vector2, col: u32, texture: Texture) void {
@@ -172,14 +175,14 @@ pub const Batcher = struct {
         self.vert_index += 4;
     }
 
-    pub fn draw(self: *Batcher, texture: Texture, quad: math.Quad, mat: math.Matrix3x2, color: math.Color) void {
+    pub fn draw(self: *Batcher, texture: Texture, quad: math.Quad, mat: math.Matrix3x2, color: math.Color, options: zia.gfx.VertexOptions) void {
         self.ensureCapacity(texture) catch |err| {
             std.log.warn("Batcher.draw failed to append a draw call with error: {}\n", .{err});
             return;
         };
 
         // copy the quad positions, uvs and color into vertex array transforming them with the matrix as we do it
-        mat.transformQuad(self.mesh.verts[self.vert_index .. self.vert_index + 4], quad, color);
+        mat.transformQuad(self.mesh.verts[self.vert_index .. self.vert_index + 4], quad, color, options);
 
         self.draw_calls.items[self.draw_calls.items.len - 1].quad_count += 1;
         self.quad_count += 1;

@@ -20,8 +20,8 @@ pub const Renderer = struct {
             .usage = .stream,
             .size = index_buffer_size,
         });
-        const vert_buffer_size = @intCast(c_long, max_verts * @sizeOf(gfx.Vertex));
-        var vertex_buffer = rk.createBuffer(gfx.Vertex, .{
+        const vert_buffer_size = @intCast(c_long, max_verts * @sizeOf(imgui.ImDrawVert));
+        var vertex_buffer = rk.createBuffer(imgui.ImDrawVert, .{
             .usage = .stream,
             .size = vert_buffer_size,
         });
@@ -101,8 +101,8 @@ pub const Renderer = struct {
             const indices = @ptrCast([*]u16, list.IdxBuffer.Data)[0..@intCast(usize, list.IdxBuffer.Size)];
             self.bindings.index_buffer_offset = rk.appendBuffer(u16, self.bindings.index_buffer, indices);
 
-            const verts = @ptrCast([*]gfx.Vertex, list.VtxBuffer.Data)[0..@intCast(usize, list.VtxBuffer.Size)];
-            vb_offset = rk.appendBuffer(gfx.Vertex, self.bindings.vert_buffers[0], verts);
+            const verts = @ptrCast([*]imgui.ImDrawVert, list.VtxBuffer.Data)[0..@intCast(usize, list.VtxBuffer.Size)];
+            vb_offset = rk.appendBuffer(imgui.ImDrawVert, self.bindings.vert_buffers[0], verts);
             self.bindings.vertex_buffer_offsets[0] = vb_offset;
 
             rk.applyBindings(self.bindings);
@@ -159,7 +159,7 @@ pub const Renderer = struct {
             rk.destroyBuffer(self.bindings.vert_buffers[0]);
 
             self.vert_buffer_size = @floatToInt(c_long, @intToFloat(f32, draw_data.TotalVtxCount) * 1.5);
-            _ = rk.createBuffer(gfx.Vertex, .{
+            _ = rk.createBuffer(imgui.ImDrawVert, .{
                 .usage = .stream,
                 .size = self.vert_buffer_size,
             });
