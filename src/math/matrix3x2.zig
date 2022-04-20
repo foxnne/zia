@@ -166,7 +166,10 @@ pub const Matrix3x2 = extern struct {
             item.*.position.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
             item.*.uv = quad.uvs[i];
             item.*.color = color.value;
-            item.*.options = options;
+            item.*.options.height = options.height;
+            item.*.options.frag_mode = options.frag_mode;
+            item.*.options.vert_mode = @intToFloat(f32, i); //only the top 2 verts
+            item.*.options.time = if (options.vert_mode == 1) options.time else 0;
         }
     }
 
