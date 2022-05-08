@@ -18,7 +18,7 @@ pub const Vector2 = extern struct {
     }
 
     pub fn angleToVec(radians: f32, length: f32) Vector2 {
-        return .{ .x = math.cos(radians) * length, .y = math.sin(radians) * length };
+        return .{ .x = @cos(radians) * length, .y = @sin(radians) * length };
     }
 
     pub fn orthogonal(self: Vector2) Vector2 {

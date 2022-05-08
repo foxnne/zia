@@ -68,8 +68,8 @@ pub const Matrix3x2 = extern struct {
     }
 
     pub fn setTransform(self: *Matrix3x2, vals: TransformParams) void {
-        const c = math.cos(vals.angle);
-        const s = math.sin(vals.angle);
+        const c = @cos(vals.angle);
+        const s = @sin(vals.angle);
 
         // matrix multiplication carried out on paper:
         // |1    x| |c -s  | |sx     | |1   -ox|
