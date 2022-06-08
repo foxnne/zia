@@ -11,10 +11,13 @@ pub const Time = struct {
     frames_per_seconds: u32 = 0,
     frame_count: u32 = 1,
     timestep: Timestep = undefined,
+    counter: u64 = 0,
+    prev_counter: u64 = 0,
 
     pub fn init(update_rate: f64) Time {
         return Time{
             .timestep = Timestep.init(update_rate),
+            .prev_counter = sdl.SDL_GetPerformanceCounter(),
         };
     }
 
@@ -23,6 +26,7 @@ pub const Time = struct {
         self.fps_frames += 1;
         self.prev_time = self.curr_time;
         self.curr_time = sdl.SDL_GetTicks();
+        self.counter = sdl.SDL_GetPerformanceCounter();
 
         const time_since_last = self.curr_time - self.fps_last_update;
         if (self.curr_time > self.fps_last_update + 1000) {
@@ -69,8 +73,7 @@ pub const Time = struct {
     }
 
     pub fn now(self: Time) u64 {
-        _ = self;
-        return sdl.SDL_GetPerformanceCounter();
+        return self.counter - self.prev_counter;
     }
 
     /// returns the time in milliseconds since the last call
