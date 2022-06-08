@@ -118,17 +118,17 @@ pub fn addZiaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.
     // flecs
     const flecs_builder = @import("src/deps/flecs/build.zig");
     flecs_builder.linkArtifact(b, exe, target, .exe_compiled, prefix_path ++ "src/deps/flecs/");
-    const flecs_pkg = std.build.Pkg{ .name = "flecs", .path = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig" } };
+    const flecs_pkg = std.build.Pkg{ .name = "flecs", .source = .{ .path = prefix_path ++ "src/deps/flecs/src/flecs.zig" } };
 
     // zenet
     const zenet_builder = @import("src/deps/zenet/build.zig");
     zenet_builder.linkArtifact(b, exe, target, prefix_path);
-    const zenet_pkg = std.build.Pkg{ .name = "zenet", .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" } };
+    const zenet_pkg = std.build.Pkg{ .name = "zenet", .source = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" } };
 
     // zia
     const zia_package = Pkg{
         .name = "zia",
-        .path = .{ .path = prefix_path ++ "src/zia.zig" },
+        .source = .{ .path = prefix_path ++ "src/zia.zig" },
         .dependencies = &[_]Pkg{ renderkit_pkg, sdl_pkg, stb_pkg, fontstash_pkg, imgui_pkg, flecs_pkg, zenet_pkg },
     };
     exe.addPackage(zia_package);

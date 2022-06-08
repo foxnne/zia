@@ -108,7 +108,7 @@ pub fn linkArtifact(b: *std.build.Builder, exe: *std.build.LibExeObjStep, target
 pub fn getPackage(comptime prefix_path: []const u8) std.build.Pkg {
     return .{
         .name = "zenet",
-        .path = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" },
+        .source = .{ .path = prefix_path ++ "src/deps/zenet/src/zenet.zig" },
     };
 }
 
