@@ -85,7 +85,7 @@ pub const draw = struct {
 
         quad.setImageDimensions(t.width, t.height);
         quad.setViewportRect(s.source);
-        batcher.draw(t, quad, mat, options.color, .{ .height = options.height, .frag_mode = options.frag_mode, .vert_mode = options.vert_mode, .time = options.time });
+        batcher.draw(t, quad, mat, options.color, .{ .height = options.height, .frag_mode = options.frag_mode, .vert_index = options.vert_mode, .time = options.time });
     }
 
     const TextOptions = struct {

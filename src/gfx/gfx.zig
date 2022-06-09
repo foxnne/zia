@@ -25,7 +25,7 @@ pub const FontBook = @import("fontbook.zig").FontBook;
 pub const VertexOptions = extern struct {
     height: f32 = 0,
     frag_mode: f32 = 0,
-    vert_mode: f32 = 0,
+    vert_index: f32 = 0,
     time: f32 = 0,
 };
 

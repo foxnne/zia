@@ -168,8 +168,8 @@ pub const Matrix3x2 = extern struct {
             item.*.color = color.value;
             item.*.options.height = options.height;
             item.*.options.frag_mode = options.frag_mode;
-            item.*.options.vert_mode = @intToFloat(f32, i); //only the top 2 verts
-            item.*.options.time = if (options.vert_mode == 1) options.time else 0;
+            item.*.options.vert_index = @intToFloat(f32, i); //only the top 2 verts
+            item.*.options.time = if (options.vert_index == 1) options.time else 0;
         }
     }
 
